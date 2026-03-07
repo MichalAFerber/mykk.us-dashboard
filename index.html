@@ -70,10 +70,12 @@
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             grid-auto-rows: 80px;
-            grid-auto-flow: dense;
+            grid-auto-flow: row;
             min-height: 100vh;
             padding: 20px;
             gap: 16px;
+            /* Ensure grid covers full viewport for free-placement drag targets */
+            grid-template-rows: repeat(10, 80px);
         }
 
         /* All structural containers become transparent to grid */
@@ -84,13 +86,16 @@
             display: contents;
         }
 
-        /* All widgets are direct grid items */
-        .top-row > .date-card,
-        .top-row > .search-container,
-        .top-row > .action-buttons-card {
-            align-self: stretch;
-            display: flex;
-            align-items: center;
+        /* Grid widget base */
+        [data-widget] {
+            position: relative;
+            min-width: 0;
+            transition: box-shadow 0.2s ease;
+        }
+
+        /* Hide any widget with .hidden class */
+        [data-widget].hidden {
+            display: none;
         }
 
         /* Glass morphism card style */
@@ -103,9 +108,45 @@
             box-shadow: 0 8px 32px var(--glass-shadow);
         }
 
-        /* Grid widget overflow handling */
+        /* Widget overflow handling */
         .glass-card[data-widget] {
             overflow: hidden;
+        }
+
+        /* Resize cursors at widget edges */
+        [data-widget].resize-right { cursor: ew-resize; }
+        [data-widget].resize-bottom { cursor: ns-resize; }
+        [data-widget].resize-corner { cursor: nwse-resize; }
+        [data-widget].resizing {
+            user-select: none;
+            -webkit-user-select: none;
+            transition: none;
+        }
+        body.widget-resizing {
+            cursor: inherit;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body.widget-resizing * {
+            cursor: inherit !important;
+        }
+
+        /* Visible resize grip in bottom-right corner */
+        [data-widget]::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 12px;
+            height: 12px;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        [data-widget]:hover::after {
+            opacity: 1;
         }
 
         /* Date Card */
@@ -176,12 +217,7 @@
             display: none;
         }
 
-        /* Top row search - flex grow the form */
-        .top-row > .search-container {
-            padding: 12px;
-        }
-
-        .top-row > .search-container .search-form {
+        .search-container .search-form {
             width: 100%;
         }
 
@@ -611,9 +647,6 @@
             gap: 12px;
         }
 
-        .top-row > .action-buttons-card {
-            justify-content: flex-end;
-        }
 
         .action-btn {
             width: 44px;
@@ -764,34 +797,6 @@
         }
 
         .iframe-widget-settings-body textarea:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .iframe-widget-settings-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .iframe-widget-settings-row label {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            white-space: nowrap;
-        }
-
-        .iframe-widget-settings-row input[type="number"] {
-            width: 60px;
-            padding: 4px 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            text-align: center;
-        }
-
-        .iframe-widget-settings-row input[type="number"]:focus {
             outline: none;
             border-color: rgba(255, 255, 255, 0.4);
         }
@@ -1713,50 +1718,43 @@
             left: 8px;
         }
 
-        /* Section dragging states */
-        [data-section].section-dragging {
-            opacity: 0.15;
-            transform: scale(0.98);
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .section-drag-clone {
+        /* Drag mirror (follows cursor) */
+        .drag-mirror {
             position: fixed;
             z-index: 10000;
             pointer-events: none;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-            opacity: 0.92;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            opacity: 0.85;
+            transform: scale(1.02);
+            border: 2px solid rgba(102, 126, 234, 0.6);
+            border-radius: 16px;
         }
 
-        .section-drop-indicator {
-            position: fixed;
-            height: 3px;
-            background: #667eea;
-            border-radius: 2px;
-            z-index: 9999;
-            pointer-events: none;
-            box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
-            transition: top 0.15s ease, width 0.15s ease;
+        /* Source widget placeholder during drag */
+        [data-widget].drag-source {
+            opacity: 0.2;
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            background: rgba(102, 126, 234, 0.05);
         }
 
-        .section-drop-indicator::before,
-        .section-drop-indicator::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
+        /* Hover target highlight */
+        [data-widget].drag-over {
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.6);
         }
 
-        .section-drop-indicator::before {
-            left: -4px;
+        /* FLIP animation for swapping */
+        [data-widget].flip-animate {
+            transition: transform 0.25s ease;
         }
 
-        .section-drop-indicator::after {
-            right: -4px;
+        /* Body during drag */
+        body.widget-dragging {
+            cursor: grabbing;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body.widget-dragging * {
+            cursor: grabbing !important;
         }
 
         /* Hidden action buttons */
@@ -1984,58 +1982,6 @@
             border-radius: 10px;
         }
 
-        /* Widget Size Controls */
-        .widget-size-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-        }
-
-        .widget-size-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 12px;
-        }
-
-        .widget-size-item-label {
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .widget-size-controls {
-            display: flex;
-            gap: 12px;
-        }
-
-        .widget-size-field {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .widget-size-field label {
-            font-size: 0.75rem;
-            opacity: 0.6;
-        }
-
-        .widget-size-field input {
-            width: 100%;
-            padding: 6px 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .widget-size-field input:focus {
-            outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
-        }
 
         /* Responsive - Tablet */
         @media (max-width: 900px) {
@@ -2045,7 +1991,6 @@
                 padding: 16px;
             }
 
-            /* Force all widgets to at least half width on tablet */
             [data-widget] {
                 grid-column: span 6 !important;
                 grid-row: auto !important;
@@ -2413,33 +2358,6 @@
             font-weight: 500;
         }
 
-        .widget-size-inline {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-        }
-
-        .widget-size-inline label {
-            opacity: 0.7;
-            white-space: nowrap;
-        }
-
-        .widget-size-inline input[type="number"] {
-            width: 56px;
-            padding: 4px 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-primary);
-            border-radius: 6px;
-            font-size: 0.8rem;
-            text-align: center;
-        }
-
-        .widget-size-inline input[type="number"]:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
 
         .widget-settings-extra {
             margin-top: 12px;
@@ -3125,6 +3043,8 @@
 
         <!-- iFrame Widgets (dynamically rendered) -->
         <div id="iframe-widgets-container" style="display: contents"></div>
+
+        <!-- Spacer widgets (dynamically rendered) -->
     </main>
 
     <!-- Full-Page Settings -->
@@ -3144,7 +3064,7 @@
                 <a href="#section-cloud">Cloud Sync</a>
                 <a href="#section-general">General</a>
                 <a href="#section-appearance">Appearance</a>
-                <a href="#section-widgets">Widgets & Layout</a>
+                <a href="#section-widgets">Widgets</a>
                 <a href="#section-toolbar">Toolbar Buttons</a>
                 <a href="#section-weather">Weather</a>
                 <a href="#section-iframe">iFrame Widgets</a>
@@ -3269,9 +3189,10 @@
                     </div>
                 </div>
 
-                <!-- Widgets & Layout (combined checkboxes + sizes + related settings) -->
+                <!-- Widgets & Layout -->
                 <div class="settings-section" id="section-widgets">
-                    <h3 class="settings-section-title">Widgets & Layout (12-Column Grid)</h3>
+                    <h3 class="settings-section-title">Widgets & Layout</h3>
+                    <small class="settings-help" style="margin-bottom: 12px; display: block;">Drag widget edges to resize. Drag the grip icon to reorder.</small>
 
                     <!-- Date Widget -->
                     <div class="widget-settings-item">
@@ -3280,12 +3201,6 @@
                                 <input type="checkbox" id="toggle-date">
                                 <span>Date</span>
                             </label>
-                            <div class="widget-size-inline" id="date-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="2" data-size-col="date">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="1" data-size-row="date">
-                            </div>
                         </div>
                         <div class="widget-settings-extra" id="date-settings-extra">
                             <div class="settings-group">
@@ -3307,12 +3222,6 @@
                                 <input type="checkbox" id="toggle-time">
                                 <span>Clock</span>
                             </label>
-                            <div class="widget-size-inline" id="time-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="2" data-size-col="time">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="1" data-size-row="time">
-                            </div>
                         </div>
                         <div class="widget-settings-extra" id="time-settings-extra">
                             <div class="settings-group">
@@ -3332,12 +3241,6 @@
                                 <input type="checkbox" id="toggle-search" checked>
                                 <span>Search Bar</span>
                             </label>
-                            <div class="widget-size-inline" id="search-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="8" data-size-col="search">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="1" data-size-row="search">
-                            </div>
                         </div>
                         <div class="widget-settings-extra" id="search-settings-extra">
                             <div class="settings-group">
@@ -3371,12 +3274,6 @@
                                 <input type="checkbox" id="toggle-weather">
                                 <span>Weather</span>
                             </label>
-                            <div class="widget-size-inline" id="weather-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="4" data-size-col="weather">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="4" data-size-row="weather">
-                            </div>
                         </div>
                     </div>
 
@@ -3387,12 +3284,6 @@
                                 <input type="checkbox" id="toggle-mini-calendar">
                                 <span>Mini Calendar</span>
                             </label>
-                            <div class="widget-size-inline" id="mini-calendar-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="4" data-size-col="mini-calendar">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="3" data-size-row="mini-calendar">
-                            </div>
                         </div>
                     </div>
 
@@ -3403,25 +3294,6 @@
                                 <input type="checkbox" id="toggle-favorites" checked>
                                 <span>Favorites</span>
                             </label>
-                            <div class="widget-size-inline" id="shortcuts-size-controls">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="8" data-size-col="shortcuts">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="2" data-size-row="shortcuts">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Toolbar (actions) size -->
-                    <div class="widget-settings-item">
-                        <div class="widget-settings-header">
-                            <span style="font-size: 0.85rem; opacity: 0.7;">Toolbar Size</span>
-                            <div class="widget-size-inline">
-                                <label>W</label>
-                                <input type="number" min="1" max="12" value="4" data-size-col="actions">
-                                <label>H</label>
-                                <input type="number" min="1" max="8" value="1" data-size-row="actions">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -3529,12 +3401,6 @@
                                     <input type="checkbox" id="toggle-donetick">
                                     <span>Show Chores Widget</span>
                                 </label>
-                                <div class="widget-size-inline" id="donetick-size-controls">
-                                    <label>W</label>
-                                    <input type="number" min="1" max="12" value="4" data-size-col="donetick">
-                                    <label>H</label>
-                                    <input type="number" min="1" max="8" value="4" data-size-row="donetick">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -3872,9 +3738,9 @@
             showSearch: true,
             showWeather: false,
             showMiniCalendar: false,
-            showFavorites: true,
-            showDate: false,
-            showTime: false,
+            showFavorites: false,
+            showDate: true,
+            showTime: true,
             dateFormat: 'short',
             timeFormat: '12h',
             searchEngine: 'google',
@@ -3884,12 +3750,12 @@
             favoritesStyle: 'gradient',
             iframeWidgets: [],
             widgetSizes: {
-                date:      { cols: 2, rows: 1 },
-                search:    { cols: 8, rows: 1 },
-                actions:   { cols: 2, rows: 1 },
                 time:      { cols: 3, rows: 1 },
+                date:      { cols: 3, rows: 1 },
+                search:    { cols: 7, rows: 1 },
+                actions:   { cols: 2, rows: 1 },
+                shortcuts: { cols: 6, rows: 3 },
                 weather:   { cols: 3, rows: 4 },
-                shortcuts: { cols: 6, rows: 4 },
                 'mini-calendar': { cols: 3, rows: 3 },
                 'donetick': { cols: 4, rows: 4 }
             },
@@ -3964,8 +3830,10 @@
             Object.entries(sizes).forEach(([widget, size]) => {
                 const el = document.querySelector(`[data-widget="${widget}"]`);
                 if (el) {
-                    el.style.gridColumn = `span ${size.cols}`;
-                    el.style.gridRow = `span ${size.rows}`;
+                    // Use longhand end properties so gridColumnStart/gridRowStart
+                    // can be set independently for explicit positioning
+                    el.style.gridColumnEnd = `span ${size.cols}`;
+                    el.style.gridRowEnd = `span ${size.rows}`;
                 }
             });
         }
@@ -4296,9 +4164,9 @@
                 const data = {
                     settings: settings,
                     shortcuts: shortcuts,
-                    sectionOrder: getCurrentSectionOrder(),
+                    widgetPositions: JSON.parse(localStorage.getItem('dashboard-widget-grid') || '{}'),
                     lastModified: firebase.firestore.FieldValue.serverTimestamp(),
-                    version: '5.0'
+                    version: '5.1'
                 };
                 await cloudSyncState.db
                     .collection('users')
@@ -4340,9 +4208,12 @@
                         shortcuts = data.shortcuts;
                         localStorage.setItem('dashboard-shortcuts', JSON.stringify(shortcuts));
                     }
-                    if (data.sectionOrder) {
-                        applySectionOrder(data.sectionOrder);
-                        saveSectionOrder(data.sectionOrder);
+                    if (data.widgetPositions) {
+                        applyWidgetPositions(data.widgetPositions);
+                        localStorage.setItem('dashboard-widget-grid', JSON.stringify(data.widgetPositions));
+                    } else if (data.sectionOrder) {
+                        // Legacy: old cloud data used section order
+                        requestAnimationFrame(() => freezeWidgetPositions());
                     }
                     applySettings();
                     updateSettingsUI();
@@ -4378,9 +4249,9 @@
             const data = {
                 settings: settings,
                 shortcuts: shortcuts,
-                sectionOrder: getCurrentSectionOrder(),
+                widgetPositions: JSON.parse(localStorage.getItem('dashboard-widget-grid') || '{}'),
                 exportDate: new Date().toISOString(),
-                version: '4.0'
+                version: '5.1'
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -4407,8 +4278,8 @@
                         shortcuts = data.shortcuts;
                         saveShortcuts();
                     }
-                    if (data.sectionOrder && Array.isArray(data.sectionOrder)) {
-                        saveSectionOrder(data.sectionOrder);
+                    if (data.widgetPositions) {
+                        localStorage.setItem('dashboard-widget-grid', JSON.stringify(data.widgetPositions));
                     }
                     window.location.reload();
                 } catch (error) {
@@ -4539,14 +4410,12 @@
             document.getElementById('mini-calendar-widget').classList.toggle('hidden', !settings.showMiniCalendar);
             document.getElementById('shortcuts-widget').classList.toggle('hidden', !settings.showFavorites);
 
-            // Donetick widget
-            const donetickVisible = settings.showDonetick && isExtensionSubscriptionActive();
+            // Donetick widget - only show when API is configured AND toggle is on
+            const donetickVisible = settings.showDonetick && settings.donetickUrl && settings.donetickApiToken && isExtensionSubscriptionActive();
             document.getElementById('donetick-widget').classList.toggle('hidden', !donetickVisible);
             updateDonetickVisibility();
-            if (donetickVisible && settings.donetickUrl && settings.donetickApiToken) {
+            if (donetickVisible) {
                 loadDonetickData();
-            } else if (donetickVisible) {
-                renderDonetickContent();
             }
 
             // Render iframe widgets
@@ -4624,15 +4493,6 @@
             // iFrame widget settings
             renderIframeWidgetSettings();
 
-            // Widget sizes
-            const sizes = settings.widgetSizes || defaultSettings.widgetSizes;
-            Object.entries(sizes).forEach(([widget, size]) => {
-                const colInput = document.querySelector(`[data-size-col="${widget}"]`);
-                const rowInput = document.querySelector(`[data-size-row="${widget}"]`);
-                if (colInput) colInput.value = size.cols;
-                if (rowInput) rowInput.value = size.rows;
-            });
-
             // Auto-refresh
             document.getElementById('toggle-auto-refresh').checked = settings.autoRefresh;
             document.getElementById('auto-refresh-minutes').value = settings.autoRefreshMinutes;
@@ -4647,7 +4507,6 @@
             document.getElementById('toggle-mini-calendar').checked = settings.showMiniCalendar;
             document.getElementById('toggle-favorites').checked = settings.showFavorites;
 
-            // Disable size controls when widget is unchecked
             updateWidgetSizeDisabledState();
 
             // Action button toggles
@@ -4703,19 +4562,10 @@
             const map = {
                 'date': 'showDate',
                 'time': 'showTime',
-                'search': 'showSearch',
-                'weather': 'showWeather',
-                'mini-calendar': 'showMiniCalendar',
-                'shortcuts': 'showFavorites',
-                'donetick': 'showDonetick'
+                'search': 'showSearch'
             };
             Object.entries(map).forEach(([widget, settingKey]) => {
                 const enabled = settings[settingKey];
-                const colInput = document.querySelector(`[data-size-col="${widget}"]`);
-                const rowInput = document.querySelector(`[data-size-row="${widget}"]`);
-                if (colInput) colInput.disabled = !enabled;
-                if (rowInput) rowInput.disabled = !enabled;
-                // Disable extra settings
                 const extraId = widget === 'time' ? 'time-settings-extra' :
                                widget === 'date' ? 'date-settings-extra' :
                                widget === 'search' ? 'search-settings-extra' : null;
@@ -5274,8 +5124,8 @@
                 // Apply grid size
                 const sizes = settings.widgetSizes || {};
                 const size = sizes[widget.id] || { cols: 4, rows: 5 };
-                el.style.gridColumn = `span ${size.cols}`;
-                el.style.gridRow = `span ${size.rows}`;
+                el.style.gridColumnEnd = `span ${size.cols}`;
+                el.style.gridRowEnd = `span ${size.rows}`;
 
                 let bodyContent;
                 if (widget.url && widget.url.trim()) {
@@ -5304,8 +5154,8 @@
                 container.appendChild(el);
             });
 
-            // Re-apply section ordering so iframe widgets respect saved order
-            loadSectionOrder();
+            // Re-apply positions so iframe widgets respect saved layout
+            loadWidgetPositions();
 
             // Attach drag handlers to new iframe widget handles
             container.querySelectorAll('.section-drag-handle').forEach(handle => {
@@ -5334,12 +5184,6 @@
                     </div>
                     <div class="iframe-widget-settings-body">
                         <textarea data-iframe-url="${index}" placeholder="Paste an embed URL or full iframe code...">${widget.url || ''}</textarea>
-                        <div class="iframe-widget-settings-row">
-                            <label>Width (1-12):</label>
-                            <input type="number" min="1" max="12" value="${(settings.widgetSizes[widget.id] || {cols: 4}).cols}" data-iframe-cols="${index}">
-                            <label>Height (1-8):</label>
-                            <input type="number" min="1" max="8" value="${(settings.widgetSizes[widget.id] || {rows: 5}).rows}" data-iframe-rows="${index}">
-                        </div>
                     </div>`;
                 list.appendChild(card);
             });
@@ -5361,26 +5205,6 @@
                 input.addEventListener('change', e => {
                     const i = parseInt(e.target.dataset.iframeEnabled);
                     settings.iframeWidgets[i].enabled = e.target.checked;
-                });
-            });
-            list.querySelectorAll('[data-iframe-cols]').forEach(input => {
-                input.addEventListener('change', e => {
-                    const i = parseInt(e.target.dataset.iframeCols);
-                    const val = Math.min(12, Math.max(1, parseInt(e.target.value) || 4));
-                    e.target.value = val;
-                    const wid = settings.iframeWidgets[i].id;
-                    if (!settings.widgetSizes[wid]) settings.widgetSizes[wid] = { cols: 4, rows: 5 };
-                    settings.widgetSizes[wid].cols = val;
-                });
-            });
-            list.querySelectorAll('[data-iframe-rows]').forEach(input => {
-                input.addEventListener('change', e => {
-                    const i = parseInt(e.target.dataset.iframeRows);
-                    const val = Math.min(8, Math.max(1, parseInt(e.target.value) || 5));
-                    e.target.value = val;
-                    const wid = settings.iframeWidgets[i].id;
-                    if (!settings.widgetSizes[wid]) settings.widgetSizes[wid] = { cols: 4, rows: 5 };
-                    settings.widgetSizes[wid].rows = val;
                 });
             });
             list.querySelectorAll('[data-iframe-delete]').forEach(btn => {
@@ -6050,40 +5874,251 @@
             }, 1000);
         }
 
-        // ============ Section Reordering ============
-        const defaultSectionOrder = ['time', 'shortcuts', 'weather', 'mini-calendar'];
-        let sectionDragState = null;
+        // ============ Widget Resize System ============
+        const RESIZE_EDGE = 10; // px from edge to trigger resize
+        const MIN_WIDGET_SIZE = 100; // px
+        const GRID_COLS = 12;
+        const ROW_HEIGHT = 80;
+        let resizeState = null;
 
-        function loadSectionOrder() {
-            const saved = localStorage.getItem('dashboard-section-order');
-            if (saved) {
-                try {
-                    applySectionOrder(JSON.parse(saved));
-                } catch (e) {
-                    applySectionOrder(defaultSectionOrder);
-                }
+        function getResizeEdges(widget, clientX, clientY) {
+            const rect = widget.getBoundingClientRect();
+            const right = rect.right - clientX < RESIZE_EDGE;
+            const bottom = rect.bottom - clientY < RESIZE_EDGE;
+            return { right, bottom, corner: right && bottom };
+        }
+
+        function updateResizeCursor(widget, clientX, clientY) {
+            if (resizeState) return;
+            const { right, bottom, corner } = getResizeEdges(widget, clientX, clientY);
+            widget.classList.remove('resize-right', 'resize-bottom', 'resize-corner');
+            if (corner) widget.classList.add('resize-corner');
+            else if (right) widget.classList.add('resize-right');
+            else if (bottom) widget.classList.add('resize-bottom');
+        }
+
+        function startWidgetResize(widget, edges, clientX, clientY) {
+            const rect = widget.getBoundingClientRect();
+            const dashboard = document.getElementById('main-dashboard');
+            const dashRect = dashboard.getBoundingClientRect();
+            const colWidth = dashRect.width / GRID_COLS;
+
+            resizeState = {
+                widget,
+                edges,
+                startX: clientX,
+                startY: clientY,
+                startWidth: rect.width,
+                startHeight: rect.height,
+                colWidth,
+                widgetId: widget.dataset.widget
+            };
+
+            widget.classList.add('resizing');
+            document.body.classList.add('widget-resizing');
+            if (edges.corner) document.body.style.cursor = 'nwse-resize';
+            else if (edges.right) document.body.style.cursor = 'ew-resize';
+            else if (edges.bottom) document.body.style.cursor = 'ns-resize';
+        }
+
+        function moveWidgetResize(clientX, clientY) {
+            if (!resizeState) return;
+            const { widget, edges, startX, startY, startWidth, startHeight, colWidth } = resizeState;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+
+            if (edges.right || edges.corner) {
+                const newWidth = Math.max(MIN_WIDGET_SIZE, startWidth + dx);
+                // Snap to nearest column
+                const cols = Math.max(1, Math.min(GRID_COLS, Math.round(newWidth / colWidth)));
+                widget.style.gridColumnEnd = `span ${cols}`;
+                resizeState.snappedCols = cols;
+            }
+
+            if (edges.bottom || edges.corner) {
+                const newHeight = Math.max(MIN_WIDGET_SIZE, startHeight + dy);
+                // Snap to nearest row
+                const rows = Math.max(1, Math.round(newHeight / ROW_HEIGHT));
+                widget.style.gridRowEnd = `span ${rows}`;
+                resizeState.snappedRows = rows;
             }
         }
 
-        function saveSectionOrder(order) {
-            localStorage.setItem('dashboard-section-order', JSON.stringify(order));
+        function endWidgetResize() {
+            if (!resizeState) return;
+            const { widget, widgetId, snappedCols, snappedRows } = resizeState;
+
+            if (!settings.widgetSizes[widgetId]) {
+                settings.widgetSizes[widgetId] = { ...defaultSettings.widgetSizes[widgetId] || { cols: 4, rows: 3 } };
+            }
+            if (snappedCols !== undefined) settings.widgetSizes[widgetId].cols = snappedCols;
+            if (snappedRows !== undefined) settings.widgetSizes[widgetId].rows = snappedRows;
+
+            saveSettings();
+            scaleDateTimeFonts();
+
+            widget.classList.remove('resizing', 'resize-right', 'resize-bottom', 'resize-corner');
+            document.body.classList.remove('widget-resizing');
+            document.body.style.cursor = '';
+            resizeState = null;
         }
 
-        function applySectionOrder(order) {
-            order.forEach((sectionId, index) => {
-                const el = document.querySelector(`[data-section="${sectionId}"]`);
-                if (el) el.style.order = index;
+        function initWidgetResize() {
+            const dashboard = document.getElementById('main-dashboard');
+
+            // Mouse cursor feedback
+            dashboard.addEventListener('mousemove', (e) => {
+                if (resizeState) {
+                    e.preventDefault();
+                    moveWidgetResize(e.clientX, e.clientY);
+                    return;
+                }
+                const widget = e.target.closest('[data-widget]');
+                if (widget) updateResizeCursor(widget, e.clientX, e.clientY);
+            });
+
+            // Start resize on mousedown near edge
+            dashboard.addEventListener('mousedown', (e) => {
+                const widget = e.target.closest('[data-widget]');
+                if (!widget) return;
+                // Don't resize if clicking a drag handle or interactive element
+                if (e.target.closest('.section-drag-handle, button, a, input, textarea, select, iframe')) return;
+
+                const edges = getResizeEdges(widget, e.clientX, e.clientY);
+                if (!edges.right && !edges.bottom) return;
+
+                e.preventDefault();
+                startWidgetResize(widget, edges, e.clientX, e.clientY);
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (resizeState) {
+                    e.preventDefault();
+                    moveWidgetResize(e.clientX, e.clientY);
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (resizeState) endWidgetResize();
+            });
+
+            // Touch resize support
+            dashboard.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                const widget = touch.target.closest('[data-widget]');
+                if (!widget) return;
+                if (touch.target.closest('.section-drag-handle, button, a, input, textarea, select, iframe')) return;
+
+                const edges = getResizeEdges(widget, touch.clientX, touch.clientY);
+                if (!edges.right && !edges.bottom) return;
+
+                e.preventDefault();
+                startWidgetResize(widget, edges, touch.clientX, touch.clientY);
+
+                const onTouchMove = (ev) => {
+                    ev.preventDefault();
+                    moveWidgetResize(ev.touches[0].clientX, ev.touches[0].clientY);
+                };
+                const onTouchEnd = () => {
+                    endWidgetResize();
+                    document.removeEventListener('touchmove', onTouchMove);
+                    document.removeEventListener('touchend', onTouchEnd);
+                };
+                document.addEventListener('touchmove', onTouchMove, { passive: false });
+                document.addEventListener('touchend', onTouchEnd);
+            }, { passive: false });
+        }
+
+        // ============ Section Reordering (Swap Style) ============
+        let sectionDragState = null;
+
+        // Default grid positions: col/row are 1-based grid line numbers
+        const defaultWidgetPositions = {
+            time:             { col: 1,  row: 1 },
+            date:             { col: 1,  row: 2 },
+            search:           { col: 4,  row: 1 },
+            actions:          { col: 11, row: 1 },
+            shortcuts:        { col: 4,  row: 3 },
+            weather:          { col: 1,  row: 3 },
+            'mini-calendar':  { col: 10, row: 3 },
+            donetick:         { col: 4,  row: 6 }
+        };
+
+        function saveWidgetPositions() {
+            const positions = {};
+            document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
+                positions[el.dataset.widget] = {
+                    col: parseInt(el.style.gridColumnStart) || 1,
+                    row: parseInt(el.style.gridRowStart) || 1
+                };
+            });
+            localStorage.setItem('dashboard-widget-grid', JSON.stringify(positions));
+        }
+
+        function loadWidgetPositions() {
+            // Clean up legacy keys
+            localStorage.removeItem('dashboard-section-order');
+            localStorage.removeItem('dashboard-widget-positions');
+            localStorage.removeItem('dashboard-widget-positions-v2');
+            const saved = localStorage.getItem('dashboard-widget-grid');
+            if (saved) {
+                try {
+                    const positions = JSON.parse(saved);
+                    applyWidgetPositions(positions);
+                } catch (e) {
+                    applyWidgetPositions(defaultWidgetPositions);
+                    saveWidgetPositions();
+                }
+            } else {
+                applyWidgetPositions(defaultWidgetPositions);
+                saveWidgetPositions();
+            }
+        }
+
+        function applyWidgetPositions(positions) {
+            document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
+                const id = el.dataset.widget;
+                const pos = positions[id] || defaultWidgetPositions[id];
+                if (pos) {
+                    el.style.gridColumnStart = pos.col;
+                    el.style.gridRowStart = pos.row;
+                }
             });
         }
 
-        function getCurrentSectionOrder() {
-            const sections = Array.from(document.querySelectorAll('[data-section]'));
-            sections.sort((a, b) => {
-                const orderA = parseInt(getComputedStyle(a).order) || 0;
-                const orderB = parseInt(getComputedStyle(b).order) || 0;
-                return orderA - orderB;
+        // Record positions of all widgets for FLIP animation
+        function snapshotWidgetPositions() {
+            const map = {};
+            document.querySelectorAll('[data-widget]').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                map[el.dataset.widget] = { left: rect.left, top: rect.top };
             });
-            return sections.map(s => s.dataset.section);
+            return map;
+        }
+
+        // FLIP animate widgets from old positions to new
+        function flipAnimate(oldPositions) {
+            document.querySelectorAll('[data-widget]').forEach(el => {
+                const id = el.dataset.widget;
+                const oldPos = oldPositions[id];
+                if (!oldPos) return;
+                const newRect = el.getBoundingClientRect();
+                const dx = oldPos.left - newRect.left;
+                const dy = oldPos.top - newRect.top;
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+                el.style.transform = `translate(${dx}px, ${dy}px)`;
+                el.classList.remove('flip-animate');
+                void el.offsetHeight; // force reflow
+                el.classList.add('flip-animate');
+                el.style.transform = '';
+            });
+            // Clean up after animation
+            setTimeout(() => {
+                document.querySelectorAll('.flip-animate').forEach(el => {
+                    el.classList.remove('flip-animate');
+                });
+            }, 300);
         }
 
         function initSectionDragDrop() {
@@ -6139,115 +6174,121 @@
         function startSectionDrag(section, clientX, clientY) {
             const rect = section.getBoundingClientRect();
 
-            // Create floating clone that follows cursor
-            const clone = section.cloneNode(true);
-            clone.classList.add('section-drag-clone');
-            clone.style.top = rect.top + 'px';
-            clone.style.left = rect.left + 'px';
-            clone.style.width = rect.width + 'px';
-            clone.style.height = rect.height + 'px';
-            document.body.appendChild(clone);
+            // Create mirror (clone that follows cursor)
+            const mirror = section.cloneNode(true);
+            mirror.classList.add('drag-mirror');
+            mirror.style.top = rect.top + 'px';
+            mirror.style.left = rect.left + 'px';
+            mirror.style.width = rect.width + 'px';
+            mirror.style.height = rect.height + 'px';
+            document.body.appendChild(mirror);
 
-            // Create drop indicator line
-            const indicator = document.createElement('div');
-            indicator.classList.add('section-drop-indicator');
-            indicator.style.display = 'none';
-            document.body.appendChild(indicator);
-
-            // Ghost the original
-            section.classList.add('section-dragging');
+            // Mark original as source placeholder
+            section.classList.add('drag-source');
+            document.body.classList.add('widget-dragging');
 
             sectionDragState = {
                 draggedSection: section,
-                clone: clone,
-                indicator: indicator,
+                mirror: mirror,
                 offsetX: clientX - rect.left,
                 offsetY: clientY - rect.top,
                 sectionId: section.dataset.section,
-                insertBeforeId: null
+                lastSwapTarget: null,
+                lastFreeCell: null
             };
+        }
+
+        // Convert a viewport point to a grid cell { col, row } (1-based)
+        function getGridCellFromPoint(clientX, clientY) {
+            const dashboard = document.getElementById('main-dashboard');
+            const rect = dashboard.getBoundingClientRect();
+            const style = getComputedStyle(dashboard);
+            const gap = parseFloat(style.gap) || 16;
+            const padLeft = parseFloat(style.paddingLeft) || 20;
+            const padTop = parseFloat(style.paddingTop) || 20;
+
+            const x = clientX - rect.left - padLeft;
+            const y = clientY - rect.top - padTop;
+
+            const colWidth = (rect.width - padLeft - parseFloat(style.paddingRight || 20) - gap * (GRID_COLS - 1)) / GRID_COLS;
+            const cellW = colWidth + gap;
+            const cellH = ROW_HEIGHT + gap;
+
+            const col = Math.max(1, Math.min(GRID_COLS, Math.floor(x / cellW) + 1));
+            const row = Math.max(1, Math.floor(y / cellH) + 1);
+            return { col, row };
         }
 
         function moveSectionDrag(clientX, clientY) {
             if (!sectionDragState) return;
 
-            const { clone, indicator, draggedSection, offsetX, offsetY } = sectionDragState;
+            const { mirror, draggedSection, offsetX, offsetY } = sectionDragState;
 
-            // Move clone to follow cursor
-            clone.style.top = (clientY - offsetY) + 'px';
-            clone.style.left = (clientX - offsetX) + 'px';
+            // Move mirror to follow cursor
+            mirror.style.top = (clientY - offsetY) + 'px';
+            mirror.style.left = (clientX - offsetX) + 'px';
 
-            // Get other sections sorted by visual position
-            const sections = Array.from(document.querySelectorAll('[data-section]'))
-                .filter(s => s !== draggedSection);
-            sections.sort((a, b) => {
-                const ra = a.getBoundingClientRect();
-                const rb = b.getBoundingClientRect();
-                return ra.top - rb.top || ra.left - rb.left;
-            });
+            // Find widget under cursor (excluding the mirror and drag source)
+            const elemUnder = document.elementFromPoint(clientX, clientY);
+            const targetWidget = elemUnder ? elemUnder.closest('[data-widget]') : null;
 
-            // Find insertion point based on cursor Y vs midpoints
-            let insertBefore = null;
-            for (const s of sections) {
-                const r = s.getBoundingClientRect();
-                if (clientY < r.top + r.height / 2) {
-                    insertBefore = s;
-                    break;
+            // Remove previous hover highlight
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+            if (targetWidget && targetWidget !== draggedSection && !targetWidget.classList.contains('hidden')) {
+                targetWidget.classList.add('drag-over');
+
+                // Swap explicit grid positions with FLIP animation
+                if (sectionDragState.lastSwapTarget !== targetWidget.dataset.widget) {
+                    sectionDragState.lastSwapTarget = targetWidget.dataset.widget;
+
+                    const oldPositions = snapshotWidgetPositions();
+
+                    // Swap their explicit grid-column-start and grid-row-start
+                    const dragCol = draggedSection.style.gridColumnStart;
+                    const dragRow = draggedSection.style.gridRowStart;
+                    const targetCol = targetWidget.style.gridColumnStart;
+                    const targetRow = targetWidget.style.gridRowStart;
+
+                    draggedSection.style.gridColumnStart = targetCol;
+                    draggedSection.style.gridRowStart = targetRow;
+                    targetWidget.style.gridColumnStart = dragCol;
+                    targetWidget.style.gridRowStart = dragRow;
+
+                    flipAnimate(oldPositions);
+                }
+            } else if (!targetWidget || targetWidget === draggedSection) {
+                // Dragging over empty space — move widget to this grid cell
+                const cell = getGridCellFromPoint(clientX, clientY);
+                const cellKey = `${cell.col},${cell.row}`;
+
+                if (sectionDragState.lastFreeCell !== cellKey) {
+                    sectionDragState.lastFreeCell = cellKey;
+                    sectionDragState.lastSwapTarget = null;
+
+                    const oldPositions = snapshotWidgetPositions();
+
+                    draggedSection.style.gridColumnStart = cell.col;
+                    draggedSection.style.gridRowStart = cell.row;
+
+                    flipAnimate(oldPositions);
                 }
             }
-
-            // Position the drop indicator
-            if (insertBefore) {
-                const r = insertBefore.getBoundingClientRect();
-                indicator.style.top = (r.top - 8) + 'px';
-                indicator.style.left = r.left + 'px';
-                indicator.style.width = r.width + 'px';
-                indicator.style.display = 'block';
-            } else if (sections.length > 0) {
-                // After the last section
-                const last = sections[sections.length - 1];
-                const r = last.getBoundingClientRect();
-                indicator.style.top = (r.bottom + 5) + 'px';
-                indicator.style.left = r.left + 'px';
-                indicator.style.width = r.width + 'px';
-                indicator.style.display = 'block';
-            }
-
-            sectionDragState.insertBeforeId = insertBefore ? insertBefore.dataset.section : null;
         }
 
         function endSectionDrag() {
             if (!sectionDragState) return;
 
-            const { draggedSection, clone, indicator, insertBeforeId } = sectionDragState;
+            const { draggedSection, mirror } = sectionDragState;
 
-            // Clean up clone and indicator
-            clone.remove();
-            indicator.remove();
-            draggedSection.classList.remove('section-dragging');
+            // Clean up
+            mirror.remove();
+            draggedSection.classList.remove('drag-source');
+            document.body.classList.remove('widget-dragging');
+            document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
 
-            // Calculate and apply new order
-            const order = getCurrentSectionOrder();
-            const draggedId = draggedSection.dataset.section;
-            const draggedIndex = order.indexOf(draggedId);
-
-            if (draggedIndex !== -1) {
-                order.splice(draggedIndex, 1);
-
-                if (insertBeforeId) {
-                    const targetIndex = order.indexOf(insertBeforeId);
-                    if (targetIndex !== -1) {
-                        order.splice(targetIndex, 0, draggedId);
-                    } else {
-                        order.push(draggedId);
-                    }
-                } else {
-                    order.push(draggedId);
-                }
-
-                applySectionOrder(order);
-                saveSectionOrder(order);
-            }
+            // Save the new positions
+            saveWidgetPositions();
 
             sectionDragState = null;
         }
@@ -6463,27 +6504,7 @@
                 document.getElementById('auto-refresh-value').textContent = e.target.value;
             });
 
-            // Widget size inputs
-            document.querySelectorAll('[data-size-col]').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const widget = e.target.dataset.sizeCol;
-                    const val = Math.min(12, Math.max(1, parseInt(e.target.value) || 1));
-                    e.target.value = val;
-                    if (!settings.widgetSizes[widget]) settings.widgetSizes[widget] = {};
-                    settings.widgetSizes[widget].cols = val;
-                });
-            });
-            document.querySelectorAll('[data-size-row]').forEach(input => {
-                input.addEventListener('change', (e) => {
-                    const widget = e.target.dataset.sizeRow;
-                    const val = Math.min(8, Math.max(1, parseInt(e.target.value) || 1));
-                    e.target.value = val;
-                    if (!settings.widgetSizes[widget]) settings.widgetSizes[widget] = {};
-                    settings.widgetSizes[widget].rows = val;
-                });
-            });
-
-            // Widget toggles (also update disabled state of size controls)
+            // Widget toggles
             document.getElementById('toggle-date').addEventListener('change', (e) => { settings.showDate = e.target.checked; updateWidgetSizeDisabledState(); });
             document.getElementById('toggle-time').addEventListener('change', (e) => { settings.showTime = e.target.checked; updateWidgetSizeDisabledState(); });
             document.getElementById('toggle-search').addEventListener('change', (e) => { settings.showSearch = e.target.checked; updateWidgetSizeDisabledState(); });
@@ -6855,14 +6876,15 @@
         function init() {
             loadSettings();
             loadShortcuts();
-            loadSectionOrder();
             applyWidgetSizes();
+            loadWidgetPositions();
             updateDateTime();
             setInterval(updateDateTime, 1000);
             initEventListeners();
             initEscapeHandler();
             initSwipeGestures();
             initSectionDragDrop();
+            initWidgetResize();
             renderMiniCalendar();
             startAutoRefresh();
             // Initialize Firebase if configured
