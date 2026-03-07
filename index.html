@@ -98,83 +98,6 @@
             display: none;
         }
 
-        /* Spacer widgets */
-        .widget-spacer {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border-radius: 16px;
-            transition: border 0.2s ease, background 0.2s ease;
-        }
-        .widget-spacer:hover {
-            border: 2px dashed rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .widget-spacer .spacer-delete {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 22px;
-            height: 22px;
-            background: rgba(239, 68, 68, 0.6);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            font-size: 13px;
-            line-height: 1;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-        }
-        .widget-spacer:hover .spacer-delete {
-            display: flex;
-        }
-
-        /* Add spacer button */
-        .add-spacer-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 44px;
-            height: 44px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        .add-spacer-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-        .add-spacer-btn .tooltip {
-            position: absolute;
-            right: 54px;
-            white-space: nowrap;
-            background: rgba(30, 30, 50, 0.95);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-        .add-spacer-btn:hover .tooltip {
-            opacity: 1;
-        }
-
         /* Glass morphism card style */
         .glass-card {
             background: var(--glass-bg);
@@ -3122,14 +3045,7 @@
         <div id="iframe-widgets-container" style="display: contents"></div>
 
         <!-- Spacer widgets (dynamically rendered) -->
-        <div id="spacer-widgets-container" style="display: contents"></div>
     </main>
-
-    <!-- Add spacer button -->
-    <button class="add-spacer-btn" id="add-spacer-btn" title="Add spacer" aria-label="Add spacer widget">
-        <span class="tooltip">Add spacer</span>
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m-6-6h12"></path></svg>
-    </button>
 
     <!-- Full-Page Settings -->
     <div class="settings-page" id="settings-page" role="dialog" aria-label="Dashboard settings">
@@ -3833,7 +3749,6 @@
             weatherMapZoom: 9,
             favoritesStyle: 'gradient',
             iframeWidgets: [],
-            spacers: [],
             widgetSizes: {
                 time:      { cols: 3, rows: 1 },
                 date:      { cols: 3, rows: 1 },
@@ -4106,10 +4021,6 @@
                 // Ensure iframeWidgets array exists
                 if (!Array.isArray(settings.iframeWidgets)) {
                     settings.iframeWidgets = [...defaultSettings.iframeWidgets];
-                }
-                // Ensure spacers array exists
-                if (!Array.isArray(settings.spacers)) {
-                    settings.spacers = [];
                 }
                 // Ensure enabledEngines array exists
                 if (!Array.isArray(settings.enabledEngines)) {
@@ -4507,9 +4418,8 @@
                 loadDonetickData();
             }
 
-            // Render iframe widgets and spacers
+            // Render iframe widgets
             renderIframeWidgets();
-            renderSpacers();
 
             // Re-trigger weather animation with current settings
             if (weatherData && weatherData.current) {
@@ -5964,64 +5874,6 @@
             }, 1000);
         }
 
-        // ============ Spacer Widgets ============
-        function renderSpacers() {
-            const container = document.getElementById('spacer-widgets-container');
-            container.innerHTML = '';
-
-            const spacers = settings.spacers || [];
-            spacers.forEach(spacer => {
-                const el = document.createElement('div');
-                el.className = 'widget-spacer';
-                el.id = spacer.id;
-                el.dataset.widget = spacer.id;
-                el.dataset.section = spacer.id;
-
-                const size = settings.widgetSizes[spacer.id] || { cols: 2, rows: 1 };
-                el.style.gridColumnEnd = `span ${size.cols}`;
-                el.style.gridRowEnd = `span ${size.rows}`;
-
-                el.innerHTML = `
-                    <span class="section-drag-handle section-drag-handle-floating" aria-label="Drag to reorder">
-                        <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
-                    </span>
-                    <button class="spacer-delete" aria-label="Remove spacer" data-spacer-delete="${spacer.id}">&times;</button>
-                `;
-
-                container.appendChild(el);
-            });
-
-            // Attach drag handles
-            container.querySelectorAll('.section-drag-handle').forEach(handle => {
-                handle.addEventListener('touchstart', handleSectionTouchStart, { passive: false });
-                handle.addEventListener('mousedown', handleSectionMouseDown);
-            });
-
-            // Attach delete buttons
-            container.querySelectorAll('[data-spacer-delete]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = e.target.dataset.spacerDelete;
-                    settings.spacers = (settings.spacers || []).filter(s => s.id !== id);
-                    delete settings.widgetSizes[id];
-                    saveSettings();
-                    renderSpacers();
-                    loadWidgetPositions();
-                });
-            });
-
-            // Re-apply widget positions
-            loadWidgetPositions();
-        }
-
-        function addSpacer() {
-            if (!settings.spacers) settings.spacers = [];
-            const id = 'spacer-' + Date.now();
-            settings.spacers.push({ id });
-            settings.widgetSizes[id] = { cols: 2, rows: 1 };
-            saveSettings();
-            renderSpacers();
-        }
-
         // ============ Widget Resize System ============
         const RESIZE_EDGE = 10; // px from edge to trigger resize
         const MIN_WIDGET_SIZE = 100; // px
@@ -6627,7 +6479,6 @@
 
             settingsBtn.addEventListener('click', () => {
                 settingsPage.classList.add('active');
-                document.getElementById('add-spacer-btn').style.display = 'none';
                 stopAutoRefresh();
                 updateSettingsUI();
                 document.querySelector('.settings-page-body').scrollTop = 0;
@@ -6635,12 +6486,8 @@
 
             settingsBack.addEventListener('click', () => {
                 settingsPage.classList.remove('active');
-                document.getElementById('add-spacer-btn').style.display = '';
                 startAutoRefresh();
             });
-
-            // Add spacer button
-            document.getElementById('add-spacer-btn').addEventListener('click', addSpacer);
 
             // Page title
             document.getElementById('page-title-input').addEventListener('input', (e) => {
