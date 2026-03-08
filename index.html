@@ -112,6 +112,10 @@
         .glass-card[data-widget] {
             overflow: hidden;
         }
+        /* Search widget needs visible overflow for engine dropdown popup */
+        .search-container[data-widget] {
+            overflow: visible;
+        }
 
         /* Resize cursors at widget edges */
         [data-widget].resize-right { cursor: ew-resize; }
@@ -2972,7 +2976,6 @@
                     <span class="section-drag-handle" aria-label="Drag to reorder">
                         <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
                     </span>
-                    <span class="section-title">Weather</span>
                 </div>
                 <div id="weather-content" aria-live="polite">
                     <div class="weather-setup">
@@ -2991,7 +2994,6 @@
                     <span class="section-drag-handle" aria-label="Drag to reorder">
                         <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
                     </span>
-                    <span class="section-title">Favorites</span>
                     <button class="add-btn" id="add-shortcut-btn">+ Add</button>
                 </div>
                 <div class="shortcuts-grid" id="shortcuts-grid">
@@ -3008,7 +3010,6 @@
                     <span class="section-drag-handle" aria-label="Drag to reorder">
                         <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
                     </span>
-                    <span class="section-title">Mini Calendar</span>
                 </div>
                 <div class="mini-calendar" id="mini-calendar">
                     <div class="mini-calendar-header">
@@ -3031,7 +3032,6 @@
                 <span class="section-drag-handle" aria-label="Drag to reorder">
                     <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
                 </span>
-                <span class="section-title">Chores</span>
             </div>
             <div id="donetick-content" aria-live="polite">
                 <div class="donetick-setup">
@@ -3068,9 +3068,10 @@
                 <a href="#section-toolbar">Toolbar Buttons</a>
                 <a href="#section-weather">Weather</a>
                 <a href="#section-iframe">iFrame Widgets</a>
-                <a href="#section-donetick" id="toc-donetick" class="hidden">Donetick</a>
+                <a href="#section-donetick" id="toc-donetick" class="hidden">Integrations</a>
                 <a href="#section-data">Data</a>
                 <a href="#section-faq">FAQ</a>
+                <button class="settings-save" id="save-settings" style="margin-top: 16px; width: 100%;">Save Settings</button>
             </nav>
 
             <div class="settings-page-content">
@@ -3380,7 +3381,7 @@
 
                 <!-- Donetick (extension-gated) -->
                 <div class="settings-section hidden" id="section-donetick">
-                    <h3 class="settings-section-title">Donetick</h3>
+                    <h3 class="settings-section-title">Integrations</h3>
                     <p class="settings-help" style="margin-bottom: 12px;">
                         Connect your self-hosted <a href="https://donetick.com" target="_blank" style="color: #667eea;">Donetick</a> server to view and complete chores from your dashboard.
                     </p>
@@ -3536,7 +3537,6 @@
 
                 </details>
 
-                <button class="settings-save" id="save-settings">Save Settings</button>
             </div>
         </div>
     </div>
@@ -4607,7 +4607,8 @@
                     iconHtml = initial;
                 }
 
-                const customStyle = bgColor ? `style="background: ${bgColor};"` : '';
+                // Only apply per-shortcut bgColor when style is not transparent
+                const customStyle = (bgColor && settings.favoritesStyle !== 'transparent') ? `style="background: ${bgColor};"` : '';
 
                 return `
                     <a href="${shortcut.url}" target="${target}" class="shortcut" data-id="${shortcut.id}" title="${shortcut.name}" draggable="true">
@@ -6471,6 +6472,8 @@
         }
 
         // ============ Event Listeners ============
+        let settingsSnapshot = null;
+
         function initEventListeners() {
             const settingsBtn = document.getElementById('settings-btn');
             const settingsPage = document.getElementById('settings-page');
@@ -6478,6 +6481,7 @@
             const saveBtn = document.getElementById('save-settings');
 
             settingsBtn.addEventListener('click', () => {
+                settingsSnapshot = JSON.stringify(settings);
                 settingsPage.classList.add('active');
                 stopAutoRefresh();
                 updateSettingsUI();
@@ -6485,6 +6489,16 @@
             });
 
             settingsBack.addEventListener('click', () => {
+                if (settingsSnapshot && JSON.stringify(settings) !== settingsSnapshot) {
+                    if (confirm('You have unsaved changes. Save before leaving?')) {
+                        saveSettings();
+                        applySettings();
+                    } else {
+                        // Discard: restore from snapshot
+                        Object.assign(settings, JSON.parse(settingsSnapshot));
+                    }
+                }
+                settingsSnapshot = null;
                 settingsPage.classList.remove('active');
                 startAutoRefresh();
             });
@@ -6669,6 +6683,7 @@
             saveBtn.addEventListener('click', () => {
                 saveSettings();
                 applySettings();
+                settingsSnapshot = null;
                 settingsPage.classList.remove('active');
             });
 
