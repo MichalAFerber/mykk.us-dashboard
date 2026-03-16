@@ -8423,6 +8423,28 @@
             });
         }
 
+        function ensureExplicitPositions() {
+            const dashboard = document.getElementById('main-dashboard');
+            const style = getComputedStyle(dashboard);
+            const gap = parseFloat(style.gap) || 16;
+            const padLeft = parseFloat(style.paddingLeft) || 20;
+            const padTop = parseFloat(style.paddingTop) || 20;
+            const rect = dashboard.getBoundingClientRect();
+            const colWidth = (rect.width - padLeft - parseFloat(style.paddingRight || 20) - gap * 11) / 12;
+            const rowHeight = 40;
+
+            document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
+                if (el.style.gridColumnStart && el.style.gridRowStart) return;
+                const wr = el.getBoundingClientRect();
+                const x = wr.left - rect.left - padLeft;
+                const y = wr.top - rect.top - padTop;
+                const col = Math.max(1, Math.round(x / (colWidth + gap)) + 1);
+                const row = Math.max(1, Math.round(y / (rowHeight + gap)) + 1);
+                el.style.gridColumnStart = col;
+                el.style.gridRowStart = row;
+            });
+        }
+
         function clearWidgetPositions() {
             document.querySelectorAll('[data-widget]').forEach(el => {
                 el.style.gridColumnStart = '';
@@ -8517,6 +8539,10 @@
         }
 
         function startSectionDrag(section, clientX, clientY) {
+            // Materialize grid positions if widgets don't have explicit ones yet
+            // (first drag after fresh load with auto-flow layout)
+            ensureExplicitPositions();
+
             const rect = section.getBoundingClientRect();
 
             // Create mirror (clone that follows cursor)
