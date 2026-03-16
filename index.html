@@ -3640,13 +3640,26 @@
     <div class="wallpaper" id="wallpaper" aria-hidden="true"></div>
     <div class="overlay" id="overlay" aria-hidden="true"></div>
     <div class="weather-animation" id="weather-animation" aria-hidden="true"></div>
-    <!-- Loading screen -->
-    <div id="loading-screen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg-primary, #0b0d1a);">
+    <!-- Loading screen (transparent — user's background shows through) -->
+    <div id="loading-screen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;">
         <div style="text-align:center;color:rgba(255,255,255,0.5);">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
         </div>
         <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
     </div>
+    <!-- Apply background immediately before DOMContentLoaded -->
+    <script>
+        (function() {
+            try {
+                var s = JSON.parse(localStorage.getItem('mykkSettings') || '{}');
+                var w = document.getElementById('wallpaper');
+                if (s.bgType === 'color' && s.bgColor) document.body.style.background = s.bgColor;
+                else if (s.bgType === 'image' && s.bgImage) { if (w) w.style.backgroundImage = 'url(' + s.bgImage + ')'; }
+                else if (s.bgGradient) document.body.style.background = s.bgGradient;
+                if (s.theme === 'light' || (s.theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)) document.body.classList.add('theme-light');
+            } catch(e) {}
+        })();
+    </script>
 
     <!-- Screen reader live region for status announcements -->
     <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
