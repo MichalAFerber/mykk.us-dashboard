@@ -29,6 +29,48 @@
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.8);
             --focus-ring: rgba(102, 126, 234, 0.8);
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: rgba(255, 255, 255, 0.2);
+            --input-focus-bg: rgba(255, 255, 255, 0.15);
+            --input-focus-border: rgba(255, 255, 255, 0.4);
+            --input-placeholder: rgba(255, 255, 255, 0.4);
+            --hover-bg: rgba(255, 255, 255, 0.1);
+            --divider: rgba(255, 255, 255, 0.1);
+            --modal-bg: rgba(30, 30, 50, 0.95);
+            --settings-bg: rgba(15, 15, 30, 0.98);
+            --overlay-bg: rgba(0, 0, 0, 0.7);
+            --accent: rgba(102, 126, 234, 0.5);
+            --btn-bg: rgba(255, 255, 255, 0.1);
+            --btn-hover-bg: rgba(255, 255, 255, 0.2);
+            --btn-active-bg: rgba(102, 126, 234, 0.3);
+        }
+
+        /* Light theme */
+        body.theme-light {
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --glass-shadow: rgba(0, 0, 0, 0.08);
+            --text-primary: #1a1a2e;
+            --text-secondary: rgba(26, 26, 46, 0.65);
+            --focus-ring: rgba(102, 126, 234, 0.8);
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --input-border: rgba(0, 0, 0, 0.15);
+            --input-focus-bg: rgba(0, 0, 0, 0.08);
+            --input-focus-border: rgba(0, 0, 0, 0.3);
+            --input-placeholder: rgba(0, 0, 0, 0.4);
+            --hover-bg: rgba(0, 0, 0, 0.06);
+            --divider: rgba(0, 0, 0, 0.08);
+            --modal-bg: rgba(245, 245, 250, 0.95);
+            --settings-bg: rgba(240, 240, 248, 0.98);
+            --overlay-bg: rgba(0, 0, 0, 0.4);
+            --accent: rgba(102, 126, 234, 0.4);
+            --btn-bg: rgba(0, 0, 0, 0.06);
+            --btn-hover-bg: rgba(0, 0, 0, 0.1);
+            --btn-active-bg: rgba(102, 126, 234, 0.2);
+        }
+        body.theme-light .glass-card {
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         body {
@@ -210,6 +252,543 @@
             opacity: 0.8;
         }
 
+        /* Greeting Widget */
+        .greeting-widget {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .greeting-text {
+            font-size: 1.6rem;
+            font-weight: 300;
+            color: var(--text-primary);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Quotes Widget */
+        .quotes-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 24px;
+            cursor: pointer;
+        }
+        .quote-text {
+            font-style: italic;
+            font-size: 1rem;
+            color: var(--text-primary);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .quote-author {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Daily Focus Widget */
+        .focus-widget {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 24px;
+        }
+        .focus-content {
+            width: 100%;
+            text-align: center;
+        }
+        .focus-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .focus-display {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            text-align: center;
+            cursor: pointer;
+        }
+        .focus-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+        }
+        .focus-input::placeholder {
+            color: var(--input-placeholder);
+        }
+        .focus-input:focus {
+            border-color: var(--input-focus-border);
+            background: var(--input-focus-bg);
+        }
+
+        /* To-Do Widget */
+        .todos-widget {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+        }
+        .todos-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .todos-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .todos-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .todos-add {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .todos-input {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .todos-input::placeholder {
+            color: var(--input-placeholder);
+        }
+        .todos-input:focus {
+            border-color: var(--input-focus-border);
+            background: var(--input-focus-bg);
+        }
+        .todos-add-btn {
+            background: var(--accent);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 8px 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+        .todos-add-btn:hover {
+            opacity: 0.8;
+        }
+        .todos-list {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+        }
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--divider);
+        }
+        .todo-item.dragging {
+            opacity: 0.5;
+        }
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+        .todo-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .todo-text {
+            flex: 1;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+        .todo-delete {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .todo-item:hover .todo-delete {
+            opacity: 1;
+        }
+        .todo-drag-handle {
+            cursor: grab;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
+        /* ============ Stock Quotes Widget ============ */
+        .stocks-widget {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            overflow: hidden;
+        }
+        .stocks-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .stocks-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .stocks-cached {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .stocks-list {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+        }
+        .stock-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--divider);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .stock-item:hover {
+            background: var(--hover-bg);
+            border-radius: 6px;
+        }
+        .stock-item:last-child {
+            border-bottom: none;
+        }
+        .stock-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .stock-symbol {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .stock-price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stock-price {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .stock-change {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .stock-change.positive {
+            color: #4ade80;
+        }
+        .stock-change.negative {
+            color: #f87171;
+        }
+        .stocks-setup {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 12px;
+            text-align: center;
+        }
+        .stocks-setup p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ============ RSS Widget ============ */
+        .rss-widget {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .rss-widget .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--divider);
+        }
+        .rss-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .rss-item {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--divider);
+        }
+        .rss-item:last-child {
+            border-bottom: none;
+        }
+        .rss-item-title {
+            font-weight: 500;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .rss-item-title a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .rss-item-title a:hover {
+            text-decoration: underline;
+        }
+        .rss-item-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+        .rss-item-snippet {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .rss-setup {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            gap: 12px;
+            padding: 20px;
+        }
+        .rss-setup p {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .rss-widget-settings-card {
+            background: var(--hover-bg);
+            border: 1px solid var(--divider);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .rss-widget-settings-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .rss-widget-settings-header input[type="text"] {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            padding: 6px 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .rss-widget-settings-header input[type="text"]:focus {
+            border-color: var(--input-focus-border);
+            background: var(--input-focus-bg);
+        }
+
+        /* ============ Ambient Sounds ============ */
+        .sound-mixer-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 320px;
+            background: var(--modal-bg);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--glass-shadow);
+            z-index: 1001;
+            padding: 20px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .sound-mixer-panel.hidden {
+            display: none;
+        }
+        .sound-mixer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .sound-mixer-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .sound-mixer-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+        .sound-mixer-master {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--divider);
+        }
+        .sound-mixer-master label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            min-width: 48px;
+        }
+        .sound-mixer-master input[type="range"] {
+            flex: 1;
+        }
+        .sound-mixer-channels {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .sound-channel {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sound-channel-icon {
+            font-size: 1.2rem;
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .sound-channel-label {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            min-width: 70px;
+            flex-shrink: 0;
+        }
+        .sound-channel input[type="range"] {
+            flex: 1;
+            height: 4px;
+        }
+        .sound-mixer-timer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--divider);
+        }
+        .sound-mixer-timer label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .sound-mixer-timer select {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        /* ============ Dashboard Pages ============ */
+        .page-tabs {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            width: fit-content;
+            grid-column: 1 / -1;
+        }
+        .page-tabs.hidden {
+            display: none;
+        }
+        .page-tab {
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .page-tab:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        .page-tab.active {
+            background: rgba(102, 126, 234, 0.5);
+            color: white;
+        }
+        .page-tab-add {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px dashed var(--glass-border);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .page-tab-add:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+
         /* (center-column removed — grid layout) */
 
         /* Search Bar */
@@ -261,11 +840,11 @@
         }
 
         .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--input-placeholder);
         }
 
         .search-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--btn-hover-bg);
             border: none;
             color: var(--text-primary);
             padding: 10px 20px;
@@ -323,10 +902,74 @@
         }
 
         .shortcuts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+        .shortcuts-ungrouped,
+        .shortcut-folder-items {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             gap: 16px;
             width: 100%;
+        }
+        .shortcut-folder {
+            width: 100%;
+        }
+        .shortcut-folder-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 4px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--divider);
+            user-select: none;
+            margin-bottom: 8px;
+        }
+        .shortcut-folder-header:hover {
+            color: var(--text-primary);
+        }
+        .shortcut-folder-toggle {
+            transition: transform 0.2s;
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+        .shortcut-folder.collapsed .shortcut-folder-toggle {
+            transform: rotate(-90deg);
+        }
+        .shortcut-folder.collapsed .shortcut-folder-items {
+            display: none;
+        }
+        .folder-management-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--divider);
+        }
+        .folder-management-item span {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .folder-management-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+        .folder-management-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
         }
 
         .shortcut {
@@ -706,8 +1349,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--btn-bg);
+            border: 1px solid var(--input-border);
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -715,7 +1358,7 @@
         }
 
         .action-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: var(--btn-hover-bg);
             transform: scale(1.05);
         }
 
@@ -942,7 +1585,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: var(--overlay-bg);
             display: none;
             align-items: center;
             justify-content: center;
@@ -955,9 +1598,9 @@
         }
 
         .modal {
-            background: rgba(30, 30, 50, 0.95);
+            background: var(--modal-bg);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 32px;
             max-width: 500px;
@@ -989,7 +1632,7 @@
         }
 
         .modal-close:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--hover-bg);
         }
 
         .settings-group {
@@ -1007,8 +1650,8 @@
         .settings-input {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 1rem;
@@ -1017,19 +1660,19 @@
         }
 
         .settings-input:focus {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--input-focus-border);
+            background: var(--input-focus-bg);
         }
 
         .settings-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--input-placeholder);
         }
 
         .settings-textarea {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: 8px;
             color: var(--text-primary);
             font-size: 0.875rem;
@@ -1041,8 +1684,8 @@
         }
 
         .settings-textarea:focus {
-            border-color: rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--input-focus-border);
+            background: var(--input-focus-bg);
         }
 
         .settings-checkbox {
@@ -1169,8 +1812,8 @@
         .bg-type-btn {
             flex: 1;
             padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--btn-bg);
+            border: 1px solid var(--input-border);
             color: var(--text-primary);
             border-radius: 8px;
             cursor: pointer;
@@ -1179,8 +1822,8 @@
         }
 
         .bg-type-btn.active {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.4);
+            background: var(--btn-active-bg);
+            border-color: var(--input-focus-border);
         }
 
         .settings-save {
@@ -1213,8 +1856,8 @@
         .settings-action-btn {
             flex: 1;
             padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--btn-bg);
+            border: 1px solid var(--input-border);
             color: var(--text-primary);
             border-radius: 8px;
             cursor: pointer;
@@ -1402,7 +2045,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: var(--settings-bg);
             display: none;
             flex-direction: column;
             z-index: 2000;
@@ -1845,7 +2488,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 15, 30, 0.98);
+            background: var(--settings-bg);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             z-index: 1000;
@@ -1927,7 +2570,7 @@
             font-weight: 600;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--divider);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -2123,12 +2766,25 @@
                 padding: 8px 2px;
             }
 
-            .shortcuts-grid {
+            .shortcuts-ungrouped,
+            .shortcut-folder-items {
                 grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             }
 
             .glass-card {
                 border-radius: 12px;
+            }
+
+            .sound-mixer-panel {
+                left: 10px;
+                right: 10px;
+                bottom: 70px;
+                width: auto;
+            }
+
+            .page-tabs {
+                width: 100%;
+                overflow-x: auto;
             }
 
             .modal {
@@ -2988,6 +3644,12 @@
     <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <main class="dashboard" id="main-dashboard" role="main">
+        <!-- Dashboard Page Tabs -->
+        <div class="page-tabs hidden" id="page-tabs">
+            <div class="page-tabs-list" id="page-tabs-list" role="tablist"></div>
+            <button class="page-tab-add" id="page-tab-add" title="Add page" aria-label="Add new page">+</button>
+        </div>
+
         <!-- Top Row - Aligned Date, Search, Actions -->
         <div class="top-row">
             <!-- Date Card -->
@@ -3047,6 +3709,21 @@
                 <button class="action-btn" id="notepad-btn" title="Notepad" aria-label="Open notepad">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </button>
+                <button class="action-btn hidden" id="sounds-btn" title="Ambient Sounds" aria-label="Ambient sounds mixer">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                </button>
+                <button class="action-btn" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle light/dark theme">
+                    <!-- Sun icon (shown in dark mode, click to go light) -->
+                    <svg id="theme-icon-sun" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <!-- Moon icon (shown in light mode, click to go dark) -->
+                    <svg id="theme-icon-moon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="hidden">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                     </svg>
                 </button>
                 <button class="action-btn" id="settings-btn" title="Settings" aria-label="Open settings">
@@ -3137,6 +3814,47 @@
             </div>
         </div>
 
+        <!-- Greeting Widget -->
+        <div class="greeting-widget glass-card" id="greeting-widget" data-section="greeting" data-widget="greeting">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="greeting-text" id="greeting-text" aria-live="polite"></div>
+        </div>
+
+        <!-- Quotes Widget -->
+        <div class="quotes-widget glass-card" id="quotes-widget" data-section="quotes" data-widget="quotes" title="Click for a new quote" role="button" tabindex="0">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="quote-text" id="quote-text"></div>
+            <div class="quote-author" id="quote-author"></div>
+        </div>
+
+        <!-- Daily Focus Widget -->
+        <div class="focus-widget glass-card" id="focus-widget" data-section="focus" data-widget="focus">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="focus-content" id="focus-content"></div>
+        </div>
+
+        <!-- To-Do Widget -->
+        <div class="todos-widget glass-card" id="todos-widget" data-section="todos" data-widget="todos">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="todos-header">
+                <span class="todos-title">To-Do</span>
+                <span class="todos-count" id="todos-count"></span>
+            </div>
+            <div class="todos-add">
+                <input type="text" class="todos-input" id="todo-input" placeholder="Add a task..." maxlength="200" aria-label="New task">
+                <button class="todos-add-btn" id="todo-add-btn" aria-label="Add task">+</button>
+            </div>
+            <ul class="todos-list" id="todos-list" aria-live="polite"></ul>
+        </div>
+
         <!-- Donetick Widget -->
         <div class="donetick-widget glass-card hidden" id="donetick-widget" data-section="donetick" data-widget="donetick">
             <span class="section-drag-handle" aria-label="Drag to reorder">
@@ -3150,11 +3868,56 @@
             </div>
         </div>
 
+        <!-- Stock Quotes Widget -->
+        <div class="stocks-widget glass-card hidden" id="stocks-widget" data-section="stocks" data-widget="stocks">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="stocks-header">
+                <span class="stocks-title">Stocks</span>
+                <span class="stocks-cached" id="stocks-cached"></span>
+            </div>
+            <div id="stocks-content" aria-live="polite">
+                <div class="stocks-setup">
+                    <p>Configure your stock watchlist in Settings</p>
+                    <button class="weather-setup-btn" onclick="document.getElementById('settings-btn').click()">Configure</button>
+                </div>
+            </div>
+        </div>
+
         <!-- iFrame Widgets (dynamically rendered) -->
         <div id="iframe-widgets-container" style="display: contents"></div>
 
+        <!-- RSS Feed Widgets (dynamically rendered) -->
+        <div id="rss-widgets-container" style="display: contents"></div>
+
         <!-- Spacer widgets (dynamically rendered) -->
     </main>
+
+    <!-- Ambient Sounds Mixer Panel -->
+    <div class="sound-mixer-panel hidden" id="sound-mixer-panel" role="dialog" aria-label="Ambient sound mixer">
+        <div class="sound-mixer-header">
+            <h3>Ambient Sounds</h3>
+            <button class="sound-mixer-close" id="sound-mixer-close" aria-label="Close sound mixer">&times;</button>
+        </div>
+        <div class="sound-mixer-master">
+            <label>Master</label>
+            <input type="range" min="0" max="1" step="0.01" id="sound-master-volume" value="0.7" aria-label="Master volume">
+        </div>
+        <div class="sound-mixer-channels" id="sound-mixer-channels">
+            <!-- Dynamically rendered -->
+        </div>
+        <div class="sound-mixer-timer">
+            <label>Auto-stop</label>
+            <select id="sound-timer" aria-label="Auto-stop timer">
+                <option value="0">Never</option>
+                <option value="15">15 min</option>
+                <option value="30">30 min</option>
+                <option value="60">1 hour</option>
+                <option value="120">2 hours</option>
+            </select>
+        </div>
+    </div>
 
     <!-- Full-Page Settings -->
     <div class="settings-page" id="settings-page" role="dialog" aria-label="Dashboard settings">
@@ -3175,6 +3938,7 @@
                 <a href="#section-widgets">Widgets</a>
                 <a href="#section-toolbar">Toolbar Buttons</a>
                 <a href="#section-iframe" id="toc-iframe" class="hidden">iFrame Widgets</a>
+                <a href="#section-rss" id="toc-rss" class="hidden">RSS Feeds</a>
                 <a href="#section-integrations" id="toc-integrations" class="hidden">Integrations</a>
                 <a href="#section-data">Data</a>
                 <a href="#section-faq">FAQ</a>
@@ -3234,6 +3998,14 @@
                 <div class="settings-section" id="section-appearance">
                     <h3 class="settings-section-title">Appearance</h3>
                     <div class="settings-group">
+                        <label class="settings-label">Theme</label>
+                        <div class="bg-type-toggle">
+                            <button class="bg-type-btn" data-theme="light">Light</button>
+                            <button class="bg-type-btn active" data-theme="dark">Dark</button>
+                            <button class="bg-type-btn" data-theme="system">System</button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
                         <label class="settings-label">Page Title</label>
                         <input type="text" class="settings-input" id="page-title-input" placeholder="MyKK Dashboard">
                     </div>
@@ -3284,6 +4056,14 @@
                         </div>
                         <small class="settings-help">Default color for shortcut icons without a custom color</small>
                     </div>
+                    <div class="settings-group">
+                        <label class="settings-label">Bookmark Folders</label>
+                        <div id="folder-management-list" style="margin-bottom: 8px;"></div>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="settings-input" id="new-folder-name" placeholder="New folder name" style="flex: 1;">
+                            <button type="button" class="settings-action-btn" id="add-folder-btn" style="flex: none; padding: 10px 16px;">+ Add</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Widgets & Layout -->
@@ -3304,6 +4084,29 @@
                             <input type="checkbox" id="toggle-auto-refresh" checked>
                             <span>Auto-refresh</span>
                         </label>
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-greeting" checked>
+                            <span>Greeting</span>
+                        </label>
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-quotes" checked>
+                            <span>Quotes</span>
+                        </label>
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-focus" checked>
+                            <span>Daily Focus</span>
+                        </label>
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-todos" checked>
+                            <span>To-Do List</span>
+                        </label>
+                    </div>
+                    <!-- Greeting name setting -->
+                    <div class="widget-settings-item" id="greeting-settings-extra">
+                        <div class="settings-group">
+                            <label class="settings-label">Greeting Name</label>
+                            <input type="text" class="settings-input" id="greeting-name-input" placeholder="Enter your name">
+                        </div>
                     </div>
                     <div class="widget-settings-item" id="auto-refresh-settings-extra" style="display: none;">
                         <div class="settings-group">
@@ -3428,6 +4231,10 @@
                             <input type="checkbox" id="toggle-notepad" checked>
                             <span>Notepad</span>
                         </label>
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-sounds" checked>
+                            <span>Ambient Sounds</span>
+                        </label>
                     </div>
                 </div>
 
@@ -3444,6 +4251,21 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Add iFrame Widget
+                    </button>
+                </div>
+
+                <!-- RSS Feeds (extension-gated) -->
+                <div class="settings-section hidden" id="section-rss">
+                    <h3 class="settings-section-title">RSS Feeds</h3>
+                    <p class="settings-help" style="margin-bottom: 12px;">
+                        Add RSS feeds to see latest articles directly on your dashboard.
+                    </p>
+                    <div id="rss-widgets-settings-list"></div>
+                    <button class="settings-action-btn" id="add-rss-feed-btn" style="margin-top: 8px;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add RSS Feed
                     </button>
                 </div>
 
@@ -3545,6 +4367,28 @@
                                 <label class="settings-label">API Token</label>
                                 <input type="password" class="settings-input" id="donetick-api-token" placeholder="Your Donetick API token">
                                 <small class="settings-help">Generate a token in Donetick under Settings &rarr; API Tokens</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+                    <!-- Stock Quotes -->
+                    <div class="widget-settings-item">
+                        <div class="widget-settings-header">
+                            <label class="settings-checkbox">
+                                <input type="checkbox" id="toggle-stocks">
+                                <span>Stock Quotes</span>
+                            </label>
+                        </div>
+                        <div class="widget-settings-extra" id="stocks-settings-extra" style="display: none;">
+                            <p class="settings-help" style="margin-bottom: 12px;">
+                                Track your favorite stocks with end-of-day price data.
+                            </p>
+                            <div class="settings-group">
+                                <label class="settings-label">Watchlist (comma-separated symbols)</label>
+                                <input type="text" class="settings-input" id="stock-symbols" placeholder="AAPL, GOOGL, MSFT, AMZN">
+                                <small class="settings-help">Enter stock ticker symbols separated by commas</small>
                             </div>
                         </div>
                     </div>
@@ -3724,6 +4568,12 @@
                     </div>
                 </div>
                 <div class="settings-group">
+                    <label class="settings-label">Folder</label>
+                    <select class="settings-input" id="shortcut-folder" style="padding: 10px 12px;">
+                        <option value="">No folder</option>
+                    </select>
+                </div>
+                <div class="settings-group">
                     <label class="settings-label">Open In</label>
                     <div class="bg-type-toggle">
                         <button type="button" class="bg-type-btn active" data-target="_self">Same Tab</button>
@@ -3873,6 +4723,7 @@
         // ============ State Management ============
         const defaultSettings = {
             pageTitle: 'MyKK Dashboard',
+            theme: 'dark',
             bgType: 'gradient',
             bgGradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
             bgColor: '#1a1a2e',
@@ -3890,6 +4741,11 @@
             showFavorites: true,
             showDate: true,
             showTime: true,
+            showGreeting: true,
+            greetingName: '',
+            showQuotes: true,
+            showFocus: true,
+            showTodos: true,
             dateFormat: 'daylong',
             timeFormat: '24h',
             showSeconds: true,
@@ -3909,7 +4765,12 @@
                 weather:   { cols: 3, rows: 8 },
                 'mini-calendar': { cols: 4, rows: 7 },
                 'twitter': { cols: 4, rows: 8 },
-                'donetick': { cols: 4, rows: 8 }
+                'donetick': { cols: 4, rows: 8 },
+                greeting: { cols: 6, rows: 2 },
+                quotes: { cols: 6, rows: 2 },
+                focus: { cols: 6, rows: 2 },
+                todos: { cols: 4, rows: 6 },
+                stocks: { cols: 4, rows: 4 }
             },
             autoRefresh: false,
             autoRefreshMinutes: 15,
@@ -3925,6 +4786,15 @@
             donetickUrl: '',
             donetickApiToken: '',
             donetickFilterUser: 0,
+            showStocks: false,
+            stockSymbols: 'AAPL,GOOGL,MSFT,AMZN',
+            rssFeeds: [],
+            showSounds: true,
+            soundChannels: {},
+            soundMasterVolume: 0.7,
+            soundTimer: 0,
+            pages: [{ id: 'default', name: 'Home' }],
+            activePage: 'default',
             firebaseConfig: {
                 apiKey: '',
                 authDomain: '',
@@ -4189,6 +5059,11 @@
                 if (settings.favoritesStyle === 'gradient') {
                     settings.favoritesStyle = 'solid';
                 }
+                // Ensure new arrays/objects exist
+                if (!Array.isArray(settings.rssFeeds)) settings.rssFeeds = [];
+                if (!Array.isArray(settings.pages)) settings.pages = [{ id: 'default', name: 'Home' }];
+                if (!settings.activePage) settings.activePage = 'default';
+                if (!settings.soundChannels || typeof settings.soundChannels !== 'object') settings.soundChannels = {};
             }
             applySettings();
         }
@@ -4407,14 +5282,106 @@
             }
         }
 
+        // ============ Bookmark Folders ============
+        let shortcutFolders = [];
+
+        function loadShortcutFolders() {
+            const saved = localStorage.getItem('dashboard-shortcut-folders');
+            if (saved) {
+                try { shortcutFolders = JSON.parse(saved); } catch (e) { shortcutFolders = []; }
+            }
+        }
+
+        function saveShortcutFolders() {
+            localStorage.setItem('dashboard-shortcut-folders', JSON.stringify(shortcutFolders));
+            if (cloudSyncState.user) {
+                clearTimeout(cloudSyncState.debounceTimer);
+                cloudSyncState.debounceTimer = setTimeout(() => syncToCloud(), 2000);
+            }
+        }
+
+        function addFolder(name) {
+            if (!name.trim()) return;
+            shortcutFolders.push({ id: Date.now(), name: name.trim(), collapsed: false });
+            saveShortcutFolders();
+            renderShortcuts();
+            renderFolderManagement();
+        }
+
+        function renameFolder(id) {
+            const folder = shortcutFolders.find(f => f.id === id);
+            if (!folder) return;
+            const newName = prompt('Rename folder:', folder.name);
+            if (newName && newName.trim()) {
+                folder.name = newName.trim();
+                saveShortcutFolders();
+                renderShortcuts();
+                renderFolderManagement();
+            }
+        }
+
+        function deleteFolder(id) {
+            if (!confirm('Delete this folder? Bookmarks will be moved to ungrouped.')) return;
+            shortcuts.forEach(s => { if (s.folder === id) s.folder = null; });
+            shortcutFolders = shortcutFolders.filter(f => f.id !== id);
+            saveShortcutFolders();
+            saveShortcuts();
+            renderShortcuts();
+            renderFolderManagement();
+        }
+
+        function toggleFolderCollapse(id) {
+            const folder = shortcutFolders.find(f => f.id === id);
+            if (folder) {
+                folder.collapsed = !folder.collapsed;
+                saveShortcutFolders();
+                renderShortcuts();
+            }
+        }
+
+        function renderFolderManagement() {
+            const container = document.getElementById('folder-management-list');
+            if (!container) return;
+            // Hide folder management UI when not subscribed
+            const wrapper = container.closest('.settings-group');
+            if (wrapper) wrapper.style.display = isExtensionSubscriptionActive() ? '' : 'none';
+            container.innerHTML = shortcutFolders.map(f =>
+                '<div class="folder-management-item">' +
+                    '<span>' + escapeHtml(f.name) + '</span>' +
+                    '<button class="folder-management-btn" onclick="renameFolder(' + f.id + ')">Rename</button>' +
+                    '<button class="folder-management-btn" onclick="deleteFolder(' + f.id + ')">Delete</button>' +
+                '</div>'
+            ).join('');
+        }
+
+        function populateFolderDropdown(selectedFolderId) {
+            const select = document.getElementById('shortcut-folder');
+            if (!select) return;
+            select.innerHTML = '<option value="">No folder</option>' +
+                shortcutFolders.map(f =>
+                    '<option value="' + f.id + '"' + (f.id === selectedFolderId ? ' selected' : '') + '>' + escapeHtml(f.name) + '</option>'
+                ).join('');
+        }
+
         // ============ Export/Import ============
         function exportSettings() {
+            // Collect page data
+            const pageData = {};
+            (settings.pages || []).forEach(p => {
+                const val = localStorage.getItem('dashboard-page-' + p.id);
+                if (val) { try { pageData[p.id] = JSON.parse(val); } catch (e) {} }
+            });
+
             const data = {
                 settings: settings,
                 shortcuts: shortcuts,
+                shortcutFolders: shortcutFolders,
+                todos: todos,
+                dailyFocus: JSON.parse(localStorage.getItem('dashboard-daily-focus') || '{}'),
                 widgetPositions: JSON.parse(localStorage.getItem('dashboard-widget-grid-v2') || '{}'),
+                pageData: pageData,
                 exportDate: new Date().toISOString(),
-                version: '5.1'
+                version: '6.0'
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -4441,8 +5408,24 @@
                         shortcuts = data.shortcuts;
                         saveShortcuts();
                     }
+                    if (data.shortcutFolders && Array.isArray(data.shortcutFolders)) {
+                        shortcutFolders = data.shortcutFolders;
+                        saveShortcutFolders();
+                    }
+                    if (data.todos && Array.isArray(data.todos)) {
+                        todos = data.todos;
+                        saveTodos();
+                    }
+                    if (data.dailyFocus) {
+                        localStorage.setItem('dashboard-daily-focus', JSON.stringify(data.dailyFocus));
+                    }
                     if (data.widgetPositions) {
                         localStorage.setItem('dashboard-widget-grid-v2', JSON.stringify(data.widgetPositions));
+                    }
+                    if (data.pageData && typeof data.pageData === 'object') {
+                        Object.entries(data.pageData).forEach(([pageId, state]) => {
+                            localStorage.setItem('dashboard-page-' + pageId, JSON.stringify(state));
+                        });
                     }
                     window.location.reload();
                 } catch (error) {
@@ -4533,6 +5516,8 @@
                 secondsEl.style.display = settings.showSeconds ? '' : 'none';
                 document.getElementById('time-period').textContent = period;
             }
+
+            updateGreeting();
         }
 
         // ============ Mini Calendar ============
@@ -4580,8 +5565,29 @@
             grid.innerHTML = html;
         }
 
+        // ============ Theme ============
+        function applyTheme() {
+            let theme = settings.theme || 'dark';
+            // Theme switching is a pro feature — force dark if no subscription
+            if (!isExtensionSubscriptionActive()) theme = 'dark';
+            if (theme === 'system') {
+                theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.body.classList.toggle('theme-light', theme === 'light');
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+            if (sunIcon && moonIcon) {
+                sunIcon.classList.toggle('hidden', theme === 'light');
+                moonIcon.classList.toggle('hidden', theme !== 'light');
+            }
+            // Hide theme toggle button if not subscribed
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) themeBtn.classList.toggle('hidden', !isExtensionSubscriptionActive());
+        }
+
         // ============ Background ============
         function applySettings() {
+            applyTheme();
             // Page title
             document.title = settings.pageTitle || 'MyKK Dashboard';
 
@@ -4612,6 +5618,23 @@
             document.getElementById('weather-widget').classList.toggle('hidden', !settings.showWeather || !isExtensionSubscriptionActive());
             document.getElementById('mini-calendar-widget').classList.toggle('hidden', !settings.showMiniCalendar);
             document.getElementById('shortcuts-widget').classList.toggle('hidden', !settings.showFavorites);
+            document.getElementById('greeting-widget').classList.toggle('hidden', !settings.showGreeting);
+            document.getElementById('quotes-widget').classList.toggle('hidden', !settings.showQuotes);
+            document.getElementById('focus-widget').classList.toggle('hidden', !settings.showFocus || !isExtensionSubscriptionActive());
+            document.getElementById('todos-widget').classList.toggle('hidden', !settings.showTodos || !isExtensionSubscriptionActive());
+
+            // Stocks widget
+            const stocksVisible = settings.showStocks && settings.stockSymbols && isExtensionSubscriptionActive();
+            document.getElementById('stocks-widget').classList.toggle('hidden', !stocksVisible);
+            if (stocksVisible) loadStocks();
+
+            // Sounds toolbar button
+            document.getElementById('sounds-btn').classList.toggle('hidden', !settings.showSounds || !isExtensionSubscriptionActive());
+
+            // Update new widgets
+            updateGreeting();
+            showRandomQuote();
+            renderFocusWidget();
 
             // X/Twitter widget - only show when embed is configured AND toggle is on AND extension active
             const twitterVisible = settings.showTwitter && settings.twitterEmbedCode && isExtensionSubscriptionActive();
@@ -4630,6 +5653,12 @@
 
             // Render iframe widgets
             renderIframeWidgets();
+
+            // Render RSS feed widgets
+            renderRssWidgets();
+
+            // Render page tabs
+            renderPageTabs();
 
             // Re-trigger weather animation with current settings
             if (weatherData && weatherData.current) {
@@ -4680,6 +5709,216 @@
             renderMiniCalendar();
         }
 
+        // ============ Greeting Widget ============
+        function updateGreeting() {
+            const el = document.getElementById('greeting-text');
+            if (!el) return;
+            const hour = new Date().getHours();
+            let period;
+            if (hour < 12) period = 'morning';
+            else if (hour < 17) period = 'afternoon';
+            else period = 'evening';
+            const name = settings.greetingName ? ', ' + escapeHtml(settings.greetingName) : '';
+            el.textContent = 'Good ' + period + name;
+        }
+
+        // ============ Quotes Widget (QuoteSlate API + fallback) ============
+        // Fallback quotes used when API is unavailable or cache is empty
+        const fallbackQuotes = [
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+            { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+            { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+            { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci" },
+            { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
+            { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+            { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "Not all those who wander are lost.", author: "J.R.R. Tolkien" }
+        ];
+
+        let quotesCache = [];
+
+        function getQuotesPool() {
+            return quotesCache.length > 0 ? quotesCache : fallbackQuotes;
+        }
+
+        function loadQuotesCache() {
+            const saved = localStorage.getItem('dashboard-quotes-cache');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.quotes && data.quotes.length > 0) {
+                        quotesCache = data.quotes;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+        }
+
+        function fetchQuotesFromAPI() {
+            // Fetch 50 quotes from QuoteSlate API and cache them
+            // Quotes powered by the QuoteSlate API: https://github.com/Musheer360/QuoteSlate
+            fetch('https://quoteslate.vercel.app/api/quotes/random?count=50')
+                .then(res => {
+                    if (!res.ok) throw new Error('API error');
+                    return res.json();
+                })
+                .then(data => {
+                    const quotes = Array.isArray(data) ? data : [data];
+                    if (quotes.length > 0 && quotes[0].quote) {
+                        quotesCache = quotes.map(q => ({ text: q.quote, author: q.author }));
+                        localStorage.setItem('dashboard-quotes-cache', JSON.stringify({
+                            quotes: quotesCache,
+                            fetched: new Date().toISOString()
+                        }));
+                    }
+                })
+                .catch(() => { /* silently use cache or fallback */ });
+        }
+
+        function refreshQuotesCacheIfNeeded() {
+            const saved = localStorage.getItem('dashboard-quotes-cache');
+            let shouldFetch = true;
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.fetched) {
+                        const age = Date.now() - new Date(data.fetched).getTime();
+                        // Refresh cache if older than 7 days
+                        if (age < 7 * 24 * 60 * 60 * 1000) shouldFetch = false;
+                    }
+                } catch (e) { /* fetch anyway */ }
+            }
+            if (shouldFetch) fetchQuotesFromAPI();
+        }
+
+        function showRandomQuote() {
+            const pool = getQuotesPool();
+            const quote = pool[Math.floor(Math.random() * pool.length)];
+            document.getElementById('quote-text').textContent = '\u201C' + quote.text + '\u201D';
+            document.getElementById('quote-author').textContent = '\u2014 ' + quote.author;
+        }
+
+        // ============ Daily Focus Widget ============
+        function renderFocusWidget() {
+            const container = document.getElementById('focus-content');
+            if (!container) return;
+            const today = new Date().toISOString().split('T')[0];
+            const saved = JSON.parse(localStorage.getItem('dashboard-daily-focus') || '{}');
+
+            if (saved.date === today && saved.text) {
+                container.innerHTML =
+                    '<div class="focus-label">Today\u2019s Focus</div>' +
+                    '<div class="focus-display" id="focus-display" title="Click to edit">' + escapeHtml(saved.text) + '</div>';
+                document.getElementById('focus-display').addEventListener('click', () => {
+                    showFocusInput(saved.text);
+                });
+            } else {
+                showFocusInput('');
+            }
+        }
+
+        function showFocusInput(currentValue) {
+            const container = document.getElementById('focus-content');
+            container.innerHTML =
+                '<input type="text" class="focus-input" id="focus-input" placeholder="What\u2019s your main focus today?" value="' + escapeHtml(currentValue || '') + '" maxlength="100">';
+            const input = document.getElementById('focus-input');
+            input.focus();
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && input.value.trim()) saveFocus(input.value);
+            });
+            input.addEventListener('blur', () => {
+                if (input.value.trim()) saveFocus(input.value);
+                else renderFocusWidget();
+            });
+        }
+
+        function saveFocus(text) {
+            const today = new Date().toISOString().split('T')[0];
+            localStorage.setItem('dashboard-daily-focus', JSON.stringify({ date: today, text: text.trim() }));
+            renderFocusWidget();
+        }
+
+        // ============ To-Do Widget ============
+        let todos = [];
+
+        function loadTodos() {
+            const saved = localStorage.getItem('dashboard-todos');
+            if (saved) {
+                try { todos = JSON.parse(saved); } catch (e) { todos = []; }
+            }
+            renderTodos();
+        }
+
+        function saveTodos() {
+            localStorage.setItem('dashboard-todos', JSON.stringify(todos));
+        }
+
+        function addTodo(text) {
+            if (!text.trim()) return;
+            todos.push({ id: Date.now(), text: text.trim(), completed: false });
+            saveTodos();
+            renderTodos();
+        }
+
+        function toggleTodo(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) { todo.completed = !todo.completed; saveTodos(); renderTodos(); }
+        }
+
+        function deleteTodo(id) {
+            todos = todos.filter(t => t.id !== id);
+            saveTodos();
+            renderTodos();
+        }
+
+        function renderTodos() {
+            const list = document.getElementById('todos-list');
+            if (!list) return;
+            const count = document.getElementById('todos-count');
+            const remaining = todos.filter(t => !t.completed).length;
+            if (count) count.textContent = remaining + '/' + todos.length;
+
+            list.innerHTML = todos.map(todo =>
+                '<li class="todo-item ' + (todo.completed ? 'completed' : '') + '" data-todo-id="' + todo.id + '" draggable="true">' +
+                    '<span class="todo-drag-handle" aria-label="Drag to reorder">\u2807</span>' +
+                    '<input type="checkbox" class="todo-checkbox" ' + (todo.completed ? 'checked' : '') +
+                        ' aria-label="Mark ' + escapeHtml(todo.text) + ' as ' + (todo.completed ? 'incomplete' : 'complete') + '">' +
+                    '<span class="todo-text">' + escapeHtml(todo.text) + '</span>' +
+                    '<button class="todo-delete" aria-label="Delete task">\u00D7</button>' +
+                '</li>'
+            ).join('');
+
+            initTodoDragDrop();
+        }
+
+        function initTodoDragDrop() {
+            let draggedTodo = null;
+            document.querySelectorAll('.todo-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedTodo = item;
+                    item.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                item.addEventListener('dragover', (e) => { e.preventDefault(); });
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (!draggedTodo || draggedTodo === item) return;
+                    const fromId = parseInt(draggedTodo.dataset.todoId);
+                    const toId = parseInt(item.dataset.todoId);
+                    const fromIdx = todos.findIndex(t => t.id === fromId);
+                    const toIdx = todos.findIndex(t => t.id === toId);
+                    if (fromIdx !== -1 && toIdx !== -1) {
+                        const [moved] = todos.splice(fromIdx, 1);
+                        todos.splice(toIdx, 0, moved);
+                        saveTodos();
+                        renderTodos();
+                    }
+                });
+                item.addEventListener('dragend', () => { item.classList.remove('dragging'); });
+            });
+        }
+
         function updateDateFormatLabels() {
             const now = new Date();
             const d = now.getDate();
@@ -4711,6 +5950,11 @@
         }
 
         function updateSettingsUI() {
+            // Theme buttons
+            document.querySelectorAll('.bg-type-btn[data-theme]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === (settings.theme || 'dark'));
+            });
+
             // Page title
             document.getElementById('page-title-input').value = settings.pageTitle || 'MyKK Dashboard';
 
@@ -4735,6 +5979,9 @@
             // iFrame widget settings
             renderIframeWidgetSettings();
 
+            // Folder management
+            renderFolderManagement();
+
             // Auto-refresh
             document.getElementById('toggle-auto-refresh').checked = settings.autoRefresh;
             document.getElementById('auto-refresh-minutes').value = settings.autoRefreshMinutes;
@@ -4752,6 +5999,13 @@
             document.getElementById('search-settings-extra').style.display = settings.showSearch ? '' : 'none';
             document.getElementById('toggle-mini-calendar').checked = settings.showMiniCalendar;
             document.getElementById('toggle-favorites').checked = settings.showFavorites;
+            document.getElementById('toggle-greeting').checked = settings.showGreeting;
+            document.getElementById('toggle-quotes').checked = settings.showQuotes;
+            document.getElementById('toggle-focus').checked = settings.showFocus;
+            document.getElementById('toggle-todos').checked = settings.showTodos;
+            const greetingExtra = document.getElementById('greeting-settings-extra');
+            if (greetingExtra) greetingExtra.style.display = settings.showGreeting ? '' : 'none';
+            document.getElementById('greeting-name-input').value = settings.greetingName || '';
 
             updateWidgetSizeDisabledState();
 
@@ -4761,6 +6015,18 @@
             document.getElementById('toggle-camera').checked = settings.showCamera;
             document.getElementById('toggle-paint').checked = settings.showPaint;
             document.getElementById('toggle-notepad').checked = settings.showNotepad;
+            document.getElementById('toggle-sounds').checked = settings.showSounds;
+
+            // Stock settings
+            const toggleStocks = document.getElementById('toggle-stocks');
+            if (toggleStocks) toggleStocks.checked = settings.showStocks;
+            const stocksExtra = document.getElementById('stocks-settings-extra');
+            if (stocksExtra) stocksExtra.style.display = settings.showStocks ? '' : 'none';
+            const stockSymbols = document.getElementById('stock-symbols');
+            if (stockSymbols) stockSymbols.value = settings.stockSymbols || '';
+
+            // RSS settings
+            renderRssWidgetSettings();
 
             // Weather animation toggle
             document.getElementById('toggle-weather-animation').checked = settings.showWeatherAnimation;
@@ -4859,47 +6125,75 @@
             }
         }
 
+        function renderShortcutHtml(shortcut) {
+            const iconData = getIconUrl(shortcut);
+            const initial = shortcut.name.charAt(0).toUpperCase();
+            const faviconUrl = getFaviconUrl(shortcut.url);
+            const target = shortcut.target || '_self';
+            const bgColor = shortcut.bgColor || '';
+            const styleClass = getIconStyleClass();
+
+            let iconHtml;
+            if (iconData) {
+                const fallbackUrl = iconData.fallback || faviconUrl;
+                iconHtml = `<img src="${iconData.url}" onerror="this.onerror=null; if('${fallbackUrl}'){this.src='${fallbackUrl}';}else{this.style.display='none'; this.parentElement.textContent='${initial}';}">`;
+            } else if (faviconUrl) {
+                iconHtml = `<img src="${faviconUrl}" onerror="this.style.display='none'; this.parentElement.textContent='${initial}';">`;
+            } else {
+                iconHtml = initial;
+            }
+
+            let customStyle = '';
+            if (bgColor) {
+                customStyle = `style="background: ${bgColor};"`;
+            } else if (settings.favoritesStyle !== 'transparent') {
+                customStyle = `style="background: ${settings.shortcutIconColor || '#667eea'};"`;
+            }
+
+            return `
+                <a href="${shortcut.url}" target="${target}" class="shortcut" data-id="${shortcut.id}" title="${shortcut.name}" draggable="true">
+                    <button class="shortcut-edit" aria-label="Edit ${shortcut.name}" onclick="event.preventDefault(); event.stopPropagation(); openEditShortcut(${shortcut.id});">✎</button>
+                    <button class="shortcut-delete" aria-label="Delete ${shortcut.name}" onclick="event.preventDefault(); event.stopPropagation(); deleteShortcut(${shortcut.id});">×</button>
+                    <div class="shortcut-icon ${styleClass}" ${customStyle}>
+                        ${iconHtml}
+                    </div>
+                    <span class="shortcut-name">${shortcut.name}</span>
+                </a>
+            `;
+        }
+
         function renderShortcuts() {
             const container = document.getElementById('shortcuts-grid');
-            container.innerHTML = shortcuts.map(shortcut => {
-                const iconData = getIconUrl(shortcut);
-                const initial = shortcut.name.charAt(0).toUpperCase();
-                const faviconUrl = getFaviconUrl(shortcut.url);
-                const target = shortcut.target || '_self';
-                const bgColor = shortcut.bgColor || '';
-                const styleClass = getIconStyleClass();
+            const hasFolders = isExtensionSubscriptionActive() && shortcutFolders.length > 0;
+            const ungrouped = hasFolders ? shortcuts.filter(s => !s.folder) : shortcuts;
+            const html = [];
 
-                let iconHtml;
-                if (iconData) {
-                    const fallbackUrl = iconData.fallback || faviconUrl;
-                    iconHtml = `<img src="${iconData.url}" onerror="this.onerror=null; if('${fallbackUrl}'){this.src='${fallbackUrl}';}else{this.style.display='none'; this.parentElement.textContent='${initial}';}">`;
-                } else if (faviconUrl) {
-                    iconHtml = `<img src="${faviconUrl}" onerror="this.style.display='none'; this.parentElement.textContent='${initial}';">`;
-                } else {
-                    iconHtml = initial;
-                }
+            // Render ungrouped shortcuts
+            if (ungrouped.length > 0) {
+                html.push('<div class="shortcuts-ungrouped">');
+                ungrouped.forEach(s => html.push(renderShortcutHtml(s)));
+                html.push('</div>');
+            }
 
-                // Apply per-shortcut bgColor (always honored) or fall back to global shortcutIconColor (only when not transparent)
-                let customStyle = '';
-                if (bgColor) {
-                    customStyle = `style="background: ${bgColor};"`;
-                } else if (settings.favoritesStyle !== 'transparent') {
-                    customStyle = `style="background: ${settings.shortcutIconColor || '#667eea'};"`;
-                }
+            // Render each folder (pro only)
+            if (!hasFolders) { container.innerHTML = html.join(''); initShortcutDragDrop(); return; }
+            shortcutFolders.forEach(folder => {
+                const folderShortcuts = shortcuts.filter(s => s.folder === folder.id);
+                const collapsedClass = folder.collapsed ? ' collapsed' : '';
+                html.push(
+                    '<div class="shortcut-folder' + collapsedClass + '" data-folder-id="' + folder.id + '">' +
+                        '<div class="shortcut-folder-header" onclick="toggleFolderCollapse(' + folder.id + ')">' +
+                            '<svg class="shortcut-folder-toggle" fill="currentColor" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>' +
+                            '<span>' + escapeHtml(folder.name) + '</span>' +
+                            '<span style="margin-left: auto; font-weight: 400; opacity: 0.6;">' + folderShortcuts.length + '</span>' +
+                        '</div>' +
+                        '<div class="shortcut-folder-items">'
+                );
+                folderShortcuts.forEach(s => html.push(renderShortcutHtml(s)));
+                html.push('</div></div>');
+            });
 
-                return `
-                    <a href="${shortcut.url}" target="${target}" class="shortcut" data-id="${shortcut.id}" title="${shortcut.name}" draggable="true">
-                        <button class="shortcut-edit" aria-label="Edit ${shortcut.name}" onclick="event.preventDefault(); event.stopPropagation(); openEditShortcut(${shortcut.id});">✎</button>
-                        <button class="shortcut-delete" aria-label="Delete ${shortcut.name}" onclick="event.preventDefault(); event.stopPropagation(); deleteShortcut(${shortcut.id});">×</button>
-                        <div class="shortcut-icon ${styleClass}" ${customStyle}>
-                            ${iconHtml}
-                        </div>
-                        <span class="shortcut-name">${shortcut.name}</span>
-                    </a>
-                `;
-            }).join('');
-
-            // Add drag and drop event listeners
+            container.innerHTML = html.join('');
             initShortcutDragDrop();
         }
 
@@ -4975,12 +6269,13 @@
             document.querySelectorAll('.bg-type-btn[data-target]').forEach(b => {
                 b.classList.toggle('active', b.dataset.target === (shortcut.target || '_self'));
             });
+            populateFolderDropdown(shortcut.folder || '');
             openOverlay(document.getElementById('shortcut-modal'));
         }
 
-        function addShortcut(name, url, iconUrl = '', bgColor = '', target = '_self') {
+        function addShortcut(name, url, iconUrl = '', bgColor = '', target = '_self', folder = null) {
             const newId = shortcuts.length > 0 ? Math.max(...shortcuts.map(s => s.id)) + 1 : 1;
-            shortcuts.push({ id: newId, name, url, iconUrl, bgColor, target });
+            shortcuts.push({ id: newId, name, url, iconUrl, bgColor, target, folder });
             saveShortcuts();
             renderShortcuts();
         }
@@ -5636,20 +6931,651 @@
             const active = isExtensionSubscriptionActive();
             const tocIntegrations = document.getElementById('toc-integrations');
             const tocIframe = document.getElementById('toc-iframe');
+            const tocRss = document.getElementById('toc-rss');
             const sectionIntegrations = document.getElementById('section-integrations');
             const sectionIframe = document.getElementById('section-iframe');
+            const sectionRss = document.getElementById('section-rss');
             if (tocIntegrations) tocIntegrations.classList.toggle('hidden', !active);
             if (tocIframe) tocIframe.classList.toggle('hidden', !active);
+            if (tocRss) tocRss.classList.toggle('hidden', !active);
             if (sectionIntegrations) sectionIntegrations.classList.toggle('hidden', !active);
             if (sectionIframe) sectionIframe.classList.toggle('hidden', !active);
+            if (sectionRss) sectionRss.classList.toggle('hidden', !active);
             // Hide gated widgets if extension not active
             if (!active) {
                 if (settings.showDonetick) document.getElementById('donetick-widget').classList.add('hidden');
                 if (settings.showTwitter) document.getElementById('twitter-widget').classList.add('hidden');
                 if (settings.showWeather) document.getElementById('weather-widget').classList.add('hidden');
-                // Hide all iframe widgets
+                if (settings.showStocks) document.getElementById('stocks-widget').classList.add('hidden');
+                // Hide all iframe and rss widgets
                 document.querySelectorAll('.iframe-widget').forEach(w => w.classList.add('hidden'));
+                document.querySelectorAll('.rss-widget').forEach(w => w.classList.add('hidden'));
             }
+            // Page tabs
+            const pageTabs = document.getElementById('page-tabs');
+            if (pageTabs) pageTabs.classList.toggle('hidden', !active || !settings.pages || settings.pages.length <= 1);
+        }
+
+        // ============ Stock Quotes ============
+        const WORKER_URL = 'https://mykk-us-worker.mykk.workers.dev';
+        let stockData = null;
+
+        async function loadStocks() {
+            if (!isExtensionSubscriptionActive()) return;
+            if (!settings.showStocks || !settings.stockSymbols) return;
+
+            const container = document.getElementById('stocks-content');
+            const cachedEl = document.getElementById('stocks-cached');
+            container.innerHTML = '<div class="loading"></div>';
+
+            try {
+                const symbols = settings.stockSymbols.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+                if (symbols.length === 0) throw new Error('No symbols');
+
+                const resp = await fetch(`${WORKER_URL}/api/stocks/quotes?symbols=${symbols.join(',')}`);
+                const result = await resp.json();
+
+                if (!result.success) throw new Error(result.error);
+
+                stockData = result.data;
+                renderStocksList(result.data);
+                if (cachedEl && result.cachedAt) {
+                    const d = new Date(result.cachedAt);
+                    cachedEl.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                }
+            } catch (error) {
+                console.error('Stocks error:', error);
+                container.innerHTML = '<div class="stocks-setup"><p>Unable to load stock data</p></div>';
+            }
+        }
+
+        function renderStocksList(data) {
+            const container = document.getElementById('stocks-content');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="stocks-setup"><p>No stock data available</p></div>';
+                return;
+            }
+
+            container.innerHTML = '<ul class="stocks-list">' + data.map(stock => {
+                const change = stock.close - stock.open;
+                const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
+                const isPositive = change >= 0;
+                const sign = isPositive ? '+' : '';
+                const cls = isPositive ? 'positive' : 'negative';
+                const arrow = isPositive ? '▲' : '▼';
+
+                return '<li class="stock-item" onclick="showStockDetail(\'' + escapeHtml(stock.symbol) + '\')">' +
+                    '<div class="stock-info"><span class="stock-symbol">' + escapeHtml(stock.symbol) + '</span></div>' +
+                    '<div class="stock-price-row">' +
+                        '<span class="stock-price">$' + stock.close.toFixed(2) + '</span>' +
+                        '<span class="stock-change ' + cls + '">' + arrow + ' ' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</span>' +
+                    '</div>' +
+                '</li>';
+            }).join('') + '</ul>';
+        }
+
+        function showStockDetail(symbol) {
+            const stock = stockData ? stockData.find(s => s.symbol === symbol) : null;
+            if (!stock) return;
+
+            const modal = document.getElementById('weather-detail-modal');
+            const title = document.getElementById('weather-detail-title');
+            const content = document.getElementById('weather-detail-content');
+
+            const change = stock.close - stock.open;
+            const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
+            const isPositive = change >= 0;
+            const sign = isPositive ? '+' : '';
+            const cls = isPositive ? 'positive' : 'negative';
+            const dateStr = stock.date ? new Date(stock.date).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+
+            title.textContent = stock.symbol;
+            content.innerHTML =
+                '<div style="font-size: 3rem; font-weight: 600; margin-bottom: 8px;">$' + stock.close.toFixed(2) + '</div>' +
+                '<div class="stock-change ' + cls + '" style="font-size: 1.2rem; margin-bottom: 24px;">' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</div>' +
+                '<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">' + dateStr + '</div>' +
+                '<div class="weather-detail-grid">' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Open</div><div class="weather-detail-item-value">$' + stock.open.toFixed(2) + '</div></div>' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Close</div><div class="weather-detail-item-value">$' + stock.close.toFixed(2) + '</div></div>' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">High</div><div class="weather-detail-item-value">$' + stock.high.toFixed(2) + '</div></div>' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Low</div><div class="weather-detail-item-value">$' + stock.low.toFixed(2) + '</div></div>' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Volume</div><div class="weather-detail-item-value">' + (stock.volume ? stock.volume.toLocaleString() : 'N/A') + '</div></div>' +
+                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Day Range</div><div class="weather-detail-item-value">$' + stock.low.toFixed(2) + ' - $' + stock.high.toFixed(2) + '</div></div>' +
+                '</div>';
+
+            modal.classList.add('active');
+        }
+
+        // ============ RSS Feeds ============
+
+        function renderRssWidgets() {
+            const container = document.getElementById('rss-widgets-container');
+            container.innerHTML = '';
+
+            const feeds = settings.rssFeeds || [];
+            feeds.forEach(feed => {
+                const el = document.createElement('div');
+                el.className = 'rss-widget glass-card';
+                el.id = feed.id;
+                el.dataset.widget = feed.id;
+                el.dataset.section = feed.id;
+                if (!feed.enabled || !isExtensionSubscriptionActive()) el.classList.add('hidden');
+
+                const sizes = settings.widgetSizes || {};
+                const size = sizes[feed.id] || { cols: 4, rows: 5 };
+                el.style.gridColumnEnd = 'span ' + size.cols;
+                el.style.gridRowEnd = 'span ' + size.rows;
+
+                el.innerHTML =
+                    '<div class="section-header">' +
+                        '<span class="section-drag-handle" aria-label="Drag to reorder">' +
+                            '<svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>' +
+                        '</span>' +
+                        '<span class="section-title">' + escapeHtml(feed.name || 'RSS Feed') + '</span>' +
+                    '</div>' +
+                    '<div class="rss-content" id="rss-content-' + feed.id + '" aria-live="polite"></div>';
+
+                container.appendChild(el);
+
+                if (feed.enabled && feed.url) {
+                    loadRssFeed(feed);
+                } else if (!feed.url) {
+                    const content = el.querySelector('.rss-content');
+                    content.innerHTML = '<div class="rss-setup"><p>Configure feed URL in Settings → RSS Feeds</p><button class="weather-setup-btn" onclick="document.getElementById(\'settings-btn\').click()">Open Settings</button></div>';
+                }
+            });
+
+            loadWidgetPositions();
+
+            container.querySelectorAll('.section-drag-handle').forEach(handle => {
+                handle.addEventListener('touchstart', handleSectionTouchStart, { passive: false });
+                handle.addEventListener('mousedown', handleSectionMouseDown);
+            });
+        }
+
+        async function loadRssFeed(feed) {
+            const content = document.getElementById('rss-content-' + feed.id);
+            if (!content) return;
+
+            // Check cache
+            const cacheKey = 'rss-cache-' + feed.id;
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                try {
+                    const { data, timestamp } = JSON.parse(cached);
+                    const age = Date.now() - timestamp;
+                    const maxAge = (feed.refreshInterval || 30) * 60 * 1000;
+                    if (age < maxAge) {
+                        renderRssFeedContent(content, data);
+                        return;
+                    }
+                } catch (e) { /* ignore cache errors */ }
+            }
+
+            content.innerHTML = '<div class="loading"></div>';
+
+            try {
+                const resp = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url));
+                const data = await resp.json();
+                if (data.status !== 'ok') throw new Error(data.message || 'Feed error');
+
+                localStorage.setItem(cacheKey, JSON.stringify({ data: data, timestamp: Date.now() }));
+                renderRssFeedContent(content, data);
+            } catch (e) {
+                console.error('RSS feed error:', e);
+                content.innerHTML = '<div class="rss-setup"><p>Failed to load feed</p></div>';
+            }
+        }
+
+        function renderRssFeedContent(container, data) {
+            if (!data.items || data.items.length === 0) {
+                container.innerHTML = '<div class="rss-setup"><p>No items in this feed</p></div>';
+                return;
+            }
+
+            container.innerHTML = data.items.slice(0, 20).map(item => {
+                const date = item.pubDate ? new Date(item.pubDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '';
+                const snippet = item.description ? item.description.replace(/<[^>]*>/g, '').substring(0, 150) : '';
+                return '<div class="rss-item">' +
+                    '<div class="rss-item-title"><a href="' + escapeHtml(item.link || '') + '" target="_blank" rel="noopener">' + escapeHtml(item.title || 'Untitled') + '</a></div>' +
+                    (date ? '<div class="rss-item-meta">' + date + '</div>' : '') +
+                    (snippet ? '<div class="rss-item-snippet">' + escapeHtml(snippet) + '</div>' : '') +
+                '</div>';
+            }).join('');
+        }
+
+        function renderRssWidgetSettings() {
+            const list = document.getElementById('rss-widgets-settings-list');
+            if (!list) return;
+            list.innerHTML = '';
+
+            const feeds = settings.rssFeeds || [];
+            feeds.forEach((feed, index) => {
+                const card = document.createElement('div');
+                card.className = 'rss-widget-settings-card';
+                card.innerHTML =
+                    '<div class="rss-widget-settings-header">' +
+                        '<input type="text" value="' + escapeHtml(feed.name || '') + '" data-rss-name="' + index + '" placeholder="Feed name">' +
+                        '<label class="settings-checkbox" style="margin: 0; white-space: nowrap;">' +
+                            '<input type="checkbox" data-rss-enabled="' + index + '" ' + (feed.enabled ? 'checked' : '') + '>' +
+                            '<span>Visible</span>' +
+                        '</label>' +
+                        '<button class="iframe-widget-delete-btn" data-rss-delete="' + index + '">Delete</button>' +
+                    '</div>' +
+                    '<div class="iframe-widget-settings-body">' +
+                        '<input type="text" style="background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; padding: 8px; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;" data-rss-url="' + index + '" placeholder="RSS feed URL (e.g., https://example.com/feed.xml)" value="' + escapeHtml(feed.url || '') + '">' +
+                    '</div>';
+                list.appendChild(card);
+            });
+
+            // Attach listeners
+            list.querySelectorAll('[data-rss-name]').forEach(input => {
+                input.addEventListener('input', e => {
+                    settings.rssFeeds[parseInt(e.target.dataset.rssName)].name = e.target.value;
+                });
+            });
+            list.querySelectorAll('[data-rss-url]').forEach(input => {
+                input.addEventListener('input', e => {
+                    settings.rssFeeds[parseInt(e.target.dataset.rssUrl)].url = e.target.value;
+                });
+            });
+            list.querySelectorAll('[data-rss-enabled]').forEach(input => {
+                input.addEventListener('change', e => {
+                    settings.rssFeeds[parseInt(e.target.dataset.rssEnabled)].enabled = e.target.checked;
+                });
+            });
+            list.querySelectorAll('[data-rss-delete]').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const idx = parseInt(e.target.dataset.rssDelete);
+                    const feed = settings.rssFeeds[idx];
+                    if (feed) {
+                        delete settings.widgetSizes[feed.id];
+                        localStorage.removeItem('rss-cache-' + feed.id);
+                    }
+                    settings.rssFeeds.splice(idx, 1);
+                    renderRssWidgetSettings();
+                });
+            });
+        }
+
+        function addRssFeed() {
+            if (!isExtensionSubscriptionActive()) return;
+            const id = 'rss-' + Date.now();
+            if (!Array.isArray(settings.rssFeeds)) settings.rssFeeds = [];
+            settings.rssFeeds.push({ id: id, name: 'New Feed', url: '', enabled: true, refreshInterval: 30 });
+            settings.widgetSizes[id] = { cols: 4, rows: 5 };
+            renderRssWidgetSettings();
+        }
+
+        // ============ Ambient / Focus Sounds ============
+        const SOUND_CHANNELS = {
+            rain:       { label: 'Rain',        icon: '\uD83C\uDF27\uFE0F' },
+            thunder:    { label: 'Thunder',     icon: '\u26C8\uFE0F' },
+            wind:       { label: 'Wind',        icon: '\uD83D\uDCA8' },
+            ocean:      { label: 'Ocean',       icon: '\uD83C\uDF0A' },
+            whiteNoise: { label: 'White Noise', icon: '\uD83D\uDCFB' },
+            brownNoise: { label: 'Brown Noise', icon: '\uD83D\uDFE4' },
+        };
+
+        let audioContext = null;
+        let soundNodes = {};
+        let soundTimerHandle = null;
+
+        function getAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return audioContext;
+        }
+
+        function createNoiseBuffer(ctx, type) {
+            const bufferSize = 2 * ctx.sampleRate;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            if (type === 'white') {
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            } else {
+                // Brown noise
+                let lastOut = 0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = data[i];
+                    data[i] *= 3.5;
+                }
+            }
+            return buffer;
+        }
+
+        function startSoundChannel(channel, volume) {
+            const ctx = getAudioContext();
+            if (soundNodes[channel]) stopSoundChannel(channel);
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.value = volume * settings.soundMasterVolume;
+            masterGain.connect(ctx.destination);
+
+            let source, filter, lfo, lfoGain;
+
+            if (channel === 'rain') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'white');
+                source.loop = true;
+                filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 8000;
+                filter.Q.value = 0.5;
+                source.connect(filter);
+                filter.connect(masterGain);
+            } else if (channel === 'thunder') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'brown');
+                source.loop = true;
+                filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 200;
+                source.connect(filter);
+                filter.connect(masterGain);
+            } else if (channel === 'wind') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'brown');
+                source.loop = true;
+                filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 400;
+                lfo = ctx.createOscillator();
+                lfoGain = ctx.createGain();
+                lfo.frequency.value = 0.15;
+                lfoGain.gain.value = 250;
+                lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
+                lfo.start();
+                source.connect(filter);
+                filter.connect(masterGain);
+            } else if (channel === 'ocean') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'brown');
+                source.loop = true;
+                filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 600;
+                lfo = ctx.createOscillator();
+                lfoGain = ctx.createGain();
+                lfo.frequency.value = 0.08;
+                lfoGain.gain.value = 400;
+                lfo.connect(lfoGain);
+                lfoGain.connect(filter.frequency);
+                lfo.start();
+                source.connect(filter);
+                filter.connect(masterGain);
+            } else if (channel === 'whiteNoise') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'white');
+                source.loop = true;
+                source.connect(masterGain);
+            } else if (channel === 'brownNoise') {
+                source = ctx.createBufferSource();
+                source.buffer = createNoiseBuffer(ctx, 'brown');
+                source.loop = true;
+                source.connect(masterGain);
+            }
+
+            source.start();
+            soundNodes[channel] = { source: source, gain: masterGain, filter: filter, lfo: lfo, lfoGain: lfoGain };
+        }
+
+        function stopSoundChannel(channel) {
+            const node = soundNodes[channel];
+            if (!node) return;
+            try { node.source.stop(); } catch (e) {}
+            try { if (node.lfo) node.lfo.stop(); } catch (e) {}
+            try { node.gain.disconnect(); } catch (e) {}
+            delete soundNodes[channel];
+        }
+
+        function setSoundChannelVolume(channel, volume) {
+            settings.soundChannels[channel] = volume;
+            if (volume > 0) {
+                if (soundNodes[channel]) {
+                    soundNodes[channel].gain.gain.value = volume * settings.soundMasterVolume;
+                } else {
+                    startSoundChannel(channel, volume);
+                }
+            } else {
+                stopSoundChannel(channel);
+            }
+            saveSettings();
+        }
+
+        function setMasterVolume(volume) {
+            settings.soundMasterVolume = volume;
+            Object.keys(soundNodes).forEach(ch => {
+                const chVol = settings.soundChannels[ch] || 0;
+                soundNodes[ch].gain.gain.value = chVol * volume;
+            });
+            saveSettings();
+        }
+
+        function stopAllSounds() {
+            Object.keys(soundNodes).forEach(ch => stopSoundChannel(ch));
+            settings.soundChannels = {};
+            if (soundTimerHandle) { clearTimeout(soundTimerHandle); soundTimerHandle = null; }
+            saveSettings();
+            renderSoundMixer();
+        }
+
+        function startSoundTimer(minutes) {
+            if (soundTimerHandle) clearTimeout(soundTimerHandle);
+            settings.soundTimer = minutes;
+            if (minutes > 0) {
+                soundTimerHandle = setTimeout(() => {
+                    stopAllSounds();
+                    const timerSelect = document.getElementById('sound-timer');
+                    if (timerSelect) timerSelect.value = '0';
+                }, minutes * 60 * 1000);
+            }
+            saveSettings();
+        }
+
+        function renderSoundMixer() {
+            const container = document.getElementById('sound-mixer-channels');
+            if (!container) return;
+
+            container.innerHTML = Object.entries(SOUND_CHANNELS).map(([key, ch]) => {
+                const vol = settings.soundChannels[key] || 0;
+                return '<div class="sound-channel">' +
+                    '<span class="sound-channel-icon">' + ch.icon + '</span>' +
+                    '<span class="sound-channel-label">' + ch.label + '</span>' +
+                    '<input type="range" min="0" max="1" step="0.01" value="' + vol + '" data-sound-channel="' + key + '" aria-label="' + ch.label + ' volume">' +
+                '</div>';
+            }).join('');
+
+            container.querySelectorAll('[data-sound-channel]').forEach(slider => {
+                slider.addEventListener('input', e => {
+                    setSoundChannelVolume(e.target.dataset.soundChannel, parseFloat(e.target.value));
+                });
+            });
+
+            const masterSlider = document.getElementById('sound-master-volume');
+            if (masterSlider) masterSlider.value = settings.soundMasterVolume;
+
+            const timerSelect = document.getElementById('sound-timer');
+            if (timerSelect) timerSelect.value = String(settings.soundTimer || 0);
+        }
+
+        function resumeSavedSounds() {
+            if (!isExtensionSubscriptionActive()) return;
+            const channels = settings.soundChannels || {};
+            Object.entries(channels).forEach(([ch, vol]) => {
+                if (vol > 0 && SOUND_CHANNELS[ch]) {
+                    startSoundChannel(ch, vol);
+                }
+            });
+            if (settings.soundTimer > 0) startSoundTimer(settings.soundTimer);
+        }
+
+        // ============ Dashboard Pages ============
+
+        function renderPageTabs() {
+            if (!isExtensionSubscriptionActive()) return;
+            const pages = settings.pages || [{ id: 'default', name: 'Home' }];
+            const tabsList = document.getElementById('page-tabs-list');
+            const tabsContainer = document.getElementById('page-tabs');
+            if (!tabsList || !tabsContainer) return;
+
+            tabsContainer.classList.toggle('hidden', pages.length <= 1);
+
+            tabsList.innerHTML = pages.map(page => {
+                const active = page.id === settings.activePage ? ' active' : '';
+                return '<button class="page-tab' + active + '" data-page-id="' + escapeHtml(page.id) + '" role="tab" aria-selected="' + (page.id === settings.activePage) + '">' + escapeHtml(page.name) + '</button>';
+            }).join('');
+
+            tabsList.querySelectorAll('.page-tab').forEach(tab => {
+                tab.addEventListener('click', () => switchPage(tab.dataset.pageId));
+                tab.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showPageContextMenu(e, tab.dataset.pageId);
+                });
+            });
+        }
+
+        function savePageState(pageId) {
+            const state = {
+                widgetPositions: JSON.parse(localStorage.getItem('dashboard-widget-grid-v2') || '{}'),
+                widgetSizes: { ...settings.widgetSizes },
+                widgetVisibility: {
+                    showWeather: settings.showWeather,
+                    showMiniCalendar: settings.showMiniCalendar,
+                    showFavorites: settings.showFavorites,
+                    showDate: settings.showDate,
+                    showTime: settings.showTime,
+                    showSearch: settings.showSearch,
+                    showGreeting: settings.showGreeting,
+                    showQuotes: settings.showQuotes,
+                    showFocus: settings.showFocus,
+                    showTodos: settings.showTodos,
+                    showStocks: settings.showStocks,
+                    showTwitter: settings.showTwitter,
+                    showDonetick: settings.showDonetick,
+                    iframeWidgets: settings.iframeWidgets,
+                    rssFeeds: settings.rssFeeds,
+                }
+            };
+            localStorage.setItem('dashboard-page-' + pageId, JSON.stringify(state));
+        }
+
+        function loadPageState(pageId) {
+            const saved = localStorage.getItem('dashboard-page-' + pageId);
+            if (!saved) return;
+
+            try {
+                const state = JSON.parse(saved);
+                if (state.widgetPositions) {
+                    localStorage.setItem('dashboard-widget-grid-v2', JSON.stringify(state.widgetPositions));
+                }
+                if (state.widgetSizes) {
+                    settings.widgetSizes = { ...defaultSettings.widgetSizes, ...state.widgetSizes };
+                }
+                if (state.widgetVisibility) {
+                    Object.assign(settings, state.widgetVisibility);
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        function switchPage(pageId) {
+            if (pageId === settings.activePage) return;
+            savePageState(settings.activePage);
+            settings.activePage = pageId;
+            loadPageState(pageId);
+            saveSettings();
+            applyWidgetSizes();
+            loadWidgetPositions();
+            applySettings();
+            renderPageTabs();
+        }
+
+        function addPage() {
+            if (!isExtensionSubscriptionActive()) return;
+            const name = prompt('Page name:');
+            if (!name || !name.trim()) return;
+            const id = 'page-' + Date.now();
+            if (!Array.isArray(settings.pages)) settings.pages = [{ id: 'default', name: 'Home' }];
+
+            // Save current page state first
+            savePageState(settings.activePage);
+
+            settings.pages.push({ id: id, name: name.trim() });
+            settings.activePage = id;
+            saveSettings();
+
+            // New page starts with default layout
+            localStorage.setItem('dashboard-page-' + id, JSON.stringify({
+                widgetPositions: { ...defaultWidgetPositions },
+                widgetSizes: { ...defaultSettings.widgetSizes },
+                widgetVisibility: {
+                    showWeather: false,
+                    showMiniCalendar: true,
+                    showFavorites: true,
+                    showDate: true,
+                    showTime: true,
+                    showSearch: true,
+                    showGreeting: true,
+                    showQuotes: true,
+                    showFocus: false,
+                    showTodos: false,
+                    showStocks: false,
+                    showTwitter: false,
+                    showDonetick: false,
+                    iframeWidgets: [],
+                    rssFeeds: [],
+                }
+            }));
+
+            loadPageState(id);
+            applyWidgetSizes();
+            loadWidgetPositions();
+            applySettings();
+            renderPageTabs();
+        }
+
+        function deletePage(pageId) {
+            if (!settings.pages || settings.pages.length <= 1) return;
+            if (!confirm('Delete this page?')) return;
+
+            settings.pages = settings.pages.filter(p => p.id !== pageId);
+            localStorage.removeItem('dashboard-page-' + pageId);
+
+            if (settings.activePage === pageId) {
+                settings.activePage = settings.pages[0].id;
+                loadPageState(settings.activePage);
+                applyWidgetSizes();
+                loadWidgetPositions();
+                applySettings();
+            }
+            saveSettings();
+            renderPageTabs();
+        }
+
+        function renamePage(pageId) {
+            const page = (settings.pages || []).find(p => p.id === pageId);
+            if (!page) return;
+            const name = prompt('New name:', page.name);
+            if (!name || !name.trim()) return;
+            page.name = name.trim();
+            saveSettings();
+            renderPageTabs();
+        }
+
+        function showPageContextMenu(e, pageId) {
+            // Simple context menu via prompt
+            const action = prompt('Type "rename" to rename or "delete" to delete this page:');
+            if (!action) return;
+            if (action.toLowerCase() === 'rename') renamePage(pageId);
+            else if (action.toLowerCase() === 'delete') deletePage(pageId);
         }
 
         async function fetchDonetickChores() {
@@ -6442,7 +8368,12 @@
             'mini-calendar':  { col: 7,  row: 5 },
             weather:          { col: 1,  row: 9 },
             twitter:          { col: 5,  row: 9 },
-            donetick:         { col: 9,  row: 9 }
+            donetick:         { col: 9,  row: 9 },
+            greeting:         { col: 1,  row: 17 },
+            quotes:           { col: 7,  row: 17 },
+            focus:            { col: 1,  row: 19 },
+            todos:            { col: 7,  row: 19 },
+            stocks:           { col: 9,  row: 13 }
         };
 
         function saveWidgetPositions() {
@@ -6773,6 +8704,13 @@
                     return;
                 }
 
+                // Close sound mixer
+                const soundPanel = document.getElementById('sound-mixer-panel');
+                if (soundPanel && !soundPanel.classList.contains('hidden')) {
+                    soundPanel.classList.add('hidden');
+                    return;
+                }
+
                 const lightboxes = ['paint-lightbox', 'notepad-lightbox', 'radar-lightbox', 'webcam-lightbox'];
                 for (const id of lightboxes) {
                     const lb = document.getElementById(id);
@@ -6948,6 +8886,69 @@
             });
             document.getElementById('toggle-mini-calendar').addEventListener('change', (e) => { settings.showMiniCalendar = e.target.checked; updateWidgetSizeDisabledState(); });
             document.getElementById('toggle-favorites').addEventListener('change', (e) => { settings.showFavorites = e.target.checked; updateWidgetSizeDisabledState(); });
+            document.getElementById('toggle-greeting').addEventListener('change', (e) => {
+                settings.showGreeting = e.target.checked;
+                const extra = document.getElementById('greeting-settings-extra');
+                if (extra) extra.style.display = e.target.checked ? '' : 'none';
+                updateWidgetSizeDisabledState();
+            });
+            document.getElementById('greeting-name-input').addEventListener('input', (e) => {
+                settings.greetingName = e.target.value;
+                updateGreeting();
+            });
+            document.getElementById('toggle-quotes').addEventListener('change', (e) => { settings.showQuotes = e.target.checked; updateWidgetSizeDisabledState(); });
+            document.getElementById('toggle-focus').addEventListener('change', (e) => { settings.showFocus = e.target.checked; updateWidgetSizeDisabledState(); });
+            document.getElementById('toggle-todos').addEventListener('change', (e) => { settings.showTodos = e.target.checked; updateWidgetSizeDisabledState(); });
+            // Quotes click-to-refresh
+            document.getElementById('quotes-widget').addEventListener('click', (e) => {
+                if (e.target.closest('.section-drag-handle')) return;
+                showRandomQuote();
+            });
+            // To-Do event delegation
+            document.getElementById('todo-add-btn').addEventListener('click', () => {
+                const input = document.getElementById('todo-input');
+                addTodo(input.value);
+                input.value = '';
+                input.focus();
+            });
+            document.getElementById('todo-input').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    addTodo(e.target.value);
+                    e.target.value = '';
+                }
+            });
+            document.getElementById('todos-list').addEventListener('change', (e) => {
+                if (e.target.classList.contains('todo-checkbox')) {
+                    const id = parseInt(e.target.closest('.todo-item').dataset.todoId);
+                    toggleTodo(id);
+                }
+            });
+            document.getElementById('todos-list').addEventListener('click', (e) => {
+                if (e.target.classList.contains('todo-delete')) {
+                    const id = parseInt(e.target.closest('.todo-item').dataset.todoId);
+                    deleteTodo(id);
+                }
+            });
+
+            // Theme toggle (toolbar button)
+            document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+                settings.theme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+                applyTheme();
+                saveSettings();
+            });
+            // Theme buttons (settings)
+            document.querySelectorAll('.bg-type-btn[data-theme]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.bg-type-btn[data-theme]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    settings.theme = btn.dataset.theme;
+                    applyTheme();
+                });
+            });
+            // System preference change listener
+            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+                if (settings.theme === 'system') applyTheme();
+            });
 
             // Action button toggles
             document.getElementById('toggle-fullscreen').addEventListener('change', (e) => settings.showFullscreen = e.target.checked);
@@ -6958,6 +8959,21 @@
 
             // Weather animation toggle
             document.getElementById('toggle-weather-animation').addEventListener('change', (e) => settings.showWeatherAnimation = e.target.checked);
+
+            // Folder management
+            document.getElementById('add-folder-btn').addEventListener('click', () => {
+                const input = document.getElementById('new-folder-name');
+                addFolder(input.value);
+                input.value = '';
+            });
+            document.getElementById('new-folder-name').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const input = document.getElementById('new-folder-name');
+                    addFolder(input.value);
+                    input.value = '';
+                }
+            });
 
             // Donetick settings
             document.getElementById('donetick-url').addEventListener('input', (e) => {
@@ -6972,6 +8988,46 @@
                 if (extra) extra.style.display = e.target.checked ? '' : 'none';
                 updateWidgetSizeDisabledState();
             });
+
+            // Stock Quotes settings
+            document.getElementById('toggle-stocks').addEventListener('change', (e) => {
+                settings.showStocks = e.target.checked;
+                const extra = document.getElementById('stocks-settings-extra');
+                if (extra) extra.style.display = e.target.checked ? '' : 'none';
+                updateWidgetSizeDisabledState();
+            });
+            document.getElementById('stock-symbols').addEventListener('input', (e) => {
+                settings.stockSymbols = e.target.value;
+            });
+
+            // RSS Feeds
+            document.getElementById('add-rss-feed-btn').addEventListener('click', () => {
+                addRssFeed();
+            });
+
+            // Ambient Sounds toolbar button
+            document.getElementById('sounds-btn').addEventListener('click', () => {
+                const panel = document.getElementById('sound-mixer-panel');
+                panel.classList.toggle('hidden');
+                if (!panel.classList.contains('hidden')) {
+                    renderSoundMixer();
+                }
+            });
+            document.getElementById('sound-mixer-close').addEventListener('click', () => {
+                document.getElementById('sound-mixer-panel').classList.add('hidden');
+            });
+            document.getElementById('sound-master-volume').addEventListener('input', (e) => {
+                setMasterVolume(parseFloat(e.target.value));
+            });
+            document.getElementById('sound-timer').addEventListener('change', (e) => {
+                startSoundTimer(parseInt(e.target.value));
+            });
+            document.getElementById('toggle-sounds').addEventListener('change', (e) => {
+                settings.showSounds = e.target.checked;
+            });
+
+            // Dashboard Pages
+            document.getElementById('page-tab-add').addEventListener('click', () => addPage());
 
             // Twitter integration
             document.getElementById('twitter-embed-code').addEventListener('input', (e) => {
@@ -7156,6 +9212,7 @@
                 document.querySelectorAll('.bg-type-btn[data-target]').forEach(b => {
                     b.classList.toggle('active', b.dataset.target === '_self');
                 });
+                populateFolderDropdown('');
                 editingShortcutId = null;
                 openOverlay(shortcutModal);
             });
@@ -7192,14 +9249,16 @@
                 const useDefault = document.getElementById('shortcut-use-default-color').checked;
                 const bgColor = useDefault ? '' : document.getElementById('shortcut-bg-color').value;
                 const target = document.getElementById('shortcut-target').value;
+                const folderVal = document.getElementById('shortcut-folder').value;
+                const folder = folderVal ? parseInt(folderVal) : null;
 
                 if (editingShortcutId) {
                     const idx = shortcuts.findIndex(s => s.id === editingShortcutId);
                     if (idx !== -1) {
-                        shortcuts[idx] = { ...shortcuts[idx], name, url, iconUrl, bgColor, target };
+                        shortcuts[idx] = { ...shortcuts[idx], name, url, iconUrl, bgColor, target, folder };
                     }
                 } else {
-                    addShortcut(name, url, iconUrl, bgColor, target);
+                    addShortcut(name, url, iconUrl, bgColor, target, folder);
                 }
                 saveShortcuts();
                 renderShortcuts();
@@ -7343,6 +9402,10 @@
         function init() {
             loadSettings();
             loadShortcuts();
+            loadShortcutFolders();
+            loadTodos();
+            loadQuotesCache();
+            refreshQuotesCacheIfNeeded();
             applyWidgetSizes();
             loadWidgetPositions();
             updateDateTime();
@@ -7356,16 +9419,23 @@
             startAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
-            // Check for extension subscription and update Donetick visibility
+            // Check for extension subscription and update visibility
             updateIntegrationsVisibility();
+            renderPageTabs();
+            resumeSavedSounds();
             // Listen for extension messages (extension may load after dashboard)
             window.addEventListener('message', (e) => {
                 if (e.data && e.data.type === 'mykk-extension-status') {
                     window.mykkExtension = e.data.extension;
                     updateIntegrationsVisibility();
+                    renderPageTabs();
                     if (isExtensionSubscriptionActive() && settings.showDonetick) {
                         loadDonetickData();
                     }
+                    if (isExtensionSubscriptionActive() && settings.showStocks) {
+                        loadStocks();
+                    }
+                    resumeSavedSounds();
                 }
             });
         }
