@@ -4010,6 +4010,11 @@
                         <input type="text" class="settings-input" id="page-title-input" placeholder="MyKK Dashboard">
                     </div>
                     <div class="settings-group">
+                        <label class="settings-label">Favicon URL</label>
+                        <input type="text" class="settings-input" id="favicon-url-input" placeholder="https://example.com/favicon.png">
+                        <small class="settings-help">URL to a .ico or .png image. Leave blank for the default MyKK icon.</small>
+                    </div>
+                    <div class="settings-group">
                         <label class="settings-label">Background Type</label>
                         <div class="bg-type-toggle">
                             <button class="bg-type-btn active" data-type="gradient">Gradient</button>
@@ -4740,6 +4745,7 @@
         // ============ State Management ============
         const defaultSettings = {
             pageTitle: 'MyKK Dashboard',
+            faviconUrl: '',
             theme: 'dark',
             bgType: 'gradient',
             bgGradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
@@ -5599,11 +5605,30 @@
             }
         }
 
+        function applyFavicon() {
+            const url = settings.faviconUrl;
+            let link = document.querySelector('link[rel="icon"][data-custom]');
+            if (url) {
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    link.dataset.custom = '1';
+                    document.head.appendChild(link);
+                }
+                link.type = url.endsWith('.ico') ? 'image/x-icon' : 'image/png';
+                link.href = url;
+            } else if (link) {
+                link.remove();
+            }
+        }
+
         // ============ Background ============
         function applySettings() {
             applyTheme();
             // Page title
             document.title = settings.pageTitle || 'MyKK Dashboard';
+            // Custom favicon
+            applyFavicon();
 
             const wallpaper = document.getElementById('wallpaper');
             const overlay = document.getElementById('overlay');
@@ -5972,6 +5997,7 @@
 
             // Page title
             document.getElementById('page-title-input').value = settings.pageTitle || 'MyKK Dashboard';
+            document.getElementById('favicon-url-input').value = settings.faviconUrl || '';
 
             document.querySelectorAll('.bg-type-btn[data-type]').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.type === settings.bgType);
@@ -8886,7 +8912,9 @@
             document.getElementById('page-title-input').addEventListener('input', (e) => {
                 settings.pageTitle = e.target.value;
             });
-
+            document.getElementById('favicon-url-input').addEventListener('input', (e) => {
+                settings.faviconUrl = e.target.value.trim();
+            });
             // Auto-refresh
             document.getElementById('toggle-auto-refresh').addEventListener('change', (e) => {
                 settings.autoRefresh = e.target.checked;
