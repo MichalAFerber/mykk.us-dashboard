@@ -9509,13 +9509,11 @@
                 if (e.detail) {
                     window.mykkExtension = e.detail;
                     updateIntegrationsVisibility();
+                    // Re-apply settings to show/hide Pro widgets now that status is known
+                    applySettings();
+                    applyWidgetSizes();
+                    loadWidgetPositions();
                     renderPageTabs();
-                    if (isExtensionSubscriptionActive() && settings.showDonetick) {
-                        loadDonetickData();
-                    }
-                    if (isExtensionSubscriptionActive() && settings.showStocks) {
-                        loadStocks();
-                    }
                     resumeSavedSounds();
                 }
             });
