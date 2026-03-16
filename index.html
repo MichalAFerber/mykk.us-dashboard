@@ -9496,25 +9496,37 @@
             startAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
-            // Check for extension data set before DOMContentLoaded (via data attribute)
-            const extAttr = document.documentElement.dataset.mykkExtension;
-            if (extAttr) {
-                try { window.mykkExtension = JSON.parse(extAttr); } catch {}
-            }
             updateIntegrationsVisibility();
             renderPageTabs();
             resumeSavedSounds();
-            // Listen for extension CustomEvent (for live updates after init)
+
+            // Extension status detection — two channels for reliability:
+            // 1. Poll data attribute (handles all timing scenarios)
+            // 2. CustomEvent listener (handles live updates from sign-in/sign-out)
+            function onExtensionDetected() {
+                updateIntegrationsVisibility();
+                applySettings();
+                applyWidgetSizes();
+                loadWidgetPositions();
+                renderPageTabs();
+                resumeSavedSounds();
+            }
+
+            let extPollCount = 0;
+            const extPoll = setInterval(() => {
+                const attr = document.documentElement.dataset.mykkExtension;
+                if (attr && !window.mykkExtension) {
+                    try { window.mykkExtension = JSON.parse(attr); } catch {}
+                    if (window.mykkExtension) onExtensionDetected();
+                }
+                if (window.mykkExtension || ++extPollCount >= 20) clearInterval(extPoll);
+            }, 250);
+
             document.addEventListener('mykk-extension-status', (e) => {
                 if (e.detail) {
                     window.mykkExtension = e.detail;
-                    updateIntegrationsVisibility();
-                    // Re-apply settings to show/hide Pro widgets now that status is known
-                    applySettings();
-                    applyWidgetSizes();
-                    loadWidgetPositions();
-                    renderPageTabs();
-                    resumeSavedSounds();
+                    clearInterval(extPoll);
+                    onExtensionDetected();
                 }
             });
         }
