@@ -4204,6 +4204,10 @@
                     <h3 class="settings-section-title">Toolbar Buttons</h3>
                     <div class="settings-checkbox-grid">
                         <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-theme-btn" checked>
+                            <span>Theme Toggle</span>
+                        </label>
+                        <label class="settings-checkbox">
                             <input type="checkbox" id="toggle-fullscreen" checked>
                             <span>Fullscreen</span>
                         </label>
@@ -4787,6 +4791,7 @@
             },
             autoRefresh: false,
             autoRefreshMinutes: 15,
+            showThemeToggle: true,
             showFullscreen: true,
             showRefresh: true,
             showCamera: true,
@@ -5678,6 +5683,7 @@
             }
 
             // Toggle action buttons
+            document.getElementById('theme-toggle-btn').classList.toggle('hidden', !settings.showThemeToggle);
             document.getElementById('fullscreen-btn').classList.toggle('hidden', !settings.showFullscreen);
             document.getElementById('refresh-btn').classList.toggle('hidden', !settings.showRefresh);
             document.getElementById('camera-btn').classList.toggle('hidden', !settings.showCamera);
@@ -6019,6 +6025,7 @@
             updateWidgetSizeDisabledState();
 
             // Action button toggles
+            document.getElementById('toggle-theme-btn').checked = settings.showThemeToggle;
             document.getElementById('toggle-fullscreen').checked = settings.showFullscreen;
             document.getElementById('toggle-refresh').checked = settings.showRefresh;
             document.getElementById('toggle-camera').checked = settings.showCamera;
@@ -8984,6 +8991,7 @@
             });
 
             // Action button toggles
+            document.getElementById('toggle-theme-btn').addEventListener('change', (e) => settings.showThemeToggle = e.target.checked);
             document.getElementById('toggle-fullscreen').addEventListener('change', (e) => settings.showFullscreen = e.target.checked);
             document.getElementById('toggle-refresh').addEventListener('change', (e) => settings.showRefresh = e.target.checked);
             document.getElementById('toggle-camera').addEventListener('change', (e) => settings.showCamera = e.target.checked);
