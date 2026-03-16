@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MyKK — a customizable browser start page with search, bookmarks, weather, calendar, notepad, stocks, and more. Single HTML file. Works offline. Open source.">
+    <meta name="keywords" content="start page, new tab, browser dashboard, homepage, customizable, self-hosted, open source, bookmarks, weather, notepad, calendar">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://start.mykk.us/">
+    <meta property="og:title" content="MyKK Dashboard — Your Browser's Start Page">
+    <meta property="og:description" content="A customizable browser start page with search, bookmarks, weather, calendar, notepad, stocks, and more. Single HTML file. Works offline.">
+    <meta property="og:image" content="https://mykk.us/screenshot.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MyKK Dashboard — Your Browser's Start Page">
+    <meta name="twitter:description" content="A customizable browser start page with search, bookmarks, weather, calendar, notepad, stocks, and more.">
+    <meta name="twitter:image" content="https://mykk.us/screenshot.webp">
+    <link rel="canonical" href="https://start.mykk.us/">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <title>MyKK Dashboard</title>
@@ -3746,9 +3758,116 @@
         }
 
     </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "MyKK Dashboard",
+        "url": "https://start.mykk.us",
+        "description": "A customizable browser start page with search, bookmarks, weather, calendar, notepad, stocks, and more. Single HTML file. Works offline. Open source.",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires a modern web browser",
+        "offers": [
+            {
+                "@type": "Offer",
+                "name": "Free",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            {
+                "@type": "Offer",
+                "name": "Pro",
+                "price": "12",
+                "priceCurrency": "USD",
+                "billingIncrement": "P1Y"
+            }
+        ],
+        "featureList": [
+            "Multi-engine search (Google, Bing, DuckDuckGo, Brave, Yahoo, Ecosia, Startpage)",
+            "Drag-and-drop bookmarks with auto-detected favicons",
+            "Mini calendar with month navigation",
+            "Clock and date with 12/24h format",
+            "Personalized greeting and motivational quotes",
+            "Notepad with Plain Text, Rich Text, and Markdown modes",
+            "Paint canvas with brush, shapes, text, and export",
+            "Webcam mirror with selfie countdown",
+            "Live weather and interactive radar map",
+            "Stock quotes via Yahoo Finance",
+            "RSS feed reader",
+            "Ambient focus sounds",
+            "Daily focus and to-do list",
+            "iFrame widget embeds",
+            "Donetick task integration",
+            "X/Twitter feed embed",
+            "Light and dark theme with system detection",
+            "Custom backgrounds (gradient, color, image)",
+            "Google cloud sync via Firebase",
+            "Export and import settings",
+            "Works 100% offline",
+            "Single HTML file (~400 KB)"
+        ],
+        "author": {
+            "@type": "Person",
+            "name": "Michal Ferber",
+            "url": "https://github.com/MichalAFerber"
+        },
+        "screenshot": "https://mykk.us/screenshot.webp",
+        "softwareVersion": "1.0.0",
+        "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
 </head>
 <body>
     <a href="#main-dashboard" class="skip-to-content">Skip to dashboard</a>
+
+    <!-- SEO content for crawlers (visually hidden, not aria-hidden so it's indexable) -->
+    <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
+        <h1>MyKK Dashboard — Your Browser's Start Page, Reimagined</h1>
+        <p>MyKK is a free, open-source browser start page and new tab dashboard. It runs as a single HTML file (~400 KB) with no server, no Docker, and no build tools required. Download it from <a href="https://github.com/MichalAFerber/mykk.us-dashboard/blob/main/index.html">GitHub</a>, open it in your browser, and customize it to your liking. Or use the hosted Cloud Dashboard at <a href="https://start.mykk.us">start.mykk.us</a>.</p>
+        <h2>Free Features</h2>
+        <ul>
+            <li>Multi-engine search bar — Google, Bing, DuckDuckGo, Brave, Yahoo, Ecosia, Startpage</li>
+            <li>Drag-and-drop bookmarks with auto-detected favicons from dashboardicons.com or custom CDN icons</li>
+            <li>Mini calendar with month navigation</li>
+            <li>Clock and date widget with 12/24 hour format</li>
+            <li>Personalized greeting and motivational quotes</li>
+            <li>Notepad with Plain Text, Rich Text, and Markdown modes with live preview</li>
+            <li>Paint canvas with brush, shapes, text, eraser — export as PNG or PDF</li>
+            <li>Webcam mirror with selfie countdown timer</li>
+            <li>Light, dark, and system theme detection</li>
+            <li>Custom backgrounds — gradients, solid colors, or image URL</li>
+            <li>Google cloud sync via Firebase</li>
+            <li>Export and import settings as JSON</li>
+            <li>Works 100% offline with localStorage</li>
+            <li>Drag-and-drop widget layout on a 12-column CSS grid</li>
+            <li>Bookmark folders with collapsible groups</li>
+        </ul>
+        <h2>Pro Features</h2>
+        <ul>
+            <li>Live weather and interactive radar map with Rain, Clouds, Temperature, and Wind layers</li>
+            <li>Stock quotes via Yahoo Finance with optional Marketstack API</li>
+            <li>RSS feed reader</li>
+            <li>Ambient focus sounds — rain, fireplace, ocean, forest, and more</li>
+            <li>Daily focus widget and to-do list</li>
+            <li>iFrame widget embeds for Google Calendar, RSS, Twitter, or any URL</li>
+            <li>Donetick chore and task integration</li>
+            <li>X/Twitter timeline feed embed</li>
+            <li>Dashboard pages for different contexts</li>
+        </ul>
+        <h2>About MyKK</h2>
+        <p>MyKK is created by <a href="https://github.com/MichalAFerber">Michal Ferber</a>. The dashboard is open source under the MIT license. Install the <a href="https://chrome.google.com/webstore/detail/mggnhojgnpoeidackebojcnijjfjideo">Chrome extension</a> to replace your new tab page automatically. Visit <a href="https://mykk.us">mykk.us</a> for documentation, pricing, and support.</p>
+        <nav>
+            <a href="https://mykk.us">Website</a>
+            <a href="https://mykk.us/docs">Documentation</a>
+            <a href="https://mykk.us/roadmap">Roadmap</a>
+            <a href="https://mykk.us/support">Support</a>
+            <a href="https://mykk.us/privacy">Privacy Policy</a>
+            <a href="https://mykk.us/terms">Terms of Service</a>
+            <a href="https://mykk.us/changelog">Release Notes</a>
+            <a href="https://github.com/MichalAFerber/mykk.us-dashboard">GitHub</a>
+        </nav>
+    </div>
     <div class="wallpaper" id="wallpaper" aria-hidden="true"></div>
     <div class="overlay" id="overlay" aria-hidden="true"></div>
     <div class="weather-animation" id="weather-animation" aria-hidden="true"></div>
