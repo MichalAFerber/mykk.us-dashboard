@@ -1947,66 +1947,18 @@
         details.settings-section[open] > summary span {
             display: none;
         }
-        .faq-summary::-webkit-details-marker {
-            display: none;
-        }
-        .faq-arrow {
-            transition: transform 0.3s ease;
-            flex-shrink: 0;
-            opacity: 0.6;
-        }
-        #section-faq[open] > .faq-summary .faq-arrow {
-            transform: rotate(90deg);
-        }
-
-        .faq-item {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-        .faq-item summary {
-            cursor: pointer;
-            padding: 12px 0;
-            font-weight: 500;
-            font-size: 0.9rem;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .faq-item summary::before {
-            content: '▸';
-            transition: transform 0.2s;
-            flex-shrink: 0;
-        }
-        .faq-item[open] summary::before {
-            transform: rotate(90deg);
-        }
-        .faq-item summary::-webkit-details-marker {
-            display: none;
-        }
-        .faq-answer {
-            padding: 0 0 12px 20px;
-            opacity: 0.8;
-            font-size: 0.85rem;
-            line-height: 1.6;
-        }
-        .faq-answer ol {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-        .faq-answer ol li {
-            margin-bottom: 4px;
-        }
-        .faq-answer a {
-            color: #667eea;
-        }
-        .faq-answer code {
-            background: rgba(255,255,255,0.1);
-            padding: 1px 5px;
-            border-radius: 3px;
-            font-size: 0.8rem;
+        .toc-pro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #e040fb);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+            margin-left: 4px;
         }
 
         /* Weather Detail Modal */
@@ -4116,11 +4068,11 @@
                 <a href="#section-appearance">Appearance</a>
                 <a href="#section-widgets">Widgets</a>
                 <a href="#section-toolbar">Toolbar Buttons</a>
-                <a href="#section-iframe" id="toc-iframe" class="hidden">iFrame Widgets</a>
-                <a href="#section-rss" id="toc-rss" class="hidden">RSS Feeds</a>
-                <a href="#section-integrations" id="toc-integrations" class="hidden">Integrations</a>
+                <a href="#section-iframe" id="toc-iframe" class="hidden">iFrame Widgets <span class="toc-pro-badge">Pro</span></a>
+                <a href="#section-rss" id="toc-rss" class="hidden">RSS Feeds <span class="toc-pro-badge">Pro</span></a>
+                <a href="#section-integrations" id="toc-integrations" class="hidden">Integrations <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-data">Data</a>
-                <a href="#section-faq">FAQ</a>
+                <a href="https://mykk.us/docs" target="_blank" rel="noopener">Docs ↗</a>
                 <button class="settings-save" id="save-settings" style="margin-top: 16px; width: 100%;">Save Settings</button>
             </nav>
 
@@ -4612,115 +4564,12 @@
                 </div>
 
                 <!-- FAQ -->
-                <details class="settings-section" id="section-faq">
-                    <summary class="faq-summary" style="cursor: pointer; list-style: none; display: flex; align-items: center; gap: 10px;">
-                        <h3 class="settings-section-title" style="margin: 0; padding: 0; border: none;">FAQ</h3>
-                        <svg class="faq-arrow" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </summary>
+                <div class="settings-section" style="text-align: center; padding: 24px;">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        To learn more, visit our <a href="https://mykk.us/docs" target="_blank" rel="noopener" style="color: #667eea;">documentation</a>.
+                    </p>
+                </div>
 
-                    <details class="faq-item">
-                        <summary>What is MyKK Dashboard?</summary>
-                        <div class="faq-answer">
-                            MyKK Dashboard is a customizable browser start page you can set as your homepage or new tab page. Features include:
-                            <ol>
-                                <li><strong>Search Bar</strong> — multi-engine search (Google, Bing, DuckDuckGo, Yahoo, Brave, Ecosia, Startpage)</li>
-                                <li><strong>Shortcuts</strong> — quick-access bookmarks with auto-detected icons and drag-to-reorder</li>
-                                <li><strong>Weather</strong> — current conditions, 5-day forecast, interactive radar map, and animated weather overlays</li>
-                                <li><strong>Mini Calendar</strong> — compact monthly calendar with navigation</li>
-                                <li><strong>Date &amp; Clock</strong> — configurable date formats and 12/24-hour time with auto-scaling fonts</li>
-                                <li><strong>Toolbar</strong> — fullscreen, refresh, webcam/selfie with countdown, paint canvas (brush, shapes, text, eraser, save as PNG/PDF), and notepad</li>
-                                <li><strong>iFrame Widgets</strong> — embed Google Calendar, RSS feeds, Twitter/X, or any service with an embed URL</li>
-                                <li><strong>Drag &amp; Drop</strong> — reorder all dashboard sections on desktop and mobile</li>
-                                <li><strong>Themes</strong> — gradient presets, solid color, or custom background image</li>
-                                <li><strong>Cloud Sync</strong> — optional Google sign-in to sync settings across devices</li>
-                                <li><strong>Export / Import</strong> — download or upload settings as JSON</li>
-                                <li><strong>Responsive</strong> — adapts to desktop, tablet, and phone</li>
-                            </ol>
-                            No account or backend required. Everything runs in your browser and saves to local storage.
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>Do I need to sign in?</summary>
-                        <div class="faq-answer">
-                            No. The dashboard works entirely in your browser without signing in. Signing in with Google lets you sync settings across all your devices automatically. Without signing in, you can use Export/Import in the Data section to transfer settings manually.
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I get a weather API key?</summary>
-                        <div class="faq-answer">
-                            <ol>
-                                <li>Go to <a href="https://openweathermap.org/api" target="_blank">openweathermap.org/api</a></li>
-                                <li>Create a free account</li>
-                                <li>Subscribe to the "One Call API 3.0" (includes 1,000 free calls/day)</li>
-                                <li>Copy your API key from your account dashboard and paste it in the Weather section above</li>
-                            </ol>
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>What are iFrame Widgets?</summary>
-                        <div class="faq-answer">
-                            iFrame Widgets let you embed external content directly on your dashboard. Any service that provides an embed code or embeddable URL can be added as an iFrame widget. Go to the iFrame Widgets section above, click "Add iFrame Widget", give it a name, and paste the embed URL.
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I add Google Calendar?</summary>
-                        <div class="faq-answer">
-                            <ol>
-                                <li>Open <a href="https://calendar.google.com/calendar/r/settings" target="_blank">Google Calendar Settings</a></li>
-                                <li>Click on the calendar you want to embed (under "Settings for my calendars")</li>
-                                <li>Scroll to "Integrate calendar" and find the "Embed code" section</li>
-                                <li>Click "Customize" to adjust the look, then copy the <code>src="..."</code> URL from the embed code</li>
-                                <li>Add an iFrame Widget above and paste that URL</li>
-                            </ol>
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I add an RSS or news feed?</summary>
-                        <div class="faq-answer">
-                            Use a free RSS-to-embed service to generate an embeddable URL:
-                            <ol>
-                                <li>Go to <a href="https://rss.app/" target="_blank">rss.app</a> or <a href="https://www.rssdog.com/" target="_blank">rssdog.com</a></li>
-                                <li>Enter the RSS feed URL you want to display (e.g., from your favorite news site)</li>
-                                <li>Customize the appearance and generate the embed code</li>
-                                <li>Copy the embed URL and add it as an iFrame Widget</li>
-                            </ol>
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I embed Twitter / X?</summary>
-                        <div class="faq-answer">
-                            Use the X/Twitter integration in Settings &rarr; Integrations:
-                            <ol>
-                                <li>Go to <a href="https://publish.twitter.com/" target="_blank" style="color: #667eea;">publish.twitter.com</a></li>
-                                <li>Enter any Twitter/X URL (profile, tweet, hashtag, or list)</li>
-                                <li>Choose an embed type and customize the options</li>
-                                <li>Copy the generated embed code and paste it in Settings &rarr; Integrations &rarr; X/Twitter</li>
-                            </ol>
-                            You can also paste a plain Twitter/X URL directly (e.g. https://x.com/username).
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I find embed codes for other services?</summary>
-                        <div class="faq-answer">
-                            Most web services offer an "Embed" or "Share" option that provides iFrame code. Look for a share/embed button within the service. You can also use <a href="https://iframe-generator.org/" target="_blank">iframe-generator.org</a> to help create embed codes. The URL you need is the <code>src="..."</code> value from any <code>&lt;iframe&gt;</code> embed code.
-                        </div>
-                    </details>
-
-                    <details class="faq-item">
-                        <summary>How do I reorder sections on the dashboard?</summary>
-                        <div class="faq-answer">
-                            Hover over any widget to reveal a drag handle (three lines icon) in the top-right corner. Click and drag the handle to move the widget to a new position. On mobile, the drag handles are always visible. Your layout order is saved automatically.
-                        </div>
-                    </details>
-
-                </details>
 
             </div>
         </div>
