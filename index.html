@@ -3640,10 +3640,18 @@
     <div class="wallpaper" id="wallpaper" aria-hidden="true"></div>
     <div class="overlay" id="overlay" aria-hidden="true"></div>
     <div class="weather-animation" id="weather-animation" aria-hidden="true"></div>
+    <!-- Loading screen -->
+    <div id="loading-screen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg-primary, #0b0d1a);">
+        <div style="text-align:center;color:rgba(255,255,255,0.5);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
+        </div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+
     <!-- Screen reader live region for status announcements -->
     <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
-    <main class="dashboard" id="main-dashboard" role="main">
+    <main class="dashboard" id="main-dashboard" role="main" style="visibility:hidden;">
         <!-- Dashboard Page Tabs -->
         <div class="page-tabs hidden" id="page-tabs">
             <div class="page-tabs-list" id="page-tabs-list" role="tablist"></div>
@@ -9500,33 +9508,43 @@
             renderPageTabs();
             resumeSavedSounds();
 
-            // Extension status detection — two channels for reliability:
-            // 1. Poll data attribute (handles all timing scenarios)
-            // 2. CustomEvent listener (handles live updates from sign-in/sign-out)
-            function onExtensionDetected() {
+            // Extension status detection + loading screen
+            let dashboardRevealed = false;
+
+            function revealDashboard() {
+                if (dashboardRevealed) return;
+                dashboardRevealed = true;
+                clearInterval(extPoll);
+                // Final apply with extension status resolved
                 updateIntegrationsVisibility();
                 applySettings();
                 applyWidgetSizes();
                 loadWidgetPositions();
                 renderPageTabs();
                 resumeSavedSounds();
+                // Show dashboard, hide spinner
+                document.getElementById('main-dashboard').style.visibility = '';
+                const loader = document.getElementById('loading-screen');
+                if (loader) loader.remove();
             }
 
+            // Poll for extension data attribute (250ms x 8 = 2s max wait)
             let extPollCount = 0;
             const extPoll = setInterval(() => {
                 const attr = document.documentElement.dataset.mykkExtension;
                 if (attr && !window.mykkExtension) {
                     try { window.mykkExtension = JSON.parse(attr); } catch {}
-                    if (window.mykkExtension) onExtensionDetected();
                 }
-                if (window.mykkExtension || ++extPollCount >= 20) clearInterval(extPoll);
+                if (window.mykkExtension || ++extPollCount >= 8) {
+                    revealDashboard();
+                }
             }, 250);
 
+            // CustomEvent listener for live updates (sign-in/sign-out)
             document.addEventListener('mykk-extension-status', (e) => {
                 if (e.detail) {
                     window.mykkExtension = e.detail;
-                    clearInterval(extPoll);
-                    onExtensionDetected();
+                    revealDashboard();
                 }
             });
         }
