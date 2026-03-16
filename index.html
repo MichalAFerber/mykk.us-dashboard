@@ -5582,8 +5582,6 @@
         // ============ Theme ============
         function applyTheme() {
             let theme = settings.theme || 'dark';
-            // Theme switching is a pro feature — force dark if no subscription
-            if (!isExtensionSubscriptionActive()) theme = 'dark';
             if (theme === 'system') {
                 theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             }
@@ -5594,9 +5592,6 @@
                 sunIcon.classList.toggle('hidden', theme === 'light');
                 moonIcon.classList.toggle('hidden', theme !== 'light');
             }
-            // Hide theme toggle button if not subscribed
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            if (themeBtn) themeBtn.classList.toggle('hidden', !isExtensionSubscriptionActive());
         }
 
         // ============ Background ============
