@@ -16,6 +16,20 @@ Everything saves to your browser's local storage. Works on any device, any OS, c
 
 > Most dashboard projects (Homepage, Startpage, Homarr, etc.) require Docker, Node.js, or a dedicated server. MyKK runs from a single file on your desktop.
 
+## What's New
+
+See the full [Changelog](CHANGELOG.md) for all updates. Recent highlights:
+
+- **Stock Quotes** — real-time stock prices via Yahoo Finance (optional Marketstack API)
+- **RSS Feed** — display RSS/Atom feeds directly on your dashboard
+- **Ambient Sounds** — mixer with rain, fireplace, ocean, forest, and more
+- **Notepad Modes** — Plain Text, Rich Text, and Markdown with per-mode toolbars and live preview
+- **Daily Focus & To-Do List** — new productivity widgets
+- **Greeting & Quotes** — personalized greeting and inspirational quotes
+- **Dashboard Pages** — organize widgets across multiple pages
+- **Light/Dark Theme** — toggle between light and dark themes (available to free users)
+- **Weather Radar Fullscreen** — fullscreen radar with layer toggles
+
 ---
 
 ## Features
@@ -28,6 +42,13 @@ Everything saves to your browser's local storage. Works on any device, any OS, c
 - **Mini Calendar** — compact monthly calendar with navigation and today highlighting.
 - **Date Widget** — current date with configurable format (short, long, numeric, ISO). Auto-scaling font size.
 - **Clock Widget** — current time in 12-hour or 24-hour format with seconds display. Auto-scaling font size.
+- **Stock Quotes** — real-time stock prices with customizable CSV watchlist. Yahoo Finance by default, optional Marketstack API key.
+- **RSS Feed** — parse and display RSS/Atom feeds directly on the dashboard.
+- **Ambient Sounds** — background sound mixer with rain, fireplace, ocean, forest, and more. Mix multiple sounds with individual volume controls.
+- **Daily Focus** — set a single focus goal for the day.
+- **To-Do List** — structured checklist widget with add, complete, and delete.
+- **Greeting** — personalized greeting based on time of day.
+- **Quotes** — rotating inspirational quotes widget.
 - **iFrame Widgets** — embed any external content on your dashboard. Add Google Calendar, RSS/news feeds, Twitter/X timelines, or any service that provides an embed URL. Add unlimited widgets with custom names and sizes.
 
 ### Toolbar Buttons
@@ -36,7 +57,7 @@ Everything saves to your browser's local storage. Works on any device, any OS, c
 - **Refresh** — manually reload the page
 - **Webcam / Selfie** — live mirror view with 3-second countdown selfie capture, flash effect, and download
 - **Paint Canvas** — drawing tool with brush, line, rectangle, circle, text, and eraser. Color picker, adjustable brush size, save as PNG or PDF
-- **Notepad** — text editor with copy-to-clipboard and download as TXT. Auto-saves to localStorage.
+- **Notepad** — text editor with Plain Text, Rich Text, and Markdown modes. Per-mode toolbars, live Markdown preview, Rich Text export as .rtf. Auto-saves to localStorage.
 
 Each toolbar button can be independently shown or hidden.
 
