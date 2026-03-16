@@ -8408,12 +8408,19 @@
         const defaultWidgetPositions = null;
 
         function saveWidgetPositions() {
-            const positions = {};
-            document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
-                positions[el.dataset.widget] = {
-                    col: parseInt(el.style.gridColumnStart) || 1,
-                    row: parseInt(el.style.gridRowStart) || 1
-                };
+            // Merge with existing saved positions so hidden widgets keep theirs
+            let positions = {};
+            try {
+                const prev = localStorage.getItem('dashboard-widget-grid-v2');
+                if (prev) positions = JSON.parse(prev);
+            } catch {}
+            document.querySelectorAll('[data-widget]').forEach(el => {
+                if (el.style.gridColumnStart && el.style.gridRowStart) {
+                    positions[el.dataset.widget] = {
+                        col: parseInt(el.style.gridColumnStart) || 1,
+                        row: parseInt(el.style.gridRowStart) || 1
+                    };
+                }
             });
             localStorage.setItem('dashboard-widget-grid-v2', JSON.stringify(positions));
         }
@@ -8439,7 +8446,7 @@
 
         function applyWidgetPositions(positions) {
             if (!positions) return;
-            document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
+            document.querySelectorAll('[data-widget]').forEach(el => {
                 const id = el.dataset.widget;
                 const pos = positions[id];
                 if (pos) {
