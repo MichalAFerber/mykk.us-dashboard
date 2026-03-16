@@ -9419,11 +9419,15 @@
             startAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
-            // Check for extension subscription and update visibility
+            // Check for extension data set before DOMContentLoaded (via data attribute)
+            const extAttr = document.documentElement.dataset.mykkExtension;
+            if (extAttr) {
+                try { window.mykkExtension = JSON.parse(extAttr); } catch {}
+            }
             updateIntegrationsVisibility();
             renderPageTabs();
             resumeSavedSounds();
-            // Listen for extension CustomEvent (CSP-safe, no inline script needed)
+            // Listen for extension CustomEvent (for live updates after init)
             document.addEventListener('mykk-extension-status', (e) => {
                 if (e.detail) {
                     window.mykkExtension = e.detail;
