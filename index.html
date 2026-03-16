@@ -7042,8 +7042,10 @@
 
                 if (!result.success) throw new Error(result.error);
 
-                stockData = result.data;
-                renderStocksList(result.data);
+                // Reorder to match user's CSV order
+                const symbolOrder = symbols.reduce((map, sym, i) => { map[sym] = i; return map; }, {});
+                stockData = result.data.sort((a, b) => (symbolOrder[a.symbol] ?? 999) - (symbolOrder[b.symbol] ?? 999));
+                renderStocksList(stockData);
                 if (cachedEl && result.cachedAt) {
                     const d = new Date(result.cachedAt);
                     cachedEl.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
