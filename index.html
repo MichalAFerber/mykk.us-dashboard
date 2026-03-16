@@ -9423,10 +9423,10 @@
             updateIntegrationsVisibility();
             renderPageTabs();
             resumeSavedSounds();
-            // Listen for extension messages (extension may load after dashboard)
-            window.addEventListener('message', (e) => {
-                if (e.data && e.data.type === 'mykk-extension-status') {
-                    window.mykkExtension = e.data.extension;
+            // Listen for extension CustomEvent (CSP-safe, no inline script needed)
+            document.addEventListener('mykk-extension-status', (e) => {
+                if (e.detail) {
+                    window.mykkExtension = e.detail;
                     updateIntegrationsVisibility();
                     renderPageTabs();
                     if (isExtensionSubscriptionActive() && settings.showDonetick) {
