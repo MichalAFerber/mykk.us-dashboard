@@ -2712,14 +2712,16 @@
         /* Responsive - Tablet */
         @media (max-width: 900px) {
             .dashboard {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(12, 1fr);
                 gap: 12px;
                 padding: 16px;
             }
 
+            /* Let widgets keep their configured column spans, auto-flow rows */
             [data-widget] {
-                grid-column: span 6 !important;
                 grid-row: auto !important;
+                grid-column-start: auto !important;
+                grid-row-start: auto !important;
             }
 
             /* Always show drag handles on tablet/mobile (no hover) */
@@ -4762,20 +4764,20 @@
             shortcutIconColor: '#667eea',
             iframeWidgets: [],
             widgetSizes: {
-                time:      { cols: 4, rows: 2 },
                 date:      { cols: 6, rows: 2 },
                 search:    { cols: 6, rows: 2 },
-                actions:   { cols: 4, rows: 2 },
+                actions:   { cols: 6, rows: 2 },
+                time:      { cols: 6, rows: 2 },
                 shortcuts: { cols: 6, rows: 4 },
-                weather:   { cols: 3, rows: 8 },
-                'mini-calendar': { cols: 4, rows: 7 },
-                'twitter': { cols: 4, rows: 8 },
-                'donetick': { cols: 4, rows: 8 },
-                greeting: { cols: 6, rows: 2 },
-                quotes: { cols: 6, rows: 2 },
-                focus: { cols: 6, rows: 2 },
-                todos: { cols: 4, rows: 6 },
-                stocks: { cols: 4, rows: 4 }
+                'mini-calendar': { cols: 6, rows: 7 },
+                greeting:  { cols: 6, rows: 2 },
+                quotes:    { cols: 6, rows: 2 },
+                focus:     { cols: 6, rows: 2 },
+                todos:     { cols: 6, rows: 6 },
+                weather:   { cols: 6, rows: 8 },
+                stocks:    { cols: 6, rows: 4 },
+                'twitter': { cols: 6, rows: 8 },
+                'donetick': { cols: 6, rows: 8 },
             },
             autoRefresh: false,
             autoRefreshMinutes: 15,
@@ -6796,7 +6798,7 @@
 
                 // Apply grid size
                 const sizes = settings.widgetSizes || {};
-                const size = sizes[widget.id] || { cols: 4, rows: 5 };
+                const size = sizes[widget.id] || { cols: 6, rows: 4 };
                 el.style.gridColumnEnd = `span ${size.cols}`;
                 el.style.gridRowEnd = `span ${size.rows}`;
 
@@ -6912,7 +6914,7 @@
                 url: '',
                 enabled: true
             });
-            settings.widgetSizes[id] = { cols: 4, rows: 5 };
+            settings.widgetSizes[id] = { cols: 6, rows: 4 };
             renderIframeWidgetSettings();
         }
 
@@ -7072,7 +7074,7 @@
                 if (!feed.enabled || !isExtensionSubscriptionActive()) el.classList.add('hidden');
 
                 const sizes = settings.widgetSizes || {};
-                const size = sizes[feed.id] || { cols: 4, rows: 5 };
+                const size = sizes[feed.id] || { cols: 6, rows: 4 };
                 el.style.gridColumnEnd = 'span ' + size.cols;
                 el.style.gridRowEnd = 'span ' + size.rows;
 
@@ -7213,7 +7215,7 @@
             const id = 'rss-' + Date.now();
             if (!Array.isArray(settings.rssFeeds)) settings.rssFeeds = [];
             settings.rssFeeds.push({ id: id, name: 'New Feed', url: '', enabled: true, refreshInterval: 30 });
-            settings.widgetSizes[id] = { cols: 4, rows: 5 };
+            settings.widgetSizes[id] = { cols: 6, rows: 4 };
             renderRssWidgetSettings();
         }
 
@@ -8280,7 +8282,7 @@
             const { widget, widgetId, snappedCols, snappedRows } = resizeState;
 
             if (!settings.widgetSizes[widgetId]) {
-                settings.widgetSizes[widgetId] = { ...defaultSettings.widgetSizes[widgetId] || { cols: 4, rows: 3 } };
+                settings.widgetSizes[widgetId] = { ...defaultSettings.widgetSizes[widgetId] || { cols: 6, rows: 2 } };
             }
             if (snappedCols !== undefined) settings.widgetSizes[widgetId].cols = snappedCols;
             if (snappedRows !== undefined) settings.widgetSizes[widgetId].rows = snappedRows;
