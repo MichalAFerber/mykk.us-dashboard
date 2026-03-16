@@ -7524,7 +7524,7 @@
 
             // New page starts with default layout
             localStorage.setItem('dashboard-page-' + id, JSON.stringify({
-                widgetPositions: { ...defaultWidgetPositions },
+                widgetPositions: null,
                 widgetSizes: { ...defaultSettings.widgetSizes },
                 widgetVisibility: {
                     showWeather: false,
@@ -8368,23 +8368,10 @@
         // ============ Section Reordering (Swap Style) ============
         let sectionDragState = null;
 
-        // Default grid positions: col/row are 1-based grid line numbers
-        const defaultWidgetPositions = {
-            date:             { col: 1,  row: 1 },
-            actions:          { col: 7,  row: 1 },
-            search:           { col: 1,  row: 3 },
-            time:             { col: 7,  row: 3 },
-            shortcuts:        { col: 1,  row: 5 },
-            'mini-calendar':  { col: 7,  row: 5 },
-            weather:          { col: 1,  row: 9 },
-            twitter:          { col: 5,  row: 9 },
-            donetick:         { col: 9,  row: 9 },
-            greeting:         { col: 1,  row: 17 },
-            quotes:           { col: 7,  row: 17 },
-            focus:            { col: 1,  row: 19 },
-            todos:            { col: 7,  row: 19 },
-            stocks:           { col: 9,  row: 13 }
-        };
+        // Default grid positions are no longer used for initial layout.
+        // Widgets use grid-auto-flow: dense with only span sizes (no explicit positions).
+        // Positions are only set after user drags to reorder.
+        const defaultWidgetPositions = null;
 
         function saveWidgetPositions() {
             const positions = {};
@@ -8409,24 +8396,31 @@
                     const positions = JSON.parse(saved);
                     applyWidgetPositions(positions);
                 } catch (e) {
-                    applyWidgetPositions(defaultWidgetPositions);
-                    saveWidgetPositions();
+                    // Invalid saved data — let auto-flow handle layout
+                    clearWidgetPositions();
                 }
-            } else {
-                applyWidgetPositions(defaultWidgetPositions);
-                saveWidgetPositions();
             }
+            // No saved positions: auto-flow with dense packing handles layout
         }
 
         function applyWidgetPositions(positions) {
+            if (!positions) return;
             document.querySelectorAll('[data-widget]:not(.hidden)').forEach(el => {
                 const id = el.dataset.widget;
-                const pos = positions[id] || defaultWidgetPositions[id];
+                const pos = positions[id];
                 if (pos) {
                     el.style.gridColumnStart = pos.col;
                     el.style.gridRowStart = pos.row;
                 }
             });
+        }
+
+        function clearWidgetPositions() {
+            document.querySelectorAll('[data-widget]').forEach(el => {
+                el.style.gridColumnStart = '';
+                el.style.gridRowStart = '';
+            });
+            localStorage.removeItem('dashboard-widget-grid-v2');
         }
 
         // Record positions of all widgets for FLIP animation
