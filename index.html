@@ -4390,6 +4390,11 @@
                                 <input type="text" class="settings-input" id="stock-symbols" placeholder="AAPL, GOOGL, MSFT, AMZN">
                                 <small class="settings-help">Enter stock ticker symbols separated by commas</small>
                             </div>
+                            <div class="settings-group">
+                                <label class="settings-label">Marketstack API Key (optional)</label>
+                                <input type="text" class="settings-input" id="marketstack-api-key" placeholder="Your API key (leave blank for Yahoo Finance)">
+                                <small class="settings-help">Free data via Yahoo Finance. For Marketstack, get a key at <a href="https://marketstack.com/" target="_blank" style="color: #667eea;">marketstack.com</a> (from $8.99/mo)</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -4788,6 +4793,7 @@
             donetickFilterUser: 0,
             showStocks: false,
             stockSymbols: 'AAPL,GOOGL,MSFT,AMZN',
+            marketstackApiKey: '',
             rssFeeds: [],
             showSounds: true,
             soundChannels: {},
@@ -6024,6 +6030,8 @@
             if (stocksExtra) stocksExtra.style.display = settings.showStocks ? '' : 'none';
             const stockSymbols = document.getElementById('stock-symbols');
             if (stockSymbols) stockSymbols.value = settings.stockSymbols || '';
+            const msKey = document.getElementById('marketstack-api-key');
+            if (msKey) msKey.value = settings.marketstackApiKey || '';
 
             // RSS settings
             renderRssWidgetSettings();
@@ -6972,7 +6980,9 @@
                 const symbols = settings.stockSymbols.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
                 if (symbols.length === 0) throw new Error('No symbols');
 
-                const resp = await fetch(`${WORKER_URL}/api/stocks/quotes?symbols=${symbols.join(',')}`);
+                let stockUrl = `${WORKER_URL}/api/stocks/quotes?symbols=${symbols.join(',')}`;
+                if (settings.marketstackApiKey) stockUrl += `&marketstack_key=${encodeURIComponent(settings.marketstackApiKey)}`;
+                const resp = await fetch(stockUrl);
                 const result = await resp.json();
 
                 if (!result.success) throw new Error(result.error);
@@ -8998,6 +9008,9 @@
             });
             document.getElementById('stock-symbols').addEventListener('input', (e) => {
                 settings.stockSymbols = e.target.value;
+            });
+            document.getElementById('marketstack-api-key').addEventListener('input', (e) => {
+                settings.marketstackApiKey = e.target.value.trim();
             });
 
             // RSS Feeds
