@@ -72,6 +72,56 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
+        /* Light theme: settings toggles, buttons, and misc elements */
+        body.theme-light .settings-checkbox input {
+            background: rgba(0, 0, 0, 0.15);
+        }
+        body.theme-light .settings-checkbox input::before {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        body.theme-light .settings-checkbox input:checked {
+            background: #667eea;
+        }
+        body.theme-light .settings-help {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        body.theme-light .settings-label {
+            color: #1a1a2e;
+        }
+        body.theme-light .settings-section-title {
+            color: #1a1a2e;
+        }
+        body.theme-light .widget-settings-item {
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        body.theme-light .settings-range {
+            accent-color: #667eea;
+        }
+        body.theme-light .tool-btn {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
+        body.theme-light .tool-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        body.theme-light .tool-btn.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        body.theme-light .lightbox-header {
+            background: rgba(245, 245, 250, 0.95);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        body.theme-light .lightbox-close {
+            background: rgba(255, 60, 60, 0.8);
+        }
+        body.theme-light .notepad-mode-select {
+            background: rgba(0, 0, 0, 0.06);
+            border-color: rgba(0, 0, 0, 0.15);
+            color: #1a1a2e;
+        }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
