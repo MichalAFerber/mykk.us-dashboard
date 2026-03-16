@@ -9671,9 +9671,41 @@
             });
             document.getElementById('notepad-download').addEventListener('click', () => {
                 const mode = settings.notepadMode || 'plain';
-                const ext = mode === 'markdown' ? 'md' : mode === 'rich' ? 'html' : 'txt';
-                const content = mode === 'rich' ? document.getElementById('notepad-richtext').innerHTML : getNotepadContent();
-                const blob = new Blob([content], { type: 'text/plain' });
+                let content, ext, type;
+                if (mode === 'rich') {
+                    const html = document.getElementById('notepad-richtext').innerHTML;
+                    // Convert HTML to basic RTF
+                    let rtf = '{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Inter;}}\n';
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = html;
+                    function walkNodes(node) {
+                        for (const child of node.childNodes) {
+                            if (child.nodeType === 3) {
+                                rtf += child.textContent.replace(/[\\{}]/g, '\\$&');
+                            } else if (child.nodeType === 1) {
+                                const tag = child.tagName.toLowerCase();
+                                if (tag === 'b' || tag === 'strong') { rtf += '{\\b '; walkNodes(child); rtf += '}'; }
+                                else if (tag === 'i' || tag === 'em') { rtf += '{\\i '; walkNodes(child); rtf += '}'; }
+                                else if (tag === 'u') { rtf += '{\\ul '; walkNodes(child); rtf += '}'; }
+                                else if (tag === 's' || tag === 'strike') { rtf += '{\\strike '; walkNodes(child); rtf += '}'; }
+                                else if (tag === 'br') { rtf += '\\line\n'; }
+                                else if (tag === 'p' || tag === 'div') { walkNodes(child); rtf += '\\par\n'; }
+                                else if (tag === 'li') { rtf += '  \\bullet  '; walkNodes(child); rtf += '\\par\n'; }
+                                else { walkNodes(child); }
+                            }
+                        }
+                    }
+                    walkNodes(tmp);
+                    rtf += '}';
+                    content = rtf;
+                    ext = 'rtf';
+                    type = 'application/rtf';
+                } else {
+                    content = getNotepadContent();
+                    ext = mode === 'markdown' ? 'md' : 'txt';
+                    type = 'text/plain';
+                }
+                const blob = new Blob([content], { type });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
                 a.download = `notes.${ext}`;
