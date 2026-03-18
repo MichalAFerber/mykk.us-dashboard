@@ -945,7 +945,6 @@
         .section-title {
             font-size: 0.875rem;
             font-weight: 500;
-            text-transform: uppercase;
             letter-spacing: 1px;
             opacity: 0.8;
         }
@@ -1490,8 +1489,8 @@
 
         /* iFrame Widget Settings */
         .iframe-widget-settings-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--hover-bg);
+            border: 1px solid var(--divider);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 10px;
@@ -1505,8 +1504,8 @@
         }
 
         .iframe-widget-settings-header input {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: 6px;
             color: var(--text-primary);
             font-size: 1rem;
@@ -1518,7 +1517,7 @@
 
         .iframe-widget-settings-header input:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
+            border-color: var(--input-focus-border);
         }
 
         .iframe-widget-delete-btn {
@@ -1544,8 +1543,8 @@
         .iframe-widget-settings-body textarea {
             width: 100%;
             padding: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
             border-radius: 6px;
             color: var(--text-primary);
             font-size: 0.85rem;
@@ -1555,7 +1554,7 @@
 
         .iframe-widget-settings-body textarea:focus {
             outline: none;
-            border-color: rgba(255, 255, 255, 0.4);
+            border-color: var(--input-focus-border);
         }
 
         /* Mini Calendar */
@@ -4100,9 +4099,7 @@
             <span class="section-drag-handle" aria-label="Drag to reorder">
                 <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
             </span>
-            <div class="todos-header">
-                <span class="todos-count" id="todos-count"></span>
-            </div>
+            <div class="todos-header"></div>
             <div class="todos-add">
                 <input type="text" class="todos-input" id="todo-input" placeholder="Add a task..." maxlength="200" aria-label="New task">
                 <button class="todos-add-btn" id="todo-add-btn" aria-label="Add task">+</button>
@@ -4128,9 +4125,7 @@
             <span class="section-drag-handle" aria-label="Drag to reorder">
                 <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
             </span>
-            <div class="stocks-header">
-                <span class="stocks-cached" id="stocks-cached"></span>
-            </div>
+            <div class="stocks-header"></div>
             <div id="stocks-content" aria-live="polite">
                 <div class="stocks-setup">
                     <p>Configure your stock watchlist in Settings</p>
@@ -7126,7 +7121,10 @@
             list.querySelectorAll('[data-iframe-url]').forEach(textarea => {
                 textarea.addEventListener('input', e => {
                     const i = parseInt(e.target.dataset.iframeUrl);
-                    settings.iframeWidgets[i].url = e.target.value;
+                    let val = e.target.value;
+                    // Strip height and width attributes from iframe embed codes
+                    val = val.replace(/\s*(width|height)="[^"]*"/gi, '');
+                    settings.iframeWidgets[i].url = val;
                 });
             });
             list.querySelectorAll('[data-iframe-enabled]').forEach(input => {
@@ -7215,7 +7213,6 @@
             if (!settings.showStocks || !settings.stockSymbols) return;
 
             const container = document.getElementById('stocks-content');
-            const cachedEl = document.getElementById('stocks-cached');
             container.innerHTML = '<div class="loading"></div>';
 
             try {
@@ -7233,10 +7230,6 @@
                 const symbolOrder = symbols.reduce((map, sym, i) => { map[sym] = i; return map; }, {});
                 stockData = result.data.sort((a, b) => (symbolOrder[a.symbol] ?? 999) - (symbolOrder[b.symbol] ?? 999));
                 renderStocksList(stockData);
-                if (cachedEl && result.cachedAt) {
-                    const d = new Date(result.cachedAt);
-                    cachedEl.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                }
             } catch (error) {
                 console.error('Stocks error:', error);
                 container.innerHTML = '<div class="stocks-setup"><p>Unable to load stock data</p></div>';
@@ -7251,22 +7244,27 @@
             }
 
             container.innerHTML = '<ul class="stocks-list">' + data.map(stock => {
-                stock.open = parseFloat(stock.open);
-                stock.close = parseFloat(stock.close);
-                stock.high = parseFloat(stock.high);
-                stock.low = parseFloat(stock.low);
-                const change = stock.close - stock.open;
-                const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
+                const close = parseFloat(stock.close) || 0;
+                const open = parseFloat(stock.open);
+                const high = parseFloat(stock.high) || 0;
+                const low = parseFloat(stock.low) || 0;
+                stock.close = close; stock.open = open; stock.high = high; stock.low = low;
+                const hasChange = !isNaN(open) && open !== 0;
+                const change = hasChange ? close - open : 0;
+                const changePct = hasChange ? ((change / open) * 100) : 0;
                 const isPositive = change >= 0;
                 const sign = isPositive ? '+' : '';
                 const cls = isPositive ? 'positive' : 'negative';
                 const arrow = isPositive ? '▲' : '▼';
+                const changeHtml = hasChange
+                    ? '<span class="stock-change ' + cls + '">' + arrow + ' ' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</span>'
+                    : '';
 
                 return '<li class="stock-item" onclick="showStockDetail(\'' + escapeHtml(stock.symbol) + '\')">' +
                     '<div class="stock-info"><span class="stock-symbol">' + escapeHtml(stock.symbol) + '</span></div>' +
                     '<div class="stock-price-row">' +
-                        '<span class="stock-price">$' + stock.close.toFixed(2) + '</span>' +
-                        '<span class="stock-change ' + cls + '">' + arrow + ' ' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</span>' +
+                        '<span class="stock-price">$' + close.toFixed(2) + '</span>' +
+                        changeHtml +
                     '</div>' +
                 '</li>';
             }).join('') + '</ul>';
@@ -7280,12 +7278,13 @@
             const title = document.getElementById('weather-detail-title');
             const content = document.getElementById('weather-detail-content');
 
-            stock.open = parseFloat(stock.open);
-            stock.close = parseFloat(stock.close);
-            stock.high = parseFloat(stock.high);
-            stock.low = parseFloat(stock.low);
-            const change = stock.close - stock.open;
-            const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
+            const close = parseFloat(stock.close) || 0;
+            const open = parseFloat(stock.open);
+            const high = parseFloat(stock.high) || 0;
+            const low = parseFloat(stock.low) || 0;
+            const hasChange = !isNaN(open) && open !== 0;
+            const change = hasChange ? close - open : 0;
+            const changePct = hasChange ? ((change / open) * 100) : 0;
             const isPositive = change >= 0;
             const sign = isPositive ? '+' : '';
             const cls = isPositive ? 'positive' : 'negative';
@@ -7293,11 +7292,11 @@
 
             title.textContent = stock.symbol;
             content.innerHTML =
-                '<div style="font-size: 3rem; font-weight: 600; margin-bottom: 8px;">$' + stock.close.toFixed(2) + '</div>' +
-                '<div class="stock-change ' + cls + '" style="font-size: 1.2rem; margin-bottom: 24px;">' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</div>' +
+                '<div style="font-size: 3rem; font-weight: 600; margin-bottom: 8px;">$' + close.toFixed(2) + '</div>' +
+                (hasChange ? '<div class="stock-change ' + cls + '" style="font-size: 1.2rem; margin-bottom: 24px;">' + sign + change.toFixed(2) + ' (' + sign + changePct.toFixed(2) + '%)</div>' : '') +
                 '<div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">' + dateStr + '</div>' +
                 '<div class="weather-detail-grid">' +
-                    '<div class="weather-detail-item"><div class="weather-detail-item-label">Open</div><div class="weather-detail-item-value">$' + stock.open.toFixed(2) + '</div></div>' +
+                    (hasChange ? '<div class="weather-detail-item"><div class="weather-detail-item-label">Open</div><div class="weather-detail-item-value">$' + open.toFixed(2) + '</div></div>' : '') +
                     '<div class="weather-detail-item"><div class="weather-detail-item-label">Close</div><div class="weather-detail-item-value">$' + stock.close.toFixed(2) + '</div></div>' +
                     '<div class="weather-detail-item"><div class="weather-detail-item-label">High</div><div class="weather-detail-item-value">$' + stock.high.toFixed(2) + '</div></div>' +
                     '<div class="weather-detail-item"><div class="weather-detail-item-label">Low</div><div class="weather-detail-item-value">$' + stock.low.toFixed(2) + '</div></div>' +
@@ -7463,12 +7462,13 @@
         let rssRefreshTimer = null;
         function startRssAutoRefresh() {
             if (rssRefreshTimer) clearInterval(rssRefreshTimer);
+            const interval = Math.min(...(settings.rssFeeds || []).map(f => f.refreshInterval || 30).concat([30]));
             rssRefreshTimer = setInterval(() => {
                 const feeds = settings.rssFeeds || [];
                 feeds.forEach(feed => {
                     if (feed.enabled && feed.url) loadRssFeed(feed);
                 });
-            }, 5 * 60 * 1000); // check every 5 minutes
+            }, interval * 60 * 1000);
         }
 
         function addRssFeed() {
