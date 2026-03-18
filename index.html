@@ -6052,7 +6052,6 @@
             input.value = currentValue || '';
             input.maxLength = 100;
             container.appendChild(input);
-            input.focus();
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && input.value.trim()) saveFocus(input.value);
             });
