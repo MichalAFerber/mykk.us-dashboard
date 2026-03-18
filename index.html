@@ -2434,6 +2434,16 @@
             border-radius: 0;
         }
 
+        .radar-header {
+            position: relative;
+            gap: 16px;
+        }
+        .radar-header .lightbox-tools {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
         /* Webcam Lightbox - Fullscreen Mirror */
         .webcam-lightbox .webcam-container {
             flex: 1;
@@ -4904,16 +4914,19 @@
 
     <!-- Radar Lightbox -->
     <div class="lightbox" id="radar-lightbox" role="dialog" aria-modal="true" aria-label="Weather radar">
-        <div class="lightbox-header">
-            <span class="lightbox-title">🗺️ Weather Radar</span>
+        <div class="lightbox-header radar-header">
+            <button class="settings-back-btn" id="close-radar" aria-label="Back to dashboard">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Back to Dashboard
+            </button>
+            <span class="lightbox-title">Weather Radar</span>
+            <span id="radar-current-info" style="font-size: 0.95rem;"></span>
             <div class="lightbox-tools">
-                <span id="radar-current-info" style="font-size: 0.95rem; margin-right: 12px;"></span>
                 <button class="tool-btn active" data-radar-layer="precipitation_new" title="Rain">Rain</button>
                 <button class="tool-btn" data-radar-layer="clouds_new" title="Clouds">Clouds</button>
                 <button class="tool-btn" data-radar-layer="temp_new" title="Temperature">Temp</button>
                 <button class="tool-btn" data-radar-layer="wind_new" title="Wind">Wind</button>
             </div>
-            <button class="lightbox-close" id="close-radar" aria-label="Close radar">✕ Close</button>
         </div>
         <div class="radar-lightbox-container" id="radar-lightbox-container">
             <div id="radar-map-fullscreen"></div>
