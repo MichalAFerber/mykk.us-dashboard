@@ -84,6 +84,9 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
+        body.theme-light .rss-widget.glass-card {
+            background: rgba(255, 255, 255, 0.9);
+        }
         /* Light theme: settings toggles, buttons, and misc elements */
         body.theme-light .settings-checkbox input {
             background: rgba(0, 0, 0, 0.15);
@@ -6014,13 +6017,17 @@
         }
 
         // ============ Daily Focus Widget ============
+        let focusRendering = false;
         function renderFocusWidget() {
+            if (focusRendering) return;
+            focusRendering = true;
             const container = document.getElementById('focus-content');
-            if (!container) return;
+            if (!container) { focusRendering = false; return; }
             const today = new Date().toISOString().split('T')[0];
             const saved = JSON.parse(localStorage.getItem('dashboard-daily-focus') || '{}');
 
             if (saved.date === today && saved.text) {
+                container.textContent = '';
                 container.innerHTML =
                     '<div class="focus-label">Today\u2019s Focus</div>' +
                     '<div class="focus-display" id="focus-display" title="Click to edit">' + escapeHtml(saved.text) + '</div>';
@@ -6030,18 +6037,27 @@
             } else {
                 showFocusInput('');
             }
+            focusRendering = false;
         }
 
         function showFocusInput(currentValue) {
             const container = document.getElementById('focus-content');
-            container.innerHTML =
-                '<input type="text" class="focus-input" id="focus-input" placeholder="What\u2019s your main focus today?" value="' + escapeHtml(currentValue || '') + '" maxlength="100">';
-            const input = document.getElementById('focus-input');
+            if (!container) return;
+            container.textContent = '';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'focus-input';
+            input.id = 'focus-input';
+            input.placeholder = 'What\u2019s your main focus today?';
+            input.value = currentValue || '';
+            input.maxLength = 100;
+            container.appendChild(input);
             input.focus();
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && input.value.trim()) saveFocus(input.value);
             });
             input.addEventListener('blur', () => {
+                if (!document.getElementById('focus-content')?.contains(input)) return;
                 if (input.value.trim()) saveFocus(input.value);
                 else renderFocusWidget();
             });
