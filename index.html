@@ -126,10 +126,6 @@
             background: rgba(102, 126, 234, 0.2);
             border-color: #667eea;
         }
-        body.theme-light .lightbox-header {
-            background: rgba(245, 245, 250, 0.95);
-            border-bottom-color: rgba(0, 0, 0, 0.1);
-        }
         body.theme-light .lightbox-close {
             background: rgba(255, 60, 60, 0.8);
         }
@@ -2106,8 +2102,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 16px 24px;
-            background: var(--glass-bg);
-            border-bottom: 1px solid var(--glass-border);
+            background: var(--settings-bg);
+            border-bottom: 1px solid var(--divider);
         }
 
         .lightbox-title {
@@ -2424,13 +2420,13 @@
         /* Radar Lightbox */
         .radar-lightbox-container {
             flex: 1;
-            padding: 24px;
+            padding: 0;
         }
 
         .radar-lightbox-container .leaflet-container {
             height: 100%;
             width: 100%;
-            border-radius: 16px;
+            border-radius: 0;
         }
 
         /* Webcam Lightbox - Fullscreen Mirror */
