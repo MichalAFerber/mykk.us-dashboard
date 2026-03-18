@@ -7082,26 +7082,13 @@
                         </div>`;
                 }
 
-                el.innerHTML = `
-                    <div class="section-header">
-                        <span class="section-drag-handle" aria-label="Drag to reorder">
-                            <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
-                        </span>
-                        <span class="section-title">${widget.name}</span>
-                    </div>
-                    <div class="iframe-widget-body">${bodyContent}</div>`;
+                el.innerHTML = `<div class="iframe-widget-body">${bodyContent}</div>`;
 
                 container.appendChild(el);
             });
 
             // Re-apply positions so iframe widgets respect saved layout
             loadWidgetPositions();
-
-            // Attach drag handlers to new iframe widget handles
-            container.querySelectorAll('.section-drag-handle').forEach(handle => {
-                handle.addEventListener('touchstart', handleSectionTouchStart, { passive: false });
-                handle.addEventListener('mousedown', handleSectionMouseDown);
-            });
         }
 
         function renderIframeWidgetSettings() {
