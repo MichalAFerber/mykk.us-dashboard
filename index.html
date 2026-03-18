@@ -605,13 +605,17 @@
             flex-direction: column;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.9);
+            color: #1a1a2e;
         }
         .rss-widget .section-header {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 12px 16px;
-            border-bottom: 1px solid var(--divider);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        .rss-widget .section-title {
+            color: #1a1a2e;
         }
         .rss-content {
             flex: 1;
@@ -619,7 +623,7 @@
         }
         .rss-item {
             padding: 10px 16px;
-            border-bottom: 1px solid var(--divider);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
         .rss-item:last-child {
             border-bottom: none;
@@ -638,12 +642,12 @@
         }
         .rss-item-meta {
             font-size: 0.7rem;
-            color: var(--text-secondary);
+            color: rgba(26, 26, 46, 0.6);
             margin-top: 3px;
         }
         .rss-item-snippet {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: rgba(26, 26, 46, 0.6);
             margin-top: 4px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
