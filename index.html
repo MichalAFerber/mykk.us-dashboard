@@ -7247,6 +7247,10 @@
             }
 
             container.innerHTML = '<ul class="stocks-list">' + data.map(stock => {
+                stock.open = parseFloat(stock.open);
+                stock.close = parseFloat(stock.close);
+                stock.high = parseFloat(stock.high);
+                stock.low = parseFloat(stock.low);
                 const change = stock.close - stock.open;
                 const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
                 const isPositive = change >= 0;
@@ -7272,6 +7276,10 @@
             const title = document.getElementById('weather-detail-title');
             const content = document.getElementById('weather-detail-content');
 
+            stock.open = parseFloat(stock.open);
+            stock.close = parseFloat(stock.close);
+            stock.high = parseFloat(stock.high);
+            stock.low = parseFloat(stock.low);
             const change = stock.close - stock.open;
             const changePct = stock.open !== 0 ? ((change / stock.open) * 100) : 0;
             const isPositive = change >= 0;
@@ -7446,6 +7454,17 @@
                     renderRssWidgetSettings();
                 });
             });
+        }
+
+        let rssRefreshTimer = null;
+        function startRssAutoRefresh() {
+            if (rssRefreshTimer) clearInterval(rssRefreshTimer);
+            rssRefreshTimer = setInterval(() => {
+                const feeds = settings.rssFeeds || [];
+                feeds.forEach(feed => {
+                    if (feed.enabled && feed.url) loadRssFeed(feed);
+                });
+            }, 5 * 60 * 1000); // check every 5 minutes
         }
 
         function addRssFeed() {
@@ -9854,6 +9873,7 @@
             initWidgetResize();
             renderMiniCalendar();
             startAutoRefresh();
+            startRssAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
             updateIntegrationsVisibility();
