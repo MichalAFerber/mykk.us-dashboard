@@ -1462,15 +1462,30 @@
 
         .iframe-widget > .section-drag-handle {
             position: absolute;
-            top: 4px;
-            left: 4px;
-            z-index: 2;
+            top: 6px;
+            left: 6px;
+            right: auto;
+            width: 24px;
+            height: 24px;
+            z-index: 10;
             opacity: 0;
             transition: opacity 0.2s ease;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .iframe-widget:hover > .section-drag-handle {
-            opacity: 0.7;
+            opacity: 0.8;
+        }
+
+        .iframe-widget > .section-drag-handle svg {
+            display: block;
+            color: #fff;
+            width: 14px;
+            height: 14px;
         }
 
         .iframe-widget-body {
