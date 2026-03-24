@@ -4727,6 +4727,14 @@
                         </button>
                         <input type="file" id="import-file" accept=".json">
                     </div>
+                    <div style="margin-top: 12px;">
+                        <button class="settings-action-btn" id="reset-defaults" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Reset to Defaults
+                        </button>
+                    </div>
                 </div>
 
                 <!-- FAQ -->
@@ -5682,6 +5690,27 @@
                 }
             };
             reader.readAsText(file);
+        }
+
+        function resetToDefaults() {
+            if (!confirm('Reset all widgets and positions to defaults? This cannot be undone.')) return;
+            const freeDefaults = { ...defaultSettings };
+            freeDefaults.showFocus = false;
+            freeDefaults.showTodos = false;
+            freeDefaults.showSounds = false;
+            freeDefaults.showWeather = false;
+            freeDefaults.showStocks = false;
+            freeDefaults.showTwitter = false;
+            freeDefaults.showDonetick = false;
+            freeDefaults.iframeWidgets = [];
+            freeDefaults.rssFeeds = [];
+            freeDefaults.pages = [{ id: 'default', name: 'Home' }];
+            freeDefaults.activePage = 'default';
+            settings = freeDefaults;
+            saveSettings();
+            localStorage.removeItem('dashboard-widget-grid-v2');
+            (settings.pages || []).forEach(p => localStorage.removeItem('dashboard-page-' + p.id));
+            window.location.reload();
         }
 
         // ============ Date/Time ============
@@ -9611,6 +9640,7 @@
             document.getElementById('import-file').addEventListener('change', (e) => {
                 if (e.target.files.length > 0) importSettings(e.target.files[0]);
             });
+            document.getElementById('reset-defaults').addEventListener('click', resetToDefaults);
 
             // Shortcut modal
             const addShortcutBtn = document.getElementById('add-shortcut-btn');
