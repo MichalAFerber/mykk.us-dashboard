@@ -9927,6 +9927,19 @@
             }
         }
 
+        // ============ Midnight Refresh ============
+        // Reload the page at local midnight so the date, mini calendar, and
+        // greeting roll over to the new day. Reschedules itself on each load.
+        let midnightRefreshTimer = null;
+
+        function scheduleMidnightRefresh() {
+            if (midnightRefreshTimer) clearTimeout(midnightRefreshTimer);
+            const now = new Date();
+            // Next local midnight, plus a 5s cushion so the clock has ticked over.
+            const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5, 0);
+            midnightRefreshTimer = setTimeout(() => window.location.reload(), nextMidnight - now);
+        }
+
         // ============ Initialize ============
         function init() {
             loadSettings();
@@ -9946,6 +9959,7 @@
             initWidgetResize();
             renderMiniCalendar();
             startAutoRefresh();
+            scheduleMidnightRefresh();
             startRssAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
