@@ -18,6 +18,17 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <title>MyKK Dashboard</title>
+    <!-- Plausible analytics — loads only on the hosted dashboard. Self-hosted or
+         downloaded copies of this file never phone home. -->
+    <script>
+        if (location.hostname === 'start.mykk.us') {
+            var plausible = document.createElement('script');
+            plausible.defer = true;
+            plausible.setAttribute('data-domain', 'start.mykk.us');
+            plausible.src = 'https://plausible.thompsonblack.us/js/script.js';
+            document.head.appendChild(plausible);
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
