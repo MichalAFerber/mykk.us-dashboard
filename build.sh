@@ -19,6 +19,7 @@ mkdir -p "$DIST"
 
 # Copy all static assets
 cp index.html "$DIST/"
+cp 404.html   "$DIST/"
 cp _headers   "$DIST/"
 
 # ---------- Inject Firebase config ----------
