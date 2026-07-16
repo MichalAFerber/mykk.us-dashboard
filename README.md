@@ -91,9 +91,9 @@ Each toolbar button can be independently shown or hidden.
 
 ### Planned
 
+- [x] **PWA / Offline Mode** — service worker (`sw.js`) + web manifest for instant loads and offline support. Ships in the core app for everyone; installable to your home screen or desktop.
+- [ ] **Keyboard Shortcuts** — `/` focuses search and `Esc` closes modals today; arrow-key navigation and customizable bindings are still planned.
 - [ ] **Browser Extension** — a Chrome/Firefox extension that sets MyKK as the new-tab page. The extension will be a separate, private product with a subscription ($1/month or $12/year) to cover hosting, maintenance, and browser store review costs. Premium features bundled with the extension:
-  - **PWA / Offline Mode** — service worker for instant load and full offline support
-  - **Keyboard Shortcuts** — `/` to focus search, `Esc` to close modals, arrow keys for navigation, and customizable bindings
   - **Custom CSS** — inject your own stylesheets to personalize the dashboard beyond built-in themes
 - [ ] **Bookmark Folders** — collapsible groups/categories (Work, Social, Dev, etc.) to organize large bookmark collections
 - [ ] **Light / Dark Mode Toggle** — switchable theme with system preference detection
@@ -111,10 +111,41 @@ The core dashboard will always remain a **single-file, open-source HTML page** t
 ## Project Structure
 
 ```
-index.html   – The complete application (HTML + CSS + JS)
-_headers     – Cloudflare Pages response headers
-build.sh     – Cloudflare Pages build script (injects Firebase secrets)
+index.html            – The complete application (HTML + CSS + JS)
+manifest.webmanifest  – PWA manifest (installable app metadata)
+sw.js                 – Service worker (offline support + instant loads)
+_headers              – Cloudflare Pages response headers
+build.sh              – Cloudflare Pages build script (injects Firebase secrets)
 ```
+
+---
+
+## Adding Custom Bookmark Icons
+
+Favorites automatically detect an icon for most sites — 40+ popular services
+use crisp built-in SVGs, and everything else falls back to the site's favicon.
+When you want a nicer or more specific logo, you can set your own:
+
+1. Open a bookmark's **Add / Edit Shortcut** dialog and find the **Icon URL**
+   field (leave it blank to keep automatic detection).
+2. Paste a direct link to an image (PNG or SVG). A few good ways to find one:
+   - **Google Images** — search for `<app name> app official logo png` or
+     `<app name> logo png google play`, open the image, and copy its address.
+   - **[Icons8](https://icons8.com/)** — search the app name, pick an icon,
+     and copy its PNG/SVG URL.
+   - **[Dashboard Icons](https://github.com/homarr-labs/dashboard-icons)** —
+     browse the same icon set the dashboard uses and copy the raw file URL.
+3. Prefer a **square** image (roughly 128×128 or larger) for the sharpest
+   result. Transparent PNGs look best against the icon background styles.
+
+> **Tip:** If a linked image ever disappears (hotlinking can break), re-host it
+> — for example on your own server or an image host — and update the URL. For a
+> permanent, offline-safe icon you can also paste a
+> [data URI](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)
+> instead of a web link.
+
+You can also change the icon **background color and style** (gradient, solid, or
+transparent) from **Settings → Favorites**.
 
 ---
 

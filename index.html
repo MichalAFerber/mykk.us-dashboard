@@ -17,6 +17,14 @@
     <link rel="canonical" href="https://start.mykk.us/">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <!-- PWA / installable app -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MyKK">
+    <link rel="apple-touch-icon" href="favicon.png">
     <title>MyKK Dashboard</title>
     <!-- Plausible analytics — loads only on the hosted dashboard. Self-hosted or
          downloaded copies of this file never phone home. -->
@@ -851,6 +859,12 @@
         .page-tab.active {
             background: rgba(102, 126, 234, 0.5);
             color: white;
+        }
+        .page-tab.dragging {
+            opacity: 0.5;
+        }
+        .page-tab.drag-over {
+            box-shadow: inset 2px 0 0 rgba(102, 126, 234, 0.9);
         }
         .page-tab-add {
             width: 28px;
@@ -7772,6 +7786,9 @@
 
         // ============ Dashboard Pages ============
 
+        // Tracks the tab currently being dragged for reordering.
+        let draggedPageId = null;
+
         function renderPageTabs() {
             if (!isExtensionSubscriptionActive()) return;
             const pages = settings.pages || [{ id: 'default', name: 'Home' }];
@@ -7783,7 +7800,7 @@
 
             tabsList.innerHTML = pages.map(page => {
                 const active = page.id === settings.activePage ? ' active' : '';
-                return '<button class="page-tab' + active + '" data-page-id="' + escapeHtml(page.id) + '" role="tab" aria-selected="' + (page.id === settings.activePage) + '">' + escapeHtml(page.name) + '</button>';
+                return '<button class="page-tab' + active + '" draggable="true" data-page-id="' + escapeHtml(page.id) + '" role="tab" aria-selected="' + (page.id === settings.activePage) + '" title="Drag to reorder • right-click for options">' + escapeHtml(page.name) + '</button>';
             }).join('');
 
             tabsList.querySelectorAll('.page-tab').forEach(tab => {
@@ -7792,7 +7809,43 @@
                     e.preventDefault();
                     showPageContextMenu(e, tab.dataset.pageId);
                 });
+
+                // Drag-and-drop reordering (desktop pointer devices).
+                tab.addEventListener('dragstart', (e) => {
+                    draggedPageId = tab.dataset.pageId;
+                    e.dataTransfer.effectAllowed = 'move';
+                    tab.classList.add('dragging');
+                });
+                tab.addEventListener('dragend', () => {
+                    tab.classList.remove('dragging');
+                    draggedPageId = null;
+                });
+                tab.addEventListener('dragover', (e) => {
+                    if (!draggedPageId || draggedPageId === tab.dataset.pageId) return;
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    tab.classList.add('drag-over');
+                });
+                tab.addEventListener('dragleave', () => tab.classList.remove('drag-over'));
+                tab.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    tab.classList.remove('drag-over');
+                    reorderPages(draggedPageId, tab.dataset.pageId);
+                });
             });
+        }
+
+        // Move a page so it sits at the position of the page it was dropped on.
+        function reorderPages(fromId, toId) {
+            if (!fromId || !toId || fromId === toId) return;
+            if (!Array.isArray(settings.pages)) return;
+            const from = settings.pages.findIndex(p => p.id === fromId);
+            const to = settings.pages.findIndex(p => p.id === toId);
+            if (from < 0 || to < 0 || from === to) return;
+            const [moved] = settings.pages.splice(from, 1);
+            settings.pages.splice(to, 0, moved);
+            saveSettings();
+            renderPageTabs();
         }
 
         function savePageState(pageId) {
@@ -9208,6 +9261,34 @@
             });
         }
 
+        // Global keyboard shortcuts (in addition to Escape, handled above).
+        // "/" focuses the search box — the classic quick-search shortcut —
+        // unless the user is already typing in a field.
+        function initGlobalShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+                const t = e.target;
+                const typing = t && (
+                    t.tagName === 'INPUT' ||
+                    t.tagName === 'TEXTAREA' ||
+                    t.tagName === 'SELECT' ||
+                    t.isContentEditable
+                );
+                if (typing) return;
+
+                if (e.key === '/') {
+                    const search = document.getElementById('search-input');
+                    // offsetParent is null when the widget is hidden/collapsed.
+                    if (search && search.offsetParent !== null) {
+                        e.preventDefault();
+                        search.focus();
+                        search.select();
+                    }
+                }
+            });
+        }
+
         // Swipe gesture support for mini calendar
         function initSwipeGestures() {
             const calendar = document.getElementById('mini-calendar');
@@ -9965,6 +10046,7 @@
             setInterval(updateDateTime, 1000);
             initEventListeners();
             initEscapeHandler();
+            initGlobalShortcuts();
             initSwipeGestures();
             initSectionDragDrop();
             initWidgetResize();
@@ -10020,6 +10102,17 @@
         }
 
         document.addEventListener('DOMContentLoaded', init);
+
+        // ============ Service Worker (PWA / offline) ============
+        // Registered after load so it never competes with first paint. Only
+        // runs over http(s) — a file:// copy of this page simply skips it.
+        if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch((err) => {
+                    console.warn('Service worker registration failed:', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>
