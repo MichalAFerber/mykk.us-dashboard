@@ -103,6 +103,58 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
+
+        /* ============ High Contrast Mode (accessibility) ============ */
+        /* Maximum-contrast palette: pure black surfaces, white text and
+           borders, a bright accent, and no translucency. Defined after the
+           light-theme variables so it wins when both classes are present. */
+        body.high-contrast {
+            --glass-bg: #000000;
+            --glass-border: #ffffff;
+            --glass-shadow: rgba(0, 0, 0, 0);
+            --text-primary: #ffffff;
+            --text-secondary: #ffffff;
+            --focus-ring: #ffff00;
+            --input-bg: #000000;
+            --input-border: #ffffff;
+            --input-focus-bg: #000000;
+            --input-focus-border: #ffff00;
+            --input-placeholder: #d0d0d0;
+            --hover-bg: #333333;
+            --divider: #ffffff;
+            --modal-bg: #000000;
+            --settings-bg: #000000;
+            --overlay-bg: rgba(0, 0, 0, 0.92);
+            --accent: #1aa3ff;
+            --btn-bg: #000000;
+            --btn-hover-bg: #333333;
+            --btn-active-bg: #1aa3ff;
+            background: #000000 !important;
+        }
+        /* Solid, clearly-bordered surfaces (drop the frosted-glass blur). */
+        body.high-contrast .glass-card {
+            background: #000000 !important;
+            border: 2px solid #ffffff !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            box-shadow: none !important;
+        }
+        /* Remove the wallpaper/overlay so nothing lowers text contrast. */
+        body.high-contrast .wallpaper,
+        body.high-contrast #overlay { display: none !important; }
+        /* Strong, always-visible focus indicator for keyboard users. */
+        body.high-contrast *:focus-visible {
+            outline: 3px solid #ffff00 !important;
+            outline-offset: 2px !important;
+        }
+        /* Give interactive chrome visible borders in high contrast. */
+        body.high-contrast .tool-btn,
+        body.high-contrast .action-btn,
+        body.high-contrast .settings-input,
+        body.high-contrast .search-form,
+        body.high-contrast .settings-section {
+            border: 1px solid #ffffff !important;
+        }
         /* Light theme: settings toggles, buttons, and misc elements */
         body.theme-light .settings-checkbox input {
             background: rgba(0, 0, 0, 0.15);
@@ -4553,6 +4605,13 @@
                         </div>
                     </div>
                     <div class="settings-group">
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-high-contrast">
+                            <span>High Contrast Mode</span>
+                        </label>
+                        <small class="settings-help">A dedicated accessibility theme — pure black surfaces, white text and borders, and a strong focus outline for maximum readability. Overrides the theme above.</small>
+                    </div>
+                    <div class="settings-group">
                         <label class="settings-label">Page Title</label>
                         <input type="text" class="settings-input" id="page-title-input" placeholder="MyKK Dashboard">
                     </div>
@@ -5307,6 +5366,7 @@
             customCss: '',
             notepadMode: 'plain',
             theme: 'dark',
+            highContrast: false,
             bgType: 'gradient',
             bgGradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
             bgColor: '#1a1a2e',
@@ -6190,6 +6250,7 @@
                 theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
             }
             document.body.classList.toggle('theme-light', theme === 'light');
+            document.body.classList.toggle('high-contrast', !!settings.highContrast);
             const sunIcon = document.getElementById('theme-icon-sun');
             const moonIcon = document.getElementById('theme-icon-moon');
             if (sunIcon && moonIcon) {
@@ -6681,6 +6742,8 @@
             document.getElementById('favicon-url-input').value = settings.faviconUrl || '';
 
             // Custom CSS + Behavior & Shortcuts
+            const hcToggle = document.getElementById('toggle-high-contrast');
+            if (hcToggle) hcToggle.checked = !!settings.highContrast;
             const customCssInput = document.getElementById('custom-css-input');
             if (customCssInput) customCssInput.value = settings.customCss || '';
             const alwaysCtrl = document.getElementById('toggle-always-show-controls');
@@ -10203,6 +10266,13 @@
             });
             document.getElementById('favicon-url-input').addEventListener('input', (e) => {
                 settings.faviconUrl = e.target.value.trim();
+            });
+
+            // High Contrast Mode
+            const hcToggle = document.getElementById('toggle-high-contrast');
+            if (hcToggle) hcToggle.addEventListener('change', (e) => {
+                settings.highContrast = e.target.checked;
+                document.body.classList.toggle('high-contrast', e.target.checked);
             });
 
             // Custom CSS — apply live as the user types
