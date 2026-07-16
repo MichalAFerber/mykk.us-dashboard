@@ -40,6 +40,7 @@ See the full [Changelog](CHANGELOG.md) for all updates. Recent highlights:
 - **Favorites / Bookmarks** — add, edit, delete, and drag-to-reorder quick-access shortcuts. Automatic favicon detection for 40+ popular services. Customizable icon background color and style (gradient, solid, or transparent).
 - **Weather** — current conditions, 5-day forecast, and interactive radar map powered by OpenWeatherMap. Click current weather or any forecast day for a detail modal with feels-like temperature, humidity, wind, UV index, pressure, and visibility. Switchable radar layers (precipitation, clouds, temperature, wind). Animated weather overlays (rain, snow, thunderstorm, clouds, mist, wind).
 - **Mini Calendar** — compact monthly calendar with navigation and today highlighting.
+- **Calendar Feeds (ICS Sync)** — subscribe to any number of ICS/iCal feeds (Google Calendar, Outlook, Apple iCloud, Nextcloud, `webcal://` links, etc.). All calendars merge into one **Upcoming Events** widget, each with its own color, grouped by day (Today / Tomorrow / date) with recurring-event and all-day support. Feeds are cached and auto-refreshed.
 - **Date Widget** — current date with configurable format (short, long, numeric, ISO). Auto-scaling font size.
 - **Clock Widget** — current time in 12-hour or 24-hour format with seconds display. Auto-scaling font size.
 - **Stock Quotes** — real-time stock prices with customizable CSV watchlist. Yahoo Finance by default, optional Marketstack API key.

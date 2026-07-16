@@ -719,6 +719,108 @@
             background: var(--input-focus-bg);
         }
 
+        /* ============ Calendar (ICS) Widget ============ */
+        .ics-widget {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .ics-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px 8px;
+        }
+        .ics-header .section-title {
+            flex: 1;
+            font-weight: 600;
+        }
+        .ics-refresh-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s, color 0.2s;
+        }
+        .ics-refresh-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        .ics-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 4px 8px;
+        }
+        .ics-day-group {
+            padding: 6px 12px 2px;
+        }
+        .ics-day-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .ics-event {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 5px 4px;
+            border-radius: 6px;
+        }
+        .ics-event:hover {
+            background: var(--hover-bg);
+        }
+        .ics-event-dot {
+            flex: 0 0 auto;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            align-self: center;
+        }
+        .ics-event-time {
+            flex: 0 0 auto;
+            min-width: 62px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+        .ics-event-title {
+            flex: 1;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            color: var(--text-primary);
+            min-width: 0;
+        }
+        .ics-event-loc {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ics-setup {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            gap: 12px;
+            padding: 20px;
+        }
+        .ics-setup p {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         /* ============ Ambient Sounds ============ */
         .sound-mixer-panel {
             position: fixed;
@@ -4207,6 +4309,25 @@
             </div>
         </div>
 
+        <!-- Calendar (ICS) upcoming-events widget -->
+        <div class="ics-widget glass-card hidden" id="ics-widget" data-section="ics" data-widget="ics">
+            <span class="section-drag-handle" aria-label="Drag to reorder">
+                <svg fill="currentColor" viewBox="0 0 24 24" width="18" height="18"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/></svg>
+            </span>
+            <div class="ics-header">
+                <span class="section-title">Upcoming Events</span>
+                <button class="ics-refresh-btn" id="ics-refresh-btn" title="Refresh events" aria-label="Refresh calendar events">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+            </div>
+            <div class="ics-content" id="ics-content" aria-live="polite">
+                <div class="ics-setup">
+                    <p>Add a calendar feed in Settings &rarr; Calendar Feeds</p>
+                    <button class="weather-setup-btn" onclick="document.getElementById('settings-btn').click()">Open Settings</button>
+                </div>
+            </div>
+        </div>
+
         <!-- iFrame Widgets (dynamically rendered) -->
         <div id="iframe-widgets-container" style="display: contents"></div>
 
@@ -4261,6 +4382,7 @@
                 <a href="#section-toolbar">Toolbar Buttons</a>
                 <a href="#section-iframe" id="toc-iframe" class="hidden">iFrame Widgets <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-rss" id="toc-rss" class="hidden">RSS Feeds <span class="toc-pro-badge">Pro</span></a>
+                <a href="#section-ics" id="toc-ics" class="hidden">Calendar Feeds <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-integrations" id="toc-integrations" class="hidden">Integrations <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-data">Data</a>
                 <a href="https://mykk.us/docs" target="_blank" rel="noopener">Docs ↗</a>
@@ -4585,6 +4707,23 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Add RSS Feed
+                    </button>
+                </div>
+
+                <!-- Calendar Feeds / ICS Sync (extension-gated) -->
+                <div class="settings-section hidden" id="section-ics">
+                    <h3 class="settings-section-title">Calendar Feeds</h3>
+                    <p class="settings-help" style="margin-bottom: 12px;">
+                        Subscribe to ICS/iCal feeds from Google Calendar, Outlook, Apple iCloud, Nextcloud, and more to see your
+                        upcoming events. Add as many calendars as you like — they merge into one <strong>Upcoming Events</strong> widget,
+                        each with its own color. Paste the calendar's secret <em>ICS address</em> or a <code>webcal://</code> link.
+                    </p>
+                    <div id="ics-feeds-settings-list"></div>
+                    <button class="settings-action-btn" id="add-ics-feed-btn" style="margin-top: 8px;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Add Calendar Feed
                     </button>
                 </div>
 
@@ -5051,6 +5190,7 @@
                 stocks:    { cols: 6, rows: 4 },
                 'twitter': { cols: 6, rows: 8 },
                 'donetick': { cols: 6, rows: 8 },
+                ics:       { cols: 6, rows: 6 },
             },
             autoRefresh: false,
             autoRefreshMinutes: 15,
@@ -5071,6 +5211,7 @@
             stockSymbols: 'AAPL,GOOGL,MSFT,AMZN',
             marketstackApiKey: '',
             rssFeeds: [],
+            icsFeeds: [],
             showSounds: true,
             soundChannels: {},
             soundMasterVolume: 0.7,
@@ -5343,6 +5484,7 @@
                 }
                 // Ensure new arrays/objects exist
                 if (!Array.isArray(settings.rssFeeds)) settings.rssFeeds = [];
+                if (!Array.isArray(settings.icsFeeds)) settings.icsFeeds = [];
                 if (!Array.isArray(settings.pages)) settings.pages = [{ id: 'default', name: 'Home' }];
                 if (!settings.activePage) settings.activePage = 'default';
                 if (!settings.soundChannels || typeof settings.soundChannels !== 'object') settings.soundChannels = {};
@@ -5729,6 +5871,7 @@
             freeDefaults.showDonetick = false;
             freeDefaults.iframeWidgets = [];
             freeDefaults.rssFeeds = [];
+            freeDefaults.icsFeeds = [];
             freeDefaults.pages = [{ id: 'default', name: 'Home' }];
             freeDefaults.activePage = 'default';
             settings = freeDefaults;
@@ -5944,6 +6087,12 @@
             const stocksVisible = settings.showStocks && settings.stockSymbols && isExtensionSubscriptionActive();
             document.getElementById('stocks-widget').classList.toggle('hidden', !stocksVisible);
             if (stocksVisible) loadStocks();
+
+            // Calendar (ICS) widget — visible whenever at least one feed is enabled with a URL
+            const icsEnabledFeeds = (settings.icsFeeds || []).filter(f => f.enabled && f.url);
+            const icsVisible = icsEnabledFeeds.length > 0 && isExtensionSubscriptionActive();
+            document.getElementById('ics-widget').classList.toggle('hidden', !icsVisible);
+            if (icsVisible) loadIcsEvents();
 
             // Sounds toolbar button
             document.getElementById('sounds-btn').classList.toggle('hidden', !settings.showSounds || !isExtensionSubscriptionActive());
@@ -6361,6 +6510,9 @@
 
             // RSS settings
             renderRssWidgetSettings();
+
+            // Calendar feed (ICS) settings
+            renderIcsFeedSettings();
 
             // Weather animation toggle
             document.getElementById('toggle-weather-animation').checked = settings.showWeatherAnimation;
@@ -7293,21 +7445,27 @@
             const tocIntegrations = document.getElementById('toc-integrations');
             const tocIframe = document.getElementById('toc-iframe');
             const tocRss = document.getElementById('toc-rss');
+            const tocIcs = document.getElementById('toc-ics');
             const sectionIntegrations = document.getElementById('section-integrations');
             const sectionIframe = document.getElementById('section-iframe');
             const sectionRss = document.getElementById('section-rss');
+            const sectionIcs = document.getElementById('section-ics');
             if (tocIntegrations) tocIntegrations.classList.toggle('hidden', !active);
             if (tocIframe) tocIframe.classList.toggle('hidden', !active);
             if (tocRss) tocRss.classList.toggle('hidden', !active);
+            if (tocIcs) tocIcs.classList.toggle('hidden', !active);
             if (sectionIntegrations) sectionIntegrations.classList.toggle('hidden', !active);
             if (sectionIframe) sectionIframe.classList.toggle('hidden', !active);
             if (sectionRss) sectionRss.classList.toggle('hidden', !active);
+            if (sectionIcs) sectionIcs.classList.toggle('hidden', !active);
             // Hide gated widgets if extension not active
             if (!active) {
                 if (settings.showDonetick) document.getElementById('donetick-widget').classList.add('hidden');
                 if (settings.showTwitter) document.getElementById('twitter-widget').classList.add('hidden');
                 if (settings.showWeather) document.getElementById('weather-widget').classList.add('hidden');
                 if (settings.showStocks) document.getElementById('stocks-widget').classList.add('hidden');
+                const icsW = document.getElementById('ics-widget');
+                if (icsW) icsW.classList.add('hidden');
                 // Hide all iframe and rss widgets
                 document.querySelectorAll('.iframe-widget').forEach(w => w.classList.add('hidden'));
                 document.querySelectorAll('.rss-widget').forEach(w => w.classList.add('hidden'));
@@ -7571,6 +7729,371 @@
             settings.rssFeeds.push({ id: id, name: 'New Feed', url: '', enabled: true, refreshInterval: 30 });
             settings.widgetSizes[id] = { cols: 6, rows: 4 };
             renderRssWidgetSettings();
+        }
+
+        // ============ Calendar (ICS) Sync ============
+        // Subscribe to any number of ICS/iCal feeds (Google, Outlook, Apple,
+        // Nextcloud, …) and merge them into one "Upcoming Events" widget.
+        const ICS_FEED_COLORS = ['#667eea', '#48bb78', '#ed8936', '#e53e3e', '#38b2ac', '#d69e2e', '#9f7aea', '#ec4899'];
+        const ICS_WEEKDAY_MAP = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
+
+        // --- Parsing (RFC 5545 subset) ---
+        function icsUnfold(text) {
+            // Normalize newlines, then join folded continuation lines (CRLF + space/tab).
+            return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n[ \t]/g, '');
+        }
+
+        function icsUnescape(v) {
+            return v.replace(/\\n/gi, '\n').replace(/\\,/g, ',').replace(/\\;/g, ';').replace(/\\\\/g, '\\');
+        }
+
+        function icsParseProp(line) {
+            const colon = line.indexOf(':');
+            if (colon === -1) return null;
+            const left = line.slice(0, colon);
+            const value = line.slice(colon + 1);
+            const parts = left.split(';');
+            const name = parts[0].toUpperCase();
+            const params = {};
+            for (let i = 1; i < parts.length; i++) {
+                const eq = parts[i].indexOf('=');
+                if (eq !== -1) params[parts[i].slice(0, eq).toUpperCase()] = parts[i].slice(eq + 1);
+            }
+            return { name, params, value };
+        }
+
+        function icsParseDate(value, params) {
+            const isDateOnly = (params && params.VALUE === 'DATE') || /^\d{8}$/.test(value);
+            if (isDateOnly) {
+                const y = +value.slice(0, 4), mo = +value.slice(4, 6), d = +value.slice(6, 8);
+                return { date: new Date(y, mo - 1, d), allDay: true };
+            }
+            const m = value.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z)?$/);
+            if (!m) return null;
+            const [, y, mo, d, h, mi, s, z] = m;
+            if (z === 'Z') return { date: new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s)), allDay: false };
+            // Floating time or TZID: approximate as local (no full tz database in-browser).
+            return { date: new Date(+y, +mo - 1, +d, +h, +mi, +s), allDay: false };
+        }
+
+        function icsParseVevents(icsText) {
+            const lines = icsUnfold(icsText).split('\n');
+            const events = [];
+            let cur = null;
+            for (const raw of lines) {
+                if (!raw) continue;
+                if (raw === 'BEGIN:VEVENT') { cur = {}; continue; }
+                if (raw === 'END:VEVENT') { if (cur) events.push(cur); cur = null; continue; }
+                if (!cur) continue;
+                const p = icsParseProp(raw);
+                if (!p) continue;
+                switch (p.name) {
+                    case 'DTSTART': { const dt = icsParseDate(p.value, p.params); if (dt) { cur.start = dt.date; cur.allDay = dt.allDay; } break; }
+                    case 'DTEND': { const dt = icsParseDate(p.value, p.params); if (dt) cur.end = dt.date; break; }
+                    case 'SUMMARY': cur.summary = icsUnescape(p.value); break;
+                    case 'LOCATION': cur.location = icsUnescape(p.value); break;
+                    case 'UID': cur.uid = p.value; break;
+                    case 'RRULE': cur.rrule = p.value; break;
+                    case 'STATUS': cur.status = p.value; break;
+                }
+            }
+            return events;
+        }
+
+        function icsParseRrule(str) {
+            const out = {};
+            str.split(';').forEach(pair => {
+                const eq = pair.indexOf('=');
+                if (eq !== -1) out[pair.slice(0, eq).toUpperCase()] = pair.slice(eq + 1);
+            });
+            return out;
+        }
+
+        function icsAddByFreq(date, freq, interval) {
+            const d = new Date(date);
+            if (freq === 'DAILY') d.setDate(d.getDate() + interval);
+            else if (freq === 'WEEKLY') d.setDate(d.getDate() + 7 * interval);
+            else if (freq === 'MONTHLY') d.setMonth(d.getMonth() + interval);
+            else if (freq === 'YEARLY') d.setFullYear(d.getFullYear() + interval);
+            return d;
+        }
+
+        // Expand a single (possibly recurring) event into occurrences in [windowStart, windowEnd].
+        function icsExpandEvent(ev, windowStart, windowEnd, maxOccurrences) {
+            const results = [];
+            if (!ev.start) return results;
+            const durationMs = ev.end ? (ev.end - ev.start) : (ev.allDay ? 86400000 : 3600000);
+
+            if (!ev.rrule) {
+                if (ev.start <= windowEnd && (ev.end || ev.start) >= windowStart) {
+                    results.push({ ...ev, start: new Date(ev.start), end: new Date(ev.start.getTime() + durationMs) });
+                }
+                return results;
+            }
+
+            const r = icsParseRrule(ev.rrule);
+            const freq = r.FREQ;
+            if (!freq) return results;
+            const interval = Math.max(1, parseInt(r.INTERVAL || '1', 10));
+            const count = r.COUNT ? parseInt(r.COUNT, 10) : null;
+            let until = null;
+            if (r.UNTIL) { const u = icsParseDate(r.UNTIL, {}); until = u ? u.date : null; }
+            const byday = r.BYDAY ? r.BYDAY.split(',').map(x => x.trim().slice(-2).toUpperCase()) : null;
+
+            let occurrences = 0;
+            let cursor = new Date(ev.start);
+            let guard = 0;
+            const hardStop = 5000;
+
+            while (guard++ < hardStop) {
+                if (until && cursor > until) break;
+                if (count && occurrences >= count) break;
+                if (cursor > windowEnd) break;
+
+                if (freq === 'WEEKLY' && byday && byday.length) {
+                    const weekStart = new Date(cursor);
+                    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                    for (const code of byday) {
+                        const wd = ICS_WEEKDAY_MAP[code];
+                        if (wd === undefined) continue;
+                        const occ = new Date(weekStart);
+                        occ.setDate(weekStart.getDate() + wd);
+                        occ.setHours(ev.start.getHours(), ev.start.getMinutes(), ev.start.getSeconds(), 0);
+                        if (occ < ev.start) continue;
+                        if (until && occ > until) continue;
+                        if (count && occurrences >= count) break;
+                        occurrences++;
+                        if (occ >= windowStart && occ <= windowEnd) {
+                            results.push({ ...ev, start: new Date(occ), end: new Date(occ.getTime() + durationMs) });
+                        }
+                    }
+                } else {
+                    occurrences++;
+                    if (cursor >= windowStart && cursor <= windowEnd) {
+                        results.push({ ...ev, start: new Date(cursor), end: new Date(cursor.getTime() + durationMs) });
+                    }
+                }
+                cursor = icsAddByFreq(cursor, freq, interval);
+                if (results.length >= maxOccurrences) break;
+            }
+            return results;
+        }
+
+        // Merge, expand, filter and sort events across multiple feeds.
+        function icsCollectUpcoming(feedTexts, opts) {
+            opts = opts || {};
+            const now = opts.now || new Date();
+            const lookaheadDays = opts.lookaheadDays || 60;
+            const windowStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const windowEnd = new Date(now.getTime() + lookaheadDays * 86400000);
+            let all = [];
+            feedTexts.forEach(({ text, feed }) => {
+                if (!text) return;
+                icsParseVevents(text).forEach(ev => {
+                    if (ev.status === 'CANCELLED') return;
+                    const occ = icsExpandEvent(ev, windowStart, windowEnd, 50);
+                    occ.forEach(o => { o.feedColor = feed && feed.color; o.feedName = feed && feed.name; });
+                    all = all.concat(occ);
+                });
+            });
+            all = all.filter(e => (e.end || e.start) >= now || (e.allDay && e.start >= windowStart));
+            all.sort((a, b) => a.start - b.start);
+            return all;
+        }
+
+        // --- Fetching (CORS-aware, with proxy fallbacks) ---
+        function icsNormalizeUrl(url) {
+            const u = (url || '').trim();
+            if (/^webcal:\/\//i.test(u)) return u.replace(/^webcal:\/\//i, 'https://');
+            return u;
+        }
+
+        async function fetchIcsText(url) {
+            const normalized = icsNormalizeUrl(url);
+            if (!normalized) return null;
+            // Try a direct fetch first (works for feeds that send CORS headers),
+            // then fall back to public CORS proxies for the ones that don't.
+            const attempts = [
+                normalized,
+                'https://corsproxy.io/?url=' + encodeURIComponent(normalized),
+                'https://api.allorigins.win/raw?url=' + encodeURIComponent(normalized),
+            ];
+            for (const attempt of attempts) {
+                try {
+                    const resp = await fetch(attempt);
+                    if (!resp.ok) continue;
+                    const text = await resp.text();
+                    if (text && text.indexOf('BEGIN:VCALENDAR') !== -1) return text;
+                } catch (e) { /* try next strategy */ }
+            }
+            return null;
+        }
+
+        async function getIcsFeedText(feed, forceRefresh) {
+            const cacheKey = 'ics-cache-' + feed.id;
+            if (!forceRefresh) {
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    try {
+                        const { text, timestamp } = JSON.parse(cached);
+                        const maxAge = (feed.refreshInterval || 60) * 60 * 1000;
+                        if (text && Date.now() - timestamp < maxAge) return text;
+                    } catch (e) { /* ignore cache errors */ }
+                }
+            }
+            const text = await fetchIcsText(feed.url);
+            if (text) {
+                try { localStorage.setItem(cacheKey, JSON.stringify({ text, timestamp: Date.now() })); } catch (e) { /* quota */ }
+                return text;
+            }
+            // Network failed — fall back to stale cache if we have any.
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) { try { return JSON.parse(cached).text; } catch (e) { /* ignore */ } }
+            return null;
+        }
+
+        // --- Widget load + render ---
+        let icsLoading = false;
+        async function loadIcsEvents(forceRefresh) {
+            if (!isExtensionSubscriptionActive()) return;
+            const content = document.getElementById('ics-content');
+            if (!content) return;
+            const feeds = (settings.icsFeeds || []).filter(f => f.enabled && f.url);
+            if (feeds.length === 0) {
+                content.dataset.rendered = '';
+                content.innerHTML = '<div class="ics-setup"><p>Add a calendar feed in Settings &rarr; Calendar Feeds</p><button class="weather-setup-btn" onclick="document.getElementById(\'settings-btn\').click()">Open Settings</button></div>';
+                return;
+            }
+            if (icsLoading) return;
+            icsLoading = true;
+            if (forceRefresh || !content.dataset.rendered) content.innerHTML = '<div class="loading"></div>';
+            try {
+                const texts = await Promise.all(feeds.map(feed => getIcsFeedText(feed, forceRefresh)));
+                const feedTexts = feeds.map((feed, i) => ({ text: texts[i], feed }));
+                if (!feedTexts.some(ft => ft.text)) {
+                    content.innerHTML = '<div class="ics-setup"><p>Unable to load calendar feeds. Check the ICS URLs in Settings.</p></div>';
+                    content.dataset.rendered = '';
+                    return;
+                }
+                const events = icsCollectUpcoming(feedTexts, { lookaheadDays: 60 });
+                renderIcsEvents(events);
+                content.dataset.rendered = '1';
+            } catch (e) {
+                console.error('ICS load error:', e);
+                if (!content.dataset.rendered) content.innerHTML = '<div class="ics-setup"><p>Unable to load calendar feeds</p></div>';
+            } finally {
+                icsLoading = false;
+            }
+        }
+
+        function icsDayKey(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+
+        function renderIcsEvents(events) {
+            const content = document.getElementById('ics-content');
+            if (!content) return;
+            if (!events || events.length === 0) {
+                content.innerHTML = '<div class="ics-setup"><p>No upcoming events in the next 60 days</p></div>';
+                return;
+            }
+            const now = new Date();
+            const todayKey = icsDayKey(now);
+            const tomorrowKey = icsDayKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+
+            const groups = {};
+            const order = [];
+            events.slice(0, 60).forEach(ev => {
+                const k = icsDayKey(ev.start);
+                if (!groups[k]) { groups[k] = []; order.push(k); }
+                groups[k].push(ev);
+            });
+
+            let html = '';
+            order.forEach(k => {
+                const first = groups[k][0].start;
+                let label;
+                if (k === todayKey) label = 'Today';
+                else if (k === tomorrowKey) label = 'Tomorrow';
+                else label = first.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+                html += '<div class="ics-day-group"><div class="ics-day-label">' + escapeHtml(label) + '</div>';
+                groups[k].forEach(ev => {
+                    const timeLabel = ev.allDay ? 'All day' : ev.start.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+                    const color = ev.feedColor || '#667eea';
+                    html += '<div class="ics-event">' +
+                        '<span class="ics-event-dot" style="background:' + escapeHtml(color) + '"></span>' +
+                        '<span class="ics-event-time">' + escapeHtml(timeLabel) + '</span>' +
+                        '<span class="ics-event-title">' + escapeHtml(ev.summary || '(no title)') +
+                        (ev.location ? '<span class="ics-event-loc">' + escapeHtml(ev.location) + '</span>' : '') +
+                        '</span>' +
+                    '</div>';
+                });
+                html += '</div>';
+            });
+            content.innerHTML = html;
+        }
+
+        function renderIcsFeedSettings() {
+            const list = document.getElementById('ics-feeds-settings-list');
+            if (!list) return;
+            list.innerHTML = '';
+            const feeds = settings.icsFeeds || [];
+            feeds.forEach((feed, index) => {
+                const card = document.createElement('div');
+                card.className = 'rss-widget-settings-card';
+                card.innerHTML =
+                    '<div class="rss-widget-settings-header">' +
+                        '<input type="color" value="' + escapeHtml(feed.color || '#667eea') + '" data-ics-color="' + index + '" title="Calendar color" style="width: 34px; height: 32px; padding: 0; border: none; background: none; cursor: pointer;">' +
+                        '<input type="text" value="' + escapeHtml(feed.name || '') + '" data-ics-name="' + index + '" placeholder="Calendar name">' +
+                        '<label class="settings-checkbox" style="margin: 0; white-space: nowrap;">' +
+                            '<input type="checkbox" data-ics-enabled="' + index + '" ' + (feed.enabled ? 'checked' : '') + '>' +
+                            '<span>On</span>' +
+                        '</label>' +
+                        '<button class="iframe-widget-delete-btn" data-ics-delete="' + index + '">Delete</button>' +
+                    '</div>' +
+                    '<div class="iframe-widget-settings-body">' +
+                        '<input type="text" style="background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 4px; padding: 8px; color: var(--text-primary); font-size: 0.85rem; outline: none; width: 100%;" data-ics-url="' + index + '" placeholder="ICS/iCal URL or webcal:// link" value="' + escapeHtml(feed.url || '') + '">' +
+                    '</div>';
+                list.appendChild(card);
+            });
+
+            list.querySelectorAll('[data-ics-name]').forEach(input => {
+                input.addEventListener('input', e => { settings.icsFeeds[parseInt(e.target.dataset.icsName)].name = e.target.value; });
+            });
+            list.querySelectorAll('[data-ics-url]').forEach(input => {
+                input.addEventListener('input', e => { settings.icsFeeds[parseInt(e.target.dataset.icsUrl)].url = e.target.value.trim(); });
+            });
+            list.querySelectorAll('[data-ics-color]').forEach(input => {
+                input.addEventListener('input', e => { settings.icsFeeds[parseInt(e.target.dataset.icsColor)].color = e.target.value; });
+            });
+            list.querySelectorAll('[data-ics-enabled]').forEach(input => {
+                input.addEventListener('change', e => { settings.icsFeeds[parseInt(e.target.dataset.icsEnabled)].enabled = e.target.checked; });
+            });
+            list.querySelectorAll('[data-ics-delete]').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const idx = parseInt(e.target.dataset.icsDelete);
+                    const feed = settings.icsFeeds[idx];
+                    if (feed) localStorage.removeItem('ics-cache-' + feed.id);
+                    settings.icsFeeds.splice(idx, 1);
+                    renderIcsFeedSettings();
+                });
+            });
+        }
+
+        let icsRefreshTimer = null;
+        function startIcsAutoRefresh() {
+            if (icsRefreshTimer) clearInterval(icsRefreshTimer);
+            icsRefreshTimer = setInterval(() => {
+                const feeds = (settings.icsFeeds || []).filter(f => f.enabled && f.url);
+                if (feeds.length && isExtensionSubscriptionActive()) loadIcsEvents(true);
+            }, 30 * 60 * 1000);
+        }
+
+        function addIcsFeed() {
+            if (!isExtensionSubscriptionActive()) return;
+            if (!Array.isArray(settings.icsFeeds)) settings.icsFeeds = [];
+            const id = 'ics-' + Date.now();
+            const color = ICS_FEED_COLORS[settings.icsFeeds.length % ICS_FEED_COLORS.length];
+            settings.icsFeeds.push({ id: id, name: 'New Calendar', url: '', color: color, enabled: true, refreshInterval: 60 });
+            renderIcsFeedSettings();
         }
 
         // ============ Ambient / Focus Sounds ============
@@ -7868,6 +8391,7 @@
                     showDonetick: settings.showDonetick,
                     iframeWidgets: settings.iframeWidgets,
                     rssFeeds: settings.rssFeeds,
+                    icsFeeds: settings.icsFeeds,
                 }
             };
             localStorage.setItem('dashboard-page-' + pageId, JSON.stringify(state));
@@ -7937,6 +8461,7 @@
                     showDonetick: false,
                     iframeWidgets: [],
                     rssFeeds: [],
+                    icsFeeds: [],
                 }
             }));
 
@@ -9546,6 +10071,12 @@
                 addRssFeed();
             });
 
+            // Calendar (ICS) feeds
+            const addIcsBtn = document.getElementById('add-ics-feed-btn');
+            if (addIcsBtn) addIcsBtn.addEventListener('click', () => addIcsFeed());
+            const icsRefreshBtn = document.getElementById('ics-refresh-btn');
+            if (icsRefreshBtn) icsRefreshBtn.addEventListener('click', () => loadIcsEvents(true));
+
             // Ambient Sounds toolbar button
             document.getElementById('sounds-btn').addEventListener('click', () => {
                 const panel = document.getElementById('sound-mixer-panel');
@@ -10054,6 +10585,7 @@
             startAutoRefresh();
             scheduleMidnightRefresh();
             startRssAutoRefresh();
+            startIcsAutoRefresh();
             // Initialize Firebase if configured
             initFirebase();
             updateIntegrationsVisibility();
