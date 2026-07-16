@@ -13,6 +13,7 @@ All notable changes to the MyKK Dashboard.
 - Customizable keyboard shortcuts + arrow-key navigation between bookmarks (Settings → Behavior & Shortcuts)
 - Screensaver — idle full-screen drifting clock for kiosk/always-on displays
 - Option to always show widget controls instead of only on hover
+- High Contrast Mode — dedicated accessibility theme (black surfaces, white text/borders, strong focus outline)
 - Docs: how to add custom bookmark icons
 
 ## March 16, 2026

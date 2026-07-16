@@ -71,6 +71,7 @@ Each toolbar button can be independently shown or hidden.
 - **Drag & Drop Reordering** — reorder all dashboard sections by dragging. Handles appear on hover (desktop) or are always visible (mobile).
 - **Custom CSS** — inject your own stylesheet (Settings → Appearance) to personalize the dashboard beyond the built-in themes. Applied live.
 - **Always-Show Controls** — option to keep widget controls (edit, delete, resize, add) visible at all times instead of only on hover.
+- **High Contrast Mode** — dedicated accessibility theme with pure black surfaces, white text and borders, a strong focus outline, and no translucency. Overrides light/dark.
 - **Keyboard Shortcuts** — `/` focuses search and `Esc` closes modals, plus customizable single-key bindings (focus search, open settings, toggle theme/fullscreen, refresh) and arrow-key navigation between bookmarks. Configure under Settings → Behavior & Shortcuts.
 - **Screensaver** — optional idle clock for kiosk/always-on displays: after a configurable idle timeout, a full-screen drifting clock appears (to reduce burn-in) and dismisses on any activity.
 
@@ -105,7 +106,7 @@ Each toolbar button can be independently shown or hidden.
 - [ ] **Todo / Task List Widget** — structured checklist widget alongside the existing notepad
 - [ ] **Native RSS Widget** — parse and display RSS/Atom feeds directly instead of relying on iframes
 - [ ] **Additional Auth Providers** — GitHub, Apple, and email/password sign-in via Firebase
-- [ ] **High Contrast Mode** — a dedicated high-contrast theme for improved readability
+- [x] **High Contrast Mode** — a dedicated high-contrast theme for improved readability
 
 ### Design Principles
 
