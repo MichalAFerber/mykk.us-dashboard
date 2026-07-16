@@ -18,8 +18,12 @@ rm -rf "$DIST"
 mkdir -p "$DIST"
 
 # Copy all static assets
-cp index.html "$DIST/"
-cp _headers   "$DIST/"
+cp index.html            "$DIST/"
+cp _headers              "$DIST/"
+cp manifest.webmanifest  "$DIST/"
+cp sw.js                 "$DIST/"
+cp favicon.svg           "$DIST/"
+cp favicon.png           "$DIST/"
 
 # ---------- Inject Firebase config ----------
 # Only touch the file if at least the API key is provided.

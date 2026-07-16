@@ -2,6 +2,15 @@
 
 All notable changes to the MyKK Dashboard.
 
+## July 16, 2026
+
+### Features
+- Calendar Feeds (ICS Sync) — subscribe to multiple ICS/iCal feeds (Google, Outlook, Apple, Nextcloud, `webcal://`); merged, color-coded Upcoming Events widget with recurring and all-day event support
+- PWA / Offline Mode — installable web app manifest and service worker for instant loads and full offline support
+- Keyboard shortcut: `/` focuses the search bar
+- Dashboard pages can be reordered by dragging their tabs
+- Docs: how to add custom bookmark icons
+
 ## March 16, 2026
 
 ### Features
