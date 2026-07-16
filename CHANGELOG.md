@@ -9,6 +9,10 @@ All notable changes to the MyKK Dashboard.
 - PWA / Offline Mode — installable web app manifest and service worker for instant loads and full offline support
 - Keyboard shortcut: `/` focuses the search bar
 - Dashboard pages can be reordered by dragging their tabs
+- Custom CSS injection — apply your own stylesheet live from Settings → Appearance
+- Customizable keyboard shortcuts + arrow-key navigation between bookmarks (Settings → Behavior & Shortcuts)
+- Screensaver — idle full-screen drifting clock for kiosk/always-on displays
+- Option to always show widget controls instead of only on hover
 - Docs: how to add custom bookmark icons
 
 ## March 16, 2026

@@ -69,6 +69,10 @@ Each toolbar button can be independently shown or hidden.
 - **Auto-Refresh** — configurable interval (0–60 minutes) to keep data fresh
 - **Widget Layout** — 12-column CSS grid. Set custom width (1–12 columns) and height (1–8 rows) for every widget.
 - **Drag & Drop Reordering** — reorder all dashboard sections by dragging. Handles appear on hover (desktop) or are always visible (mobile).
+- **Custom CSS** — inject your own stylesheet (Settings → Appearance) to personalize the dashboard beyond the built-in themes. Applied live.
+- **Always-Show Controls** — option to keep widget controls (edit, delete, resize, add) visible at all times instead of only on hover.
+- **Keyboard Shortcuts** — `/` focuses search and `Esc` closes modals, plus customizable single-key bindings (focus search, open settings, toggle theme/fullscreen, refresh) and arrow-key navigation between bookmarks. Configure under Settings → Behavior & Shortcuts.
+- **Screensaver** — optional idle clock for kiosk/always-on displays: after a configurable idle timeout, a full-screen drifting clock appears (to reduce burn-in) and dismisses on any activity.
 
 ### Cloud Sync
 
@@ -93,9 +97,9 @@ Each toolbar button can be independently shown or hidden.
 ### Planned
 
 - [x] **PWA / Offline Mode** — service worker (`sw.js`) + web manifest for instant loads and offline support. Ships in the core app for everyone; installable to your home screen or desktop.
-- [ ] **Keyboard Shortcuts** — `/` focuses search and `Esc` closes modals today; arrow-key navigation and customizable bindings are still planned.
-- [ ] **Browser Extension** — a Chrome/Firefox extension that sets MyKK as the new-tab page. The extension will be a separate, private product with a subscription ($1/month or $12/year) to cover hosting, maintenance, and browser store review costs. Premium features bundled with the extension:
-  - **Custom CSS** — inject your own stylesheets to personalize the dashboard beyond built-in themes
+- [x] **Keyboard Shortcuts** — `/` focuses search and `Esc` closes modals, plus customizable single-key bindings and arrow-key navigation between bookmarks.
+- [x] **Custom CSS** — inject your own stylesheet to personalize the dashboard beyond the built-in themes.
+- [ ] **Browser Extension** — a Chrome/Firefox extension that sets MyKK as the new-tab page. The extension will be a separate, private product with a subscription ($1/month or $12/year) to cover hosting, maintenance, and browser store review costs.
 - [ ] **Bookmark Folders** — collapsible groups/categories (Work, Social, Dev, etc.) to organize large bookmark collections
 - [ ] **Light / Dark Mode Toggle** — switchable theme with system preference detection
 - [ ] **Todo / Task List Widget** — structured checklist widget alongside the existing notepad

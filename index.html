@@ -3935,6 +3935,98 @@
             color: var(--text-primary);
         }
 
+        /* ============ Always-show widget controls (disable hover-only reveal) ============ */
+        body.always-show-controls [data-widget]::after { opacity: 1 !important; }
+        body.always-show-controls .shortcut .shortcut-delete,
+        body.always-show-controls .shortcut .shortcut-edit { display: flex !important; }
+        body.always-show-controls .add-shortcut-fab { opacity: 1 !important; }
+        body.always-show-controls .iframe-widget > .section-drag-handle,
+        body.always-show-controls .ics-widget > .section-drag-handle,
+        body.always-show-controls .rss-widget > .section-drag-handle { opacity: 0.8 !important; }
+
+        /* ============ Keyboard shortcut binding rows ============ */
+        .keybind-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .keybind-label {
+            flex: 1;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .keybind-input {
+            width: 96px;
+            text-align: center;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            cursor: pointer;
+            outline: none;
+        }
+        .keybind-input.capturing {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+        .keybind-clear {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .keybind-clear:hover { background: var(--hover-bg); color: var(--text-primary); }
+
+        /* ============ Screensaver (idle clock) ============ */
+        #screensaver-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            cursor: none;
+        }
+        #screensaver-overlay.active { display: flex; }
+        .screensaver-clock {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Inter', -apple-system, sans-serif;
+            animation: screensaver-drift 60s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+        .screensaver-time {
+            font-size: clamp(3rem, 14vw, 12rem);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            line-height: 1;
+        }
+        .screensaver-date {
+            font-size: clamp(1rem, 3vw, 2rem);
+            font-weight: 300;
+            margin-top: 0.5em;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        @keyframes screensaver-drift {
+            0%   { transform: translate(-6vw, -6vh); }
+            25%  { transform: translate(6vw, -3vh); }
+            50%  { transform: translate(5vw, 6vh); }
+            75%  { transform: translate(-4vw, 4vh); }
+            100% { transform: translate(-6vw, -5vh); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .screensaver-clock { animation: none; }
+        }
+
     </style>
     <script type="application/ld+json">
     {
@@ -3995,9 +4087,19 @@
         "license": "https://opensource.org/licenses/MIT"
     }
     </script>
+    <!-- User-provided custom CSS is injected here at runtime (Settings → Appearance) -->
+    <style id="custom-css-injection"></style>
 </head>
 <body>
     <a href="#main-dashboard" class="skip-to-content">Skip to dashboard</a>
+
+    <!-- Screensaver / idle-clock overlay (kiosk / always-on displays) -->
+    <div id="screensaver-overlay" role="presentation" aria-hidden="true">
+        <div class="screensaver-clock">
+            <div class="screensaver-time" id="screensaver-time">--:--</div>
+            <div class="screensaver-date" id="screensaver-date"></div>
+        </div>
+    </div>
 
     <!-- SEO content for crawlers (visually hidden, not aria-hidden so it's indexable) -->
     <div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">
@@ -4380,6 +4482,7 @@
                 <a href="#section-appearance">Appearance</a>
                 <a href="#section-widgets">Widgets</a>
                 <a href="#section-toolbar">Toolbar Buttons</a>
+                <a href="#section-behavior">Behavior &amp; Shortcuts</a>
                 <a href="#section-iframe" id="toc-iframe" class="hidden">iFrame Widgets <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-rss" id="toc-rss" class="hidden">RSS Feeds <span class="toc-pro-badge">Pro</span></a>
                 <a href="#section-ics" id="toc-ics" class="hidden">Calendar Feeds <span class="toc-pro-badge">Pro</span></a>
@@ -4512,6 +4615,11 @@
                             <input type="text" class="settings-input" id="new-folder-name" placeholder="New folder name" style="flex: 1;">
                             <button type="button" class="settings-action-btn" id="add-folder-btn" style="flex: none; padding: 10px 16px;">+ Add</button>
                         </div>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label">Custom CSS</label>
+                        <textarea class="settings-input" id="custom-css-input" rows="6" placeholder="/* Your own CSS — applied live. e.g. */&#10;.shortcut-name { font-weight: 600; }" style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; line-height: 1.5; resize: vertical; white-space: pre;"></textarea>
+                        <small class="settings-help">Advanced: inject your own stylesheet to personalize the dashboard beyond the built-in themes. Applied instantly and saved with your settings.</small>
                     </div>
                 </div>
 
@@ -4676,6 +4784,61 @@
                             <input type="checkbox" id="toggle-notepad" checked>
                             <span>Notepad</span>
                         </label>
+                    </div>
+                </div>
+
+                <!-- Behavior & Shortcuts -->
+                <div class="settings-section" id="section-behavior">
+                    <h3 class="settings-section-title">Behavior &amp; Shortcuts</h3>
+
+                    <div class="settings-group">
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-always-show-controls">
+                            <span>Always show widget controls</span>
+                        </label>
+                        <small class="settings-help">Keep edit, delete, resize, and add controls visible at all times instead of only when you hover a widget.</small>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="settings-checkbox">
+                            <input type="checkbox" id="toggle-screensaver">
+                            <span>Screensaver (idle clock)</span>
+                        </label>
+                        <small class="settings-help">After a period of inactivity, show a full-screen drifting clock — useful for always-on/kiosk displays. Move the mouse or press any key to dismiss.</small>
+                        <div class="settings-group" id="screensaver-idle-group" style="margin-top: 10px; display: none;">
+                            <label class="settings-label">Idle timeout (minutes)</label>
+                            <input type="number" class="settings-input" id="screensaver-minutes" min="1" max="120" step="1" value="5" style="max-width: 120px;">
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="settings-label">Keyboard Shortcuts</label>
+                        <small class="settings-help" style="margin-bottom: 10px; display: block;">Click a field and press a key to set it. Leave blank to disable. Shortcuts are ignored while you're typing in a field. Tip: use the arrow keys to move between bookmarks and press Enter to open one.</small>
+                        <div class="keybind-row">
+                            <span class="keybind-label">Focus search</span>
+                            <input type="text" class="keybind-input" data-binding="focusSearch" readonly placeholder="Unset">
+                            <button type="button" class="keybind-clear" data-binding-clear="focusSearch" title="Clear">&times;</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-label">Open settings</span>
+                            <input type="text" class="keybind-input" data-binding="openSettings" readonly placeholder="Unset">
+                            <button type="button" class="keybind-clear" data-binding-clear="openSettings" title="Clear">&times;</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-label">Toggle theme</span>
+                            <input type="text" class="keybind-input" data-binding="toggleTheme" readonly placeholder="Unset">
+                            <button type="button" class="keybind-clear" data-binding-clear="toggleTheme" title="Clear">&times;</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-label">Toggle fullscreen</span>
+                            <input type="text" class="keybind-input" data-binding="toggleFullscreen" readonly placeholder="Unset">
+                            <button type="button" class="keybind-clear" data-binding-clear="toggleFullscreen" title="Clear">&times;</button>
+                        </div>
+                        <div class="keybind-row">
+                            <span class="keybind-label">Refresh dashboard</span>
+                            <input type="text" class="keybind-input" data-binding="refresh" readonly placeholder="Unset">
+                            <button type="button" class="keybind-clear" data-binding-clear="refresh" title="Clear">&times;</button>
+                        </div>
                     </div>
                 </div>
 
@@ -5141,6 +5304,7 @@
         const defaultSettings = {
             pageTitle: 'MyKK Dashboard',
             faviconUrl: '',
+            customCss: '',
             notepadMode: 'plain',
             theme: 'dark',
             bgType: 'gradient',
@@ -5216,6 +5380,10 @@
             soundChannels: {},
             soundMasterVolume: 0.7,
             soundTimer: 0,
+            alwaysShowControls: false,
+            screensaverEnabled: false,
+            screensaverIdleMinutes: 5,
+            keyBindings: { focusSearch: '/', openSettings: '', toggleTheme: '', toggleFullscreen: '', refresh: '' },
             pages: [{ id: 'default', name: 'Home' }],
             activePage: 'default',
             firebaseConfig: {
@@ -5488,6 +5656,9 @@
                 if (!Array.isArray(settings.pages)) settings.pages = [{ id: 'default', name: 'Home' }];
                 if (!settings.activePage) settings.activePage = 'default';
                 if (!settings.soundChannels || typeof settings.soundChannels !== 'object') settings.soundChannels = {};
+                if (!settings.keyBindings || typeof settings.keyBindings !== 'object') settings.keyBindings = { ...defaultSettings.keyBindings };
+                else settings.keyBindings = { ...defaultSettings.keyBindings, ...settings.keyBindings };
+                if (typeof settings.customCss !== 'string') settings.customCss = '';
             }
             applySettings();
         }
@@ -5964,6 +6135,7 @@
             }
 
             updateGreeting();
+            if (screensaverActive) updateScreensaverClock();
         }
 
         // ============ Mini Calendar ============
@@ -6043,6 +6215,70 @@
             }
         }
 
+        // ============ Custom CSS Injection ============
+        function applyCustomCss() {
+            const el = document.getElementById('custom-css-injection');
+            if (el) el.textContent = settings.customCss || '';
+        }
+
+        // ============ Screensaver / Idle Clock ============
+        let screensaverIdleTimer = null;
+        let screensaverActive = false;
+
+        function showScreensaver() {
+            const overlay = document.getElementById('screensaver-overlay');
+            if (!overlay || screensaverActive) return;
+            screensaverActive = true;
+            updateScreensaverClock();
+            overlay.classList.add('active');
+            overlay.setAttribute('aria-hidden', 'false');
+        }
+
+        function hideScreensaver() {
+            const overlay = document.getElementById('screensaver-overlay');
+            if (!overlay || !screensaverActive) return;
+            screensaverActive = false;
+            overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function updateScreensaverClock() {
+            if (!screensaverActive) return;
+            const now = new Date();
+            const use24 = settings.timeFormat === '24h';
+            let h = now.getHours();
+            const m = String(now.getMinutes()).padStart(2, '0');
+            let period = '';
+            if (use24) {
+                h = String(h).padStart(2, '0');
+            } else {
+                period = h >= 12 ? ' PM' : ' AM';
+                h = h % 12 || 12;
+            }
+            const timeEl = document.getElementById('screensaver-time');
+            const dateEl = document.getElementById('screensaver-date');
+            if (timeEl) timeEl.textContent = h + ':' + m + period;
+            if (dateEl) dateEl.textContent = now.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+
+        function resetScreensaverIdle() {
+            if (screensaverActive) hideScreensaver();
+            if (screensaverIdleTimer) clearTimeout(screensaverIdleTimer);
+            if (!settings.screensaverEnabled) return;
+            const mins = Math.max(1, parseInt(settings.screensaverIdleMinutes, 10) || 5);
+            screensaverIdleTimer = setTimeout(showScreensaver, mins * 60 * 1000);
+        }
+
+        let screensaverListenersAttached = false;
+        function applyScreensaverSettings() {
+            if (settings.screensaverEnabled && !screensaverListenersAttached) {
+                ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel', 'scroll'].forEach(ev =>
+                    window.addEventListener(ev, resetScreensaverIdle, { passive: true }));
+                screensaverListenersAttached = true;
+            }
+            resetScreensaverIdle();
+        }
+
         // ============ Background ============
         function applySettings() {
             applyTheme();
@@ -6050,6 +6286,12 @@
             document.title = settings.pageTitle || 'MyKK Dashboard';
             // Custom favicon
             applyFavicon();
+            // User custom CSS
+            applyCustomCss();
+            // Always-show-controls preference (disable hover-only reveal)
+            document.body.classList.toggle('always-show-controls', !!settings.alwaysShowControls);
+            // Screensaver idle timer
+            applyScreensaverSettings();
 
             const wallpaper = document.getElementById('wallpaper');
             const overlay = document.getElementById('overlay');
@@ -6437,6 +6679,21 @@
             // Page title
             document.getElementById('page-title-input').value = settings.pageTitle || 'MyKK Dashboard';
             document.getElementById('favicon-url-input').value = settings.faviconUrl || '';
+
+            // Custom CSS + Behavior & Shortcuts
+            const customCssInput = document.getElementById('custom-css-input');
+            if (customCssInput) customCssInput.value = settings.customCss || '';
+            const alwaysCtrl = document.getElementById('toggle-always-show-controls');
+            if (alwaysCtrl) alwaysCtrl.checked = !!settings.alwaysShowControls;
+            const ssToggle = document.getElementById('toggle-screensaver');
+            if (ssToggle) ssToggle.checked = !!settings.screensaverEnabled;
+            const ssMins = document.getElementById('screensaver-minutes');
+            if (ssMins) ssMins.value = settings.screensaverIdleMinutes || 5;
+            const ssIdleGroup = document.getElementById('screensaver-idle-group');
+            if (ssIdleGroup) ssIdleGroup.style.display = settings.screensaverEnabled ? '' : 'none';
+            document.querySelectorAll('.keybind-input[data-binding]').forEach(inp => {
+                inp.value = (settings.keyBindings && settings.keyBindings[inp.dataset.binding]) || '';
+            });
 
             document.querySelectorAll('.bg-type-btn[data-type]').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.type === settings.bgType);
@@ -9787,8 +10044,41 @@
         }
 
         // Global keyboard shortcuts (in addition to Escape, handled above).
-        // "/" focuses the search box — the classic quick-search shortcut —
-        // unless the user is already typing in a field.
+        // Bindings are user-customizable via Settings → Behavior & Shortcuts.
+        function focusSearchBox() {
+            const search = document.getElementById('search-input');
+            if (search && search.offsetParent !== null) {
+                search.focus();
+                search.select();
+                return true;
+            }
+            return false;
+        }
+
+        const KEYBIND_ACTIONS = {
+            focusSearch: focusSearchBox,
+            openSettings: () => { const b = document.getElementById('settings-btn'); if (b) b.click(); return true; },
+            toggleTheme: () => { const b = document.getElementById('theme-toggle-btn'); if (b) { b.click(); return true; } return false; },
+            toggleFullscreen: () => { if (typeof toggleFullscreen === 'function') { toggleFullscreen(); return true; } return false; },
+            refresh: () => { window.location.reload(); return true; },
+        };
+
+        // Arrow-key navigation across the visible bookmark/shortcut grid.
+        function handleShortcutArrowNav(e) {
+            const active = document.activeElement;
+            if (!active || !active.classList || !active.classList.contains('shortcut')) return false;
+            const items = Array.from(document.querySelectorAll('#shortcuts-grid .shortcut'))
+                .filter(el => el.offsetParent !== null);
+            const idx = items.indexOf(active);
+            if (idx === -1) return false;
+            let next = idx;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = Math.min(items.length - 1, idx + 1);
+            else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = Math.max(0, idx - 1);
+            else return false;
+            if (next !== idx) { items[next].focus(); }
+            return true;
+        }
+
         function initGlobalShortcuts() {
             document.addEventListener('keydown', (e) => {
                 if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -9802,13 +10092,18 @@
                 );
                 if (typing) return;
 
-                if (e.key === '/') {
-                    const search = document.getElementById('search-input');
-                    // offsetParent is null when the widget is hidden/collapsed.
-                    if (search && search.offsetParent !== null) {
-                        e.preventDefault();
-                        search.focus();
-                        search.select();
+                // Arrow-key navigation between bookmarks when one is focused.
+                if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                    if (handleShortcutArrowNav(e)) { e.preventDefault(); return; }
+                }
+
+                // Customizable single-key bindings.
+                const bindings = settings.keyBindings || {};
+                for (const action in KEYBIND_ACTIONS) {
+                    const key = bindings[action];
+                    if (key && e.key === key) {
+                        if (KEYBIND_ACTIONS[action]()) e.preventDefault();
+                        return;
                     }
                 }
             });
@@ -9909,6 +10204,61 @@
             document.getElementById('favicon-url-input').addEventListener('input', (e) => {
                 settings.faviconUrl = e.target.value.trim();
             });
+
+            // Custom CSS — apply live as the user types
+            const customCssInput = document.getElementById('custom-css-input');
+            if (customCssInput) customCssInput.addEventListener('input', (e) => {
+                settings.customCss = e.target.value;
+                applyCustomCss();
+            });
+
+            // Always show widget controls
+            const alwaysCtrl = document.getElementById('toggle-always-show-controls');
+            if (alwaysCtrl) alwaysCtrl.addEventListener('change', (e) => {
+                settings.alwaysShowControls = e.target.checked;
+                document.body.classList.toggle('always-show-controls', e.target.checked);
+            });
+
+            // Screensaver
+            const ssToggle = document.getElementById('toggle-screensaver');
+            if (ssToggle) ssToggle.addEventListener('change', (e) => {
+                settings.screensaverEnabled = e.target.checked;
+                const grp = document.getElementById('screensaver-idle-group');
+                if (grp) grp.style.display = e.target.checked ? '' : 'none';
+                applyScreensaverSettings();
+            });
+            const ssMins = document.getElementById('screensaver-minutes');
+            if (ssMins) ssMins.addEventListener('input', (e) => {
+                settings.screensaverIdleMinutes = Math.max(1, parseInt(e.target.value, 10) || 5);
+                applyScreensaverSettings();
+            });
+
+            // Keyboard shortcut capture rows
+            document.querySelectorAll('.keybind-input[data-binding]').forEach(inp => {
+                inp.addEventListener('focus', () => inp.classList.add('capturing'));
+                inp.addEventListener('blur', () => inp.classList.remove('capturing'));
+                inp.addEventListener('keydown', (e) => {
+                    e.preventDefault();
+                    if (e.key === 'Escape' || e.key === 'Tab') { inp.blur(); return; }
+                    // Ignore bare modifier presses.
+                    if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
+                    const key = e.key === ' ' ? ' ' : e.key;
+                    if (!settings.keyBindings || typeof settings.keyBindings !== 'object') settings.keyBindings = {};
+                    settings.keyBindings[inp.dataset.binding] = key;
+                    inp.value = key === ' ' ? 'Space' : key;
+                    inp.blur();
+                });
+            });
+            document.querySelectorAll('.keybind-clear[data-binding-clear]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.bindingClear;
+                    if (!settings.keyBindings || typeof settings.keyBindings !== 'object') settings.keyBindings = {};
+                    settings.keyBindings[action] = '';
+                    const inp = document.querySelector('.keybind-input[data-binding="' + action + '"]');
+                    if (inp) inp.value = '';
+                });
+            });
+
             // Auto-refresh
             document.getElementById('toggle-auto-refresh').addEventListener('change', (e) => {
                 settings.autoRefresh = e.target.checked;
