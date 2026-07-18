@@ -2,6 +2,13 @@
 
 All notable changes to the MyKK Dashboard.
 
+## July 18, 2026
+
+### Security
+- **Pro data now flows through the extension's authenticated proxy.** Stocks, RSS feeds, and calendar (ICS) feeds are fetched via the MyKK extension (v1.0.6+), which calls the authenticated `api.mykk.us/api/data/*` endpoints with the signed session token — the token never touches this page. This makes Pro data a real server-side boundary rather than a client-side toggle. Older/absent extensions fall back to the previous direct paths so nothing breaks during rollout.
+- **Private calendar (ICS) URLs no longer leak to third parties.** ICS feeds are fetched server-side by the extension/Worker instead of via `corsproxy.io` / `allorigins.win`, so feed URLs that embed secret tokens stay private. RSS no longer depends on the third-party `rss2json` service when the extension is present.
+- **Added a Content-Security-Policy** (`_headers`): `script-src` is restricted to the known CDNs (blocking injected external scripts), plus `object-src 'none'`, `base-uri 'self'`, and `frame-ancestors 'self'`. `connect-src`/`frame-src` remain permissive to preserve user-configured integrations (Donetick, custom iframes/feeds).
+
 ## July 16, 2026
 
 ### Features
