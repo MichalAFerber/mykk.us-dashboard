@@ -7795,9 +7795,46 @@
             if (pageTabs) pageTabs.classList.toggle('hidden', !active || !settings.pages || settings.pages.length <= 1);
         }
 
-        // ============ Stock Quotes ============
+        // ============ Extension data proxy ============
+        // Pro data (stocks, RSS, ICS) is fetched through the extension, which
+        // holds the signed session token and calls the authenticated
+        // /api/data/* Worker endpoints. The token never touches this page.
+        // We fall back to the older direct paths when a proxy-capable
+        // extension (v1.0.6+) isn't present, so nothing breaks during rollout.
         const WORKER_URL = 'https://api.mykk.us';
         let stockData = null;
+
+        function extProxySupported() {
+            const v = window.mykkExtension && window.mykkExtension.version;
+            if (!v) return false;
+            const p = String(v).split('.').map(n => parseInt(n, 10) || 0);
+            return p[0] > 1 || (p[0] === 1 && (p[1] > 0 || (p[1] === 0 && p[2] >= 6)));
+        }
+
+        function mykkExtensionProxy(kind, payload, timeoutMs = 12000) {
+            return new Promise((resolve, reject) => {
+                const id = 'mp_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+                let settled = false;
+                const cleanup = () => {
+                    document.removeEventListener('mykk-data-response', onResp);
+                    clearTimeout(timer);
+                };
+                const onResp = (e) => {
+                    const d = e.detail;
+                    if (!d || d.id !== id || settled) return;
+                    settled = true; cleanup();
+                    if (d.ok) resolve(d.data);
+                    else reject(Object.assign(new Error(d.error || 'proxy error'), { reauth: d.reauth }));
+                };
+                const timer = setTimeout(() => {
+                    if (settled) return;
+                    settled = true; cleanup();
+                    reject(new Error('extension proxy timeout'));
+                }, timeoutMs);
+                document.addEventListener('mykk-data-response', onResp);
+                document.dispatchEvent(new CustomEvent('mykk-data-request', { detail: { id, kind, payload } }));
+            });
+        }
 
         async function loadStocks() {
             if (!isExtensionSubscriptionActive()) return;
@@ -7810,10 +7847,20 @@
                 const symbols = settings.stockSymbols.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
                 if (symbols.length === 0) throw new Error('No symbols');
 
-                let stockUrl = `${WORKER_URL}/api/stocks/quotes?symbols=${symbols.join(',')}`;
-                if (settings.marketstackApiKey) stockUrl += `&marketstack_key=${encodeURIComponent(settings.marketstackApiKey)}`;
-                const resp = await fetch(stockUrl);
-                const result = await resp.json();
+                let result;
+                if (extProxySupported()) {
+                    // Authenticated path: the extension calls /api/data/stocks/quotes.
+                    result = await mykkExtensionProxy('stocks/quotes', {
+                        symbols: symbols.join(','),
+                        marketstack_key: settings.marketstackApiKey || undefined,
+                    });
+                } else {
+                    // Fallback: legacy unauthenticated endpoint.
+                    let stockUrl = `${WORKER_URL}/api/stocks/quotes?symbols=${symbols.join(',')}`;
+                    if (settings.marketstackApiKey) stockUrl += `&marketstack_key=${encodeURIComponent(settings.marketstackApiKey)}`;
+                    const resp = await fetch(stockUrl);
+                    result = await resp.json();
+                }
 
                 if (!result.success) throw new Error(result.error);
 
@@ -7947,9 +7994,16 @@
             content.innerHTML = '<div class="loading"></div>';
 
             try {
-                const resp = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url));
-                const data = await resp.json();
-                if (data.status !== 'ok') throw new Error(data.message || 'Feed error');
+                let data;
+                if (extProxySupported()) {
+                    // Authenticated path: the extension fetches + parses the feed.
+                    data = await mykkExtensionProxy('rss', { url: feed.url });
+                } else {
+                    // Fallback: third-party rss2json.
+                    const resp = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(feed.url));
+                    data = await resp.json();
+                }
+                if (!data || data.status !== 'ok') throw new Error((data && data.message) || 'Feed error');
 
                 localStorage.setItem(cacheKey, JSON.stringify({ data: data, timestamp: Date.now() }));
                 renderRssFeedContent(content, data);
@@ -8231,8 +8285,16 @@
         async function fetchIcsText(url) {
             const normalized = icsNormalizeUrl(url);
             if (!normalized) return null;
-            // Try a direct fetch first (works for feeds that send CORS headers),
-            // then fall back to public CORS proxies for the ones that don't.
+            // Preferred: the extension fetches server-side, so a private calendar
+            // URL (which often carries a secret token) never goes to a third party.
+            if (extProxySupported()) {
+                try {
+                    const data = await mykkExtensionProxy('ics', { url: normalized });
+                    if (data && data.text && data.text.indexOf('BEGIN:VCALENDAR') !== -1) return data.text;
+                } catch (e) { /* fall through to legacy paths */ }
+            }
+            // Fallback: direct fetch (feeds that send CORS headers), then public
+            // CORS proxies for the ones that don't.
             const attempts = [
                 normalized,
                 'https://corsproxy.io/?url=' + encodeURIComponent(normalized),
