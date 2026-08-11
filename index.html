@@ -5719,6 +5719,12 @@
                 if (!settings.keyBindings || typeof settings.keyBindings !== 'object') settings.keyBindings = { ...defaultSettings.keyBindings };
                 else settings.keyBindings = { ...defaultSettings.keyBindings, ...settings.keyBindings };
                 if (typeof settings.customCss !== 'string') settings.customCss = '';
+                // A config saved while the build shipped without credentials is all
+                // empty strings — don't let it shadow the build-injected default.
+                const fb = settings.firebaseConfig;
+                if (!fb || !fb.apiKey || !fb.projectId) {
+                    settings.firebaseConfig = { ...defaultSettings.firebaseConfig };
+                }
             }
             applySettings();
         }
