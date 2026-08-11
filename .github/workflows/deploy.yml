@@ -64,7 +64,8 @@ jobs:
 
       - name: Verify the Firebase config made it into the build
         if: steps.gate.outputs.ok == 'true'
-        run: grep -q "apiKey: 'AIza" dist/index.html
+        run: |
+          grep -q "apiKey: 'AIza" dist/index.html
 
       # A runner only ever holds committed content, so --commit-dirty=false is
       # honest here in a way hand-run `wrangler pages deploy` was not.
