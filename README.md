@@ -289,7 +289,7 @@ Choose one method depending on your hosting setup:
 
 #### Cloudflare Pages (recommended)
 
-Add these as environment variables in the Cloudflare dashboard (Settings > Environment variables):
+If you deploy with this repo's GitHub Actions workflow (the production path for start.mykk.us), the values are set in the Build step's `env` block in `.github/workflows/deploy.yml` — Cloudflare Pages dashboard variables are not consulted by that build. If you instead use Cloudflare Pages' own Git-integration builds, add these as environment variables in the Cloudflare dashboard (Settings > Environment variables):
 
 | Variable | Value |
 |---|---|

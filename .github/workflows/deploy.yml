@@ -47,10 +47,24 @@ jobs:
           fi
 
       # No package.json here — the repo builds with a committed shell script,
-      # which is what Cloudflare's build was running too.
+      # which is what Cloudflare's build was running too. The Firebase values
+      # used to live in the Pages project's build settings, which this deploy
+      # model no longer consults — they are inlined rather than put in secrets
+      # because a Firebase *web* config is public by design (it ships in the
+      # page to every visitor; access control is Auth authorized domains and
+      # Firestore rules), and an absent secret would silently ship a configless
+      # build again, which is exactly how production sign-in broke on 2026-08-10.
       - name: Build
         if: steps.gate.outputs.ok == 'true'
+        env:
+          FIREBASE_API_KEY: AIzaSyCgi-xp0KwaX8RsIDcqOk5HN3qg2v5dThI
+          FIREBASE_AUTH_DOMAIN: start-mykk-us.firebaseapp.com
+          FIREBASE_PROJECT_ID: start-mykk-us
         run: bash build.sh
+
+      - name: Verify the Firebase config made it into the build
+        if: steps.gate.outputs.ok == 'true'
+        run: grep -q "apiKey: 'AIza" dist/index.html
 
       # A runner only ever holds committed content, so --commit-dirty=false is
       # honest here in a way hand-run `wrangler pages deploy` was not.
