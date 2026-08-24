@@ -24,6 +24,10 @@ cp manifest.webmanifest  "$DIST/"
 cp sw.js                 "$DIST/"
 cp favicon.svg           "$DIST/"
 cp favicon.png           "$DIST/"
+cp 404.html              "$DIST/"
+cp robots.txt            "$DIST/"
+cp sitemap.xml           "$DIST/"
+cp sitemap-index.xml     "$DIST/"
 
 # ---------- Inject Firebase config ----------
 # Only touch the file if at least the API key is provided.
