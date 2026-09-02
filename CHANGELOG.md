@@ -2,6 +2,11 @@
 
 All notable changes to the MyKK Dashboard.
 
+## September 2, 2026
+
+### Security
+- **Private calendar (ICS) URLs no longer leak when the extension answers with an error — which the entry below claimed, and the code did not do.** `fetchIcsText` routed through the extension first, but a `catch` let *any* extension failure fall through to the same `corsproxy.io` and `allorigins.win` calls the July 18 change was written to retire. That was invisible while the extension always answered. Since the Worker cutover it does not: `/api/data/ics` returns 403 for a lapsed subscriber, and every one of them took the fallback and handed a feed URL — often carrying a secret token, revocable only by regenerating the feed — to two third parties. A proxy-capable extension's answer is now final, success or failure, and the public proxies serve the no-extension path only. This is the shape the RSS and stocks widgets already used; ICS was the one written the other way round.
+
 ## July 18, 2026
 
 ### Security
