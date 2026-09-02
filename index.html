@@ -8291,16 +8291,44 @@
         async function fetchIcsText(url) {
             const normalized = icsNormalizeUrl(url);
             if (!normalized) return null;
-            // Preferred: the extension fetches server-side, so a private calendar
-            // URL (which often carries a secret token) never goes to a third party.
+            // A PROXY-CAPABLE EXTENSION'S ANSWER IS FINAL — SUCCESS OR FAILURE.
+            //
+            // The extension fetches server-side, so a private calendar URL (which
+            // usually carries a secret token in the path or query) never leaves
+            // the machine. The legacy paths below include two PUBLIC CORS
+            // proxies, and handing them that URL hands a third party a working
+            // credential to the user's calendar — permanently, and with nothing
+            // to revoke short of regenerating the feed.
+            //
+            // This used to `catch` and fall through, which was invisible for as
+            // long as the extension always answered. It does not any more: since
+            // the Worker cutover, /api/data/ics answers 403 for a LAPSED
+            // subscriber, and every one of them silently took the fallback and
+            // shipped their calendar URLs to corsproxy.io and allorigins.win.
+            // Before the cutover that same population got 200 and never reached
+            // this code, which is why the bug shipped looking harmless.
+            //
+            // So the proxies are for the NO-EXTENSION path only. This is also the
+            // shape loadRssFeed and loadStocks already use — an if/else, where an
+            // extension error propagates instead of falling through. ICS was the
+            // one widget written the other way round.
             if (extProxySupported()) {
                 try {
                     const data = await mykkExtensionProxy('ics', { url: normalized });
                     if (data && data.text && data.text.indexOf('BEGIN:VCALENDAR') !== -1) return data.text;
-                } catch (e) { /* fall through to legacy paths */ }
+                    console.error('ICS extension proxy returned no calendar for feed');
+                } catch (e) {
+                    // Logged without the URL: it is the secret being protected.
+                    console.error('ICS extension proxy error:', e && e.message);
+                }
+                // The widget's own error path takes it from here (see
+                // loadIcsEvents), after getIcsFeedText has offered stale cache.
+                return null;
             }
-            // Fallback: direct fetch (feeds that send CORS headers), then public
-            // CORS proxies for the ones that don't.
+            // No proxy-capable extension: direct fetch (feeds that send CORS
+            // headers), then public CORS proxies for the ones that don't. This is
+            // the pre-extension behaviour, unchanged, for users who have no
+            // extension to route through.
             const attempts = [
                 normalized,
                 'https://corsproxy.io/?url=' + encodeURIComponent(normalized),
