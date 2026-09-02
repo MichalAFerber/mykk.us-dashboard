@@ -7817,6 +7817,70 @@
             return p[0] > 1 || (p[0] === 1 && (p[1] > 0 || (p[1] === 0 && p[2] >= 6)));
         }
 
+        // ---- The handshake is NOT instant, and "not yet" is not "not installed" ----
+        //
+        // Both repos describe the <html data-mykk-extension> attribute as
+        // available immediately because the content script runs at
+        // document_start. It is not. content.js AWAITS
+        // chrome.runtime.sendMessage({type:'GET_SUBSCRIPTION_STATUS'}) before it
+        // writes the attribute, and that is a round trip to an MV3 service
+        // worker which Chrome terminates when idle and which may revalidate the
+        // subscription over the network on the way. On a cold worker it can
+        // easily outrun the 2s the reveal poll waits.
+        //
+        // What happened then was not a degraded experience, it was a privacy
+        // failure: revealDashboard() ran with window.mykkExtension undefined,
+        // extProxySupported() answered false, and every RSS widget shipped the
+        // customer's feed URLs to api.rss2json.com — for someone who had the
+        // extension installed and was paying for the proxy that exists to stop
+        // exactly that. Same shape for ICS (corsproxy.io, allorigins.win) and
+        // for stocks, which carries the customer's own Marketstack key.
+        //
+        // So the data path waits for a real answer instead of racing the reveal.
+        // The reveal keeps its own 2s budget — that is about paint, and making
+        // people stare at a spinner is not the fix.
+        const EXT_SEEN_KEY = 'mykk-ext-seen';
+
+        function extensionEverSeen() {
+            try { return localStorage.getItem(EXT_SEEN_KEY) === '1'; } catch (e) { return false; }
+        }
+
+        let settleExtension;
+        const extensionSettled = new Promise((resolve) => { settleExtension = resolve; });
+
+        /** Called the moment a handshake lands, from either channel. */
+        function noteExtensionPresent() {
+            try { localStorage.setItem(EXT_SEEN_KEY, '1'); } catch (e) { /* private mode */ }
+            settleExtension();
+        }
+
+        // TWO DEADLINES, AND THE ASYMMETRY IS THE POINT.
+        //
+        // A browser that has seen the extension before gets 15s: "no answer yet"
+        // there almost certainly means a cold service worker rather than an
+        // uninstalled extension, and leaking a private feed URL is much the
+        // worse of the two errors to make.
+        //
+        // A browser that has never seen it is probably a free-tier visitor with
+        // no extension at all, and they must not pay for this in latency. 2.5s
+        // is chosen against what the page already does rather than picked round:
+        // no widget fetches before revealDashboard(), which itself polls for up
+        // to 2s, so by the time a feed is requested only about half a second of
+        // this budget is left to wait out. It still gives a first-time visitor
+        // 2.5s of handshake grace measured from parse, which covers an ordinary
+        // MV3 cold start.
+        setTimeout(settleExtension, extensionEverSeen() ? 15000 : 2500);
+
+        /**
+         * Resolve before choosing between the extension path and a third-party
+         * one. Returns immediately once the handshake has landed — which, after
+         * the first widget on a page, it always has.
+         */
+        async function extensionHandshakeSettled() {
+            if (window.mykkExtension) return;
+            await extensionSettled;
+        }
+
         function mykkExtensionProxy(kind, payload, timeoutMs = 12000) {
             return new Promise((resolve, reject) => {
                 const id = 'mp_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -7854,6 +7918,9 @@
                 if (symbols.length === 0) throw new Error('No symbols');
 
                 let result;
+                // The legacy branch below carries the customer's own Marketstack
+                // key in a query string, so this waits too.
+                await extensionHandshakeSettled();
                 if (extProxySupported()) {
                     // Authenticated path: the extension calls /api/data/stocks/quotes.
                     result = await mykkExtensionProxy('stocks/quotes', {
@@ -8001,6 +8068,10 @@
 
             try {
                 let data;
+                // Wait for a real answer before considering rss2json — see
+                // extensionHandshakeSettled(). Without this, a cold MV3 worker
+                // sent a paying customer's feed URLs to a third party.
+                await extensionHandshakeSettled();
                 if (extProxySupported()) {
                     // Authenticated path: the extension fetches + parses the feed.
                     data = await mykkExtensionProxy('rss', { url: feed.url });
@@ -8291,6 +8362,10 @@
         async function fetchIcsText(url) {
             const normalized = icsNormalizeUrl(url);
             if (!normalized) return null;
+            // Same reason as loadRssFeed: an unresolved handshake must not be
+            // read as "no extension", or a private calendar URL with a secret
+            // token in it goes to corsproxy.io.
+            await extensionHandshakeSettled();
             // A PROXY-CAPABLE EXTENSION'S ANSWER IS FINAL — SUCCESS OR FAILURE.
             //
             // The extension fetches server-side, so a private calendar URL (which
@@ -11134,6 +11209,8 @@
                 const attr = document.documentElement.dataset.mykkExtension;
                 if (attr && !window.mykkExtension) {
                     try { window.mykkExtension = JSON.parse(attr); } catch {}
+                    // Releases any widget waiting to choose a fetch path.
+                    if (window.mykkExtension) noteExtensionPresent();
                 }
                 if (window.mykkExtension || ++extPollCount >= 8) {
                     revealDashboard();
@@ -11144,6 +11221,7 @@
             document.addEventListener('mykk-extension-status', (e) => {
                 if (e.detail) {
                     window.mykkExtension = e.detail;
+                    noteExtensionPresent();
                     revealDashboard();
                 }
             });
