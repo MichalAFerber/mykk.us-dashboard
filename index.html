@@ -857,6 +857,18 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        /* Sits above the event list when those events came from cache. Muted
+           rather than alarming: the events are still useful, they are just not
+           current, and the customer needs to know which. */
+        .ics-stale-note {
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0.75;
+            padding: 6px 8px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 8px;
+        }
+
         .ics-setup {
             display: flex;
             flex-direction: column;
@@ -7943,7 +7955,9 @@
                 renderStocksList(stockData);
             } catch (error) {
                 console.error('Stocks error:', error);
-                container.innerHTML = '<div class="stocks-setup"><p>Unable to load stock data</p></div>';
+                container.innerHTML = isNotEntitledError(error)
+                    ? notEntitledHtml('stocks-setup')
+                    : '<div class="stocks-setup"><p>Unable to load stock data</p></div>';
             }
         }
 
@@ -8086,7 +8100,12 @@
                 renderRssFeedContent(content, data);
             } catch (e) {
                 console.error('RSS feed error:', e);
-                content.innerHTML = '<div class="rss-setup"><p>Failed to load feed</p></div>';
+                // "Failed to load feed" never blamed the customer's configuration,
+                // so this widget did not carry the ICS defect -- but it could not
+                // tell a lapsed subscriber why the feed stopped either.
+                content.innerHTML = isNotEntitledError(e)
+                    ? notEntitledHtml('rss-setup')
+                    : '<div class="rss-setup"><p>Failed to load feed</p></div>';
             }
         }
 
@@ -8359,6 +8378,32 @@
             return u;
         }
 
+        // ENTITLEMENT IS NOT A LOAD FAILURE, AND THE COPY MUST NOT CONFUSE THEM.
+        //
+        // `mykkExtensionProxy` rejects with `reauth` set when the Worker answers
+        // 403 — the subscriber has lapsed. Every widget below used to fold that
+        // into its generic error path, so a billing state was reported as a
+        // configuration mistake: the ICS widget told a lapsed customer to "check
+        // the ICS URLs in Settings", which blames them for our state and sends
+        // them to fix feeds that were never broken.
+        //
+        // WHY THE PAGE'S OWN GATE CANNOT ANSWER THIS. `isExtensionSubscriptionActive()`
+        // reads the extension's CACHED view of the subscription, so it can still
+        // say active while the Worker says 403 — that is exactly the window this
+        // fault lives in, and it is why the widgets are reached at all. The 403
+        // is the authoritative answer and this reconciles the two: when they
+        // disagree, the Worker wins and the customer is told about the
+        // subscription, not about their feeds.
+        function isNotEntitledError(e) {
+            return !!(e && e.reauth);
+        }
+
+        /** The one lapsed-subscription message, so three widgets cannot drift. */
+        function notEntitledHtml(cssClass) {
+            return '<div class="' + cssClass + '"><p>Your MyKK Pro subscription isn\'t active, so this can\'t sync right now. Your settings are unchanged.</p>' +
+                '<button class="weather-setup-btn" onclick="document.getElementById(\'settings-btn\').click()">Check subscription</button></div>';
+        }
+
         async function fetchIcsText(url) {
             const normalized = icsNormalizeUrl(url);
             if (!normalized) return null;
@@ -8395,6 +8440,15 @@
                 } catch (e) {
                     // Logged without the URL: it is the secret being protected.
                     console.error('ICS extension proxy error:', e && e.message);
+                    // A LAPSED SUBSCRIPTION IS NOT A BROKEN FEED, so it is thrown
+                    // rather than flattened into the `null` that means "could not
+                    // load". Everything else still returns null and still gets the
+                    // stale-cache offer below. Note this throws PAST the proxies
+                    // deliberately: the leak fix stands, an entitlement failure
+                    // must never reach corsproxy.io either.
+                    if (isNotEntitledError(e)) {
+                        throw Object.assign(new Error('not entitled'), { notEntitled: true });
+                    }
                 }
                 // The widget's own error path takes it from here (see
                 // loadIcsEvents), after getIcsFeedText has offered stale cache.
@@ -8420,6 +8474,17 @@
             return null;
         }
 
+        /**
+         * One feed's text, plus WHY it is what it is.
+         *
+         * Returns { text, stale, notEntitled }. It used to return a bare string,
+         * which could not distinguish three different situations that need three
+         * different things said to the customer: fresh events, events served from
+         * a cache of unbounded age, and no events because the subscription
+         * lapsed. `stale` in particular was invisible — the old code returned the
+         * cached text with no age check and no signal, so a calendar that had
+         * stopped syncing weeks ago rendered exactly like a live one.
+         */
         async function getIcsFeedText(feed, forceRefresh) {
             const cacheKey = 'ics-cache-' + feed.id;
             if (!forceRefresh) {
@@ -8428,19 +8493,36 @@
                     try {
                         const { text, timestamp } = JSON.parse(cached);
                         const maxAge = (feed.refreshInterval || 60) * 60 * 1000;
-                        if (text && Date.now() - timestamp < maxAge) return text;
+                        if (text && Date.now() - timestamp < maxAge) {
+                            return { text, stale: false, notEntitled: false };
+                        }
                     } catch (e) { /* ignore cache errors */ }
                 }
             }
-            const text = await fetchIcsText(feed.url);
+            let notEntitled = false;
+            let text = null;
+            try {
+                text = await fetchIcsText(feed.url);
+            } catch (e) {
+                if (!e || !e.notEntitled) throw e;
+                notEntitled = true;
+            }
             if (text) {
                 try { localStorage.setItem(cacheKey, JSON.stringify({ text, timestamp: Date.now() })); } catch (e) { /* quota */ }
-                return text;
+                return { text, stale: false, notEntitled: false };
             }
-            // Network failed — fall back to stale cache if we have any.
+            // Could not refresh — fall back to stale cache if we have any. Still
+            // offered when the subscription lapsed: the customer paid for these
+            // events once and seeing them beats an empty widget, PROVIDED the
+            // widget says they are not current, which is what `stale` carries.
             const cached = localStorage.getItem(cacheKey);
-            if (cached) { try { return JSON.parse(cached).text; } catch (e) { /* ignore */ } }
-            return null;
+            if (cached) {
+                try {
+                    const { text: cachedText } = JSON.parse(cached);
+                    if (cachedText) return { text: cachedText, stale: true, notEntitled };
+                } catch (e) { /* ignore */ }
+            }
+            return { text: null, stale: false, notEntitled };
         }
 
         // --- Widget load + render ---
@@ -8459,15 +8541,23 @@
             icsLoading = true;
             if (forceRefresh || !content.dataset.rendered) content.innerHTML = '<div class="loading"></div>';
             try {
-                const texts = await Promise.all(feeds.map(feed => getIcsFeedText(feed, forceRefresh)));
-                const feedTexts = feeds.map((feed, i) => ({ text: texts[i], feed }));
+                const results = await Promise.all(feeds.map(feed => getIcsFeedText(feed, forceRefresh)));
+                const feedTexts = feeds.map((feed, i) => ({ text: results[i].text, feed }));
+                const anyNotEntitled = results.some(r => r.notEntitled);
+                const anyStale = results.some(r => r.stale);
                 if (!feedTexts.some(ft => ft.text)) {
-                    content.innerHTML = '<div class="ics-setup"><p>Unable to load calendar feeds. Check the ICS URLs in Settings.</p></div>';
+                    // SAY WHICH THING IS TRUE. A lapsed subscription and a broken
+                    // feed URL are different problems with different fixes, and
+                    // telling a lapsed customer to check their URLs sends them to
+                    // repair something that is not broken.
+                    content.innerHTML = anyNotEntitled
+                        ? notEntitledHtml('ics-setup')
+                        : '<div class="ics-setup"><p>Unable to load calendar feeds. Check the ICS URLs in Settings.</p></div>';
                     content.dataset.rendered = '';
                     return;
                 }
                 const events = icsCollectUpcoming(feedTexts, { lookaheadDays: 60 });
-                renderIcsEvents(events);
+                renderIcsEvents(events, { stale: anyStale, notEntitled: anyNotEntitled });
                 content.dataset.rendered = '1';
             } catch (e) {
                 console.error('ICS load error:', e);
@@ -8479,12 +8569,22 @@
 
         function icsDayKey(d) { return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
 
-        function renderIcsEvents(events) {
+        function renderIcsEvents(events, state) {
             const content = document.getElementById('ics-content');
             if (!content) return;
             if (!events || events.length === 0) {
                 content.innerHTML = '<div class="ics-setup"><p>No upcoming events in the next 60 days</p></div>';
                 return;
+            }
+            // THE STALE BANNER. Without it these events are indistinguishable
+            // from live ones, so a calendar that stopped syncing looks healthy
+            // for as long as the cache survives — which is unbounded, since the
+            // stale path applies no age limit.
+            let banner = '';
+            if (state && state.notEntitled) {
+                banner = '<div class="ics-stale-note">Showing saved events. Your MyKK Pro subscription isn\'t active, so these aren\'t syncing.</div>';
+            } else if (state && state.stale) {
+                banner = '<div class="ics-stale-note">Showing saved events &mdash; couldn\'t refresh just now.</div>';
             }
             const now = new Date();
             const todayKey = icsDayKey(now);
@@ -8519,7 +8619,7 @@
                 });
                 html += '</div>';
             });
-            content.innerHTML = html;
+            content.innerHTML = banner + html;
         }
 
         function renderIcsFeedSettings() {
